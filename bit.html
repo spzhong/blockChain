@@ -77,6 +77,8 @@
     <li><label>Categories</label></li>
 
         
+            <li><a href="poofAlgorithm.html">共识算法</a></li>
+        
             <li><a href="index.html">指引</a></li>
         
             <li><a href="bit.html">比特币</a></li>
@@ -106,44 +108,89 @@
 			<div class="article">
                 <a class="clearlink" href="15348479167321.html">
                 
-                  <h1>什么是比特币</h1>
+                  <h1>比特币</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h3 id="toc_0">定义</h3>
+                        	<h3 id="toc_0">历史</h3>
 
-<p>首先要区分比特币和区块链两个概念，先有了比特币，之后提出了区块链，但是比特币是区块链技术的一种应用；</p>
-
-<pre><code class="language-text">本质上就是一个去中心化账本
-一种建立于p2p和密码学基础上的数据货币
-密码学和分布式系统的组合产物
-</code></pre>
-
-<h3 id="toc_1">特点</h3>
-
-<ul>
-<li><p>去中心化的点对点网络</p>
-<p><font size=2>比特币的传输协议，或者是说脚本的传输协议</font></p></li>
-<li><p>区块链</p>
-<p><font size=2>整个交易引用的账本</font></p></li>
-<li><p>共识机制</p>
-<ul>
-<li>  <font size=2>货币的发行规则（是一种奖励规则，解决货币的流通的问题） </font></li>
-<li>  <font size=2>交易的验证规则（交易引用，解决交易双花问题） </font></li>
-<li>  <font size=2>交易数据一致性（去中心化，引入工作量证明，解决由谁来写入区块链的问题） </font></li>
-<li>  <font size=2>脚本的网络传输协议（解决个个节点之间的区块同步问题） </font></li>
-</ul></li>
-<li><p>货币所有权的证明</p>
-<p><font size=2>公钥，私钥，匿名化交易</font></p></li>
-</ul>
-
-<h3 id="toc_2">历史</h3>
+<hr/>
 
 <ul>
 <li>2008年，Bitcoin是由署名Satoshi Nakamoto发明的，他出版了为“Bitcoin:A Peer-to-Peer Electronic Cash System”;结合了b-money和hashCash的发明，创建一个完全去中心化的电子现金系统，不依赖中央机构进行的货币发行或结算和验证交易。</li>
 <li>2009年，基于中本聪（传言是澳大利亚人，目前尚未被确认身份）发布的参考实施指南，之后由许多程序员进行修订。</li>
-<li>2014年，比特币背后的区块链技术被大家关注，并正式的发布分布式记账本（Distributed Ledger）技术的革新浪潮。 
+<li>2014年，比特币背后的区块链技术被大家关注，并正式的发布分布式记账本（Distributed Ledger）技术的革新浪潮。</li>
+</ul>
+
+<h3 id="toc_1">什么是比特币</h3>
+
+<hr/>
+
+<p>本质上就是一个去中心化账本<br/>
+一种建立于p2p和密码学基础上的数据货币<br/>
+密码学和分布式系统的组合产物<br/>
+比特币的特点：</p>
+
+<ul>
+<li>去中心化的点对点网络<br/>
+比特币的传输协议，或者是说脚本的传输协议</li>
+<li>区块链<br/>
+存放交易的数据链 <br/>
+块，时间戳，难度系数，交易集合</li>
+<li>共识机制<br/>
+货币的发行规则（是一种奖励规则，解决货币的流通的问题）<br/>
+交易的验证规则（交易引用，解决交易双花问题）<br/>
+交易数据一致性（去中心化，引入工作量证明，解决由谁来写入区块链的问题） <br/>
+脚本的网络传输协议（解决个个节点之间的区块同步问题） </li>
+<li>货币所有权的证明<br/>
+公钥，私钥，匿名化交易</li>
+</ul>
+
+<h3 id="toc_2">比特币是如何发行的</h3>
+
+<p>比特币没有特定的发行机构，而是依靠一套去中心化的发行机制，逐步将比特币发行出去；比特币系统相当于一个去中心化的大账本，每个区块就是这一个账本中的一页，系统自动生成比特币作为奖励激励矿工参与记账；<br/>
+每十分钟全体矿工一起计算一道问题，最先算出的矿工获得记一页账的权利，经过100个块确认后，矿工将自动的获得一定数量的比特币；<br/>
+最开始记账一次获取50个比特币，每记21万页账（大约需要4年）记账的奖励就会减少一半，直到大约2140年，比特币无法细分，直至发行完毕，总量2100万枚；</p>
+
+<h3 id="toc_3">怎么挖矿</h3>
+
+<p>挖矿是数字货币一个创新，解决了数据一致性的问题；<br/>
+比特币通过挖矿产生，每10分钟，全网矿工一起计算一道算术题，谁先算出答案，就相当于挖到了这个区块，这个过程叫做挖矿；<br/>
+那么是什么样的算术题呢？<br/>
+首先，每个区块上有一难度系数，将随机产生hash256的值进行计算，需要小于该难度系数；<br/>
+将交易信息+自增长的数字，进行hash256，得到64位的16进制，转换为二进制2<sup>256次方的值；</sup><br/>
+0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
+这是一个极大的值，例如随机产生一个2<sup>256次方的值都小于该值；</sup><br/>
+为了增加计算的时间，我们将值缩小，例如：0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
+1 Khash/s = 1000 hash/s<br/>
+1 Mhash/s = 1000 Khash/s<br/>
+1 Ghash/s = 1000 Mhash/s<br/>
+1 Shash/s = 1000 Ghash/s<br/>
+1 PHash/s = 1000 Shash/s = 1000000000000000 hash/s <br/>
+难度系数：<br/>
+0x0000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
+nonce的最大值2<sup>32次方</sup><br/>
+比特币里nonce的预设太小了。对于现在的挖矿难度，当交易的merkle tree给定后，在32bit的nonce里面找到解的概率忽略不计。一台专业矿机在秒为单位的时间内就能穷举完nonce的所有可能。nonce太小，Merkle tree root来凑。现在的做法是不断的改变coinbase交易，带动merkle tree变化，再循环穷举nonce。针对一个给定的merkle tree root，nonce穷举完了，还没找到解，接着改coinbase来换新的merkle tree root，开始新的nonce穷举，如此重复，直到找到解为止。<br/>
+如何改变coinbase交易？<br/>
+1000笔交易的顺序可能有，1000!个阶乘计算，这个数字是极其大的<br/>
+预留了2<sup>32次方,那么最大的值是2<sup>224次方</sup></sup><br/>
+<code>D*2^32/600<br/>
+时间=难度*2^32/算力<br/>
+</code></p>
+
+<p>随着运算的提高，难度系统也再增加，每2014块（两周）会调整一下，难度系数，确保产生的块平均维持在10分钟左右，不至于过快的将币挖完；</p>
+
+<h3 id="toc_4">比特币怎么交易</h3>
+
+<p>生活中我们都有自己的银行账户，转账是在银行账户之间进行的。同样，比特币转账就是把比特币从一个比特币地址转移到另一个比特币地址上的过程。如果你想要转账比特币给别人，你需要在比特币交易平台、比特币钱包或者比特币客户端中，输入你的比特币地址、接收方地址、转账金额和手续费金额。确定支付后交易信息会在比特币网络进行全网广播。矿工每隔10分钟会将比特币网络中未被记账的交易打包进一个区块，这就完成了一次确认，此时比特币已转到对方账户。通常需要经过6次确认，确保交易记录不能被任何人窜改，转账才算真正完成。</p>
+
+<h3 id="toc_5">比特币是怎么交易</h3>
+
+<h3 id="toc_6">比特币的脚本是什么</h3>
+
+<h3 id="toc_7">比特币的p2p网络</h3>
+
                         
                       </div>
                   </div>
@@ -177,7 +224,7 @@
                         
                         	<h3 id="toc_0">定义</h3>
 
-<pre><code class="language-text">分布式的数据库
+<pre class="line-numbers"><code class="language-text">分布式的数据库
 密码学和分布式系统的组合产物
 基于共识机制，去中心化的公开数据库
 </code></pre>
@@ -191,166 +238,6 @@
 <li><p>可追溯的（Trackable）</p></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348479167598.html">
-                
-                  <h1>比特币交易本质</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348503678201.html">
-                
-                  <h1>比特币的脚本</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348503915875.html">
-                
-                  <h1>什么是挖矿</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348504038663.html">
-                
-                  <h1>p2p网络</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348504148099.html">
-                
-                  <h1>其他相关的介绍</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
                         
                       </div>
                   </div>
@@ -490,6 +377,8 @@
 
       	<p class="cat-list">
         
+            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
+        
             <a href="index.html"><strong>指引</strong></a>
         
             <a href="bit.html"><strong>比特币</strong></a>
@@ -517,7 +406,7 @@
 		  
 		      
 			      <li class="post">
-			        <a href="15348479167321.html">什么是比特币</a>
+			        <a href="15348479167321.html">比特币</a>
 			      </li>
 		     
 		  
@@ -538,8 +427,6 @@
 			        <a href="15348479167538.html">区块链的基本概念</a>
 			      </li>
 		     
-		  
-		      
 		  
 		      
 		  
