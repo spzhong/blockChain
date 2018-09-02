@@ -338,21 +338,19 @@
 密钥是一对，拥有公开密钥和私有密钥，随机生成一个私钥，然后通过椭圆曲线算法得到公钥</p>
 <blockquote>
 <p>公钥加密，只有私钥可解开<br/>
-    私钥签名，可以用公钥验证  </p>
+    私钥签名，可以用公钥验证</p>
 </blockquote></li>
 <li><p>base58和base58cheack<br/>
 为了更简洁的表示长串的数字，使用更少的符号来表示<br/>
-比特币钱包的地址：<br/>
-    <img src="media/15348479167321/541535370548_.pic.jpg" alt="541535370548_.pi"/></p>
-<p>比特币钱包的验证：<br/>
-     <img src="media/15348479167321/551535370565_.pic_hd.png" alt="551535370565_.pic_hd"/></p></li>
+比特币钱包的地址<br/>
+比特币钱包的验证</p></li>
 </ul>
 
 <h5 id="toc_5">2.钱包都有哪些类型</h5>
 
 <ul>
-<li>全节点钱包客户端􏱟􏷈􏰰􏺊</li>
-<li>简单支付客户端􏵯􏰝􏶊􏶋􏳴􏲸􏱓SPV</li>
+<li>全节点钱包客户端</li>
+<li>简单支付验证客户端SPV</li>
 <li>基于第三方客户端程序接口</li>
 </ul>
 
@@ -377,10 +375,90 @@ base58(1个字节版本号0x00+公钥哈希值+校验码)<br/>
 <p>在比特币系统中由用户（通过私钥控制的钱包），将每一笔的交易广播到整个比特币的网络中，矿工通过竞争计算生成的每个节点达成的共识的区块（包含当前网络中所发生的所有的交易），然后将其区块同步到其它的节点；</p>
 <p>比特币的持有者已授权把比特币转账给其他人，而持有者能够再次授权，转移给该比特币所有权链中的其他人，产生另一笔交易来花掉这些比特币，后面的持有者在花费比特币也是类似的方式；</p>
 <p>整个交易的传递，其实就是所有权的证明转移，这就是为什么说，区块链实现的是价值的转移，而非单纯互联网信息传递；</p></li>
+<li><p>块，交易结构己交易链的说明</p></li>
+</ol>
+
+<pre class="line-numbers"><code class="language-text"># pram 块的结构
+type Block struct {
+        hash               string       哈希
+        confirmations      string       确认次数
+        size               uint64       块的大小
+        height             uint64       块的高度
+        version            uint32       块的版本
+        merkleroot         string       默克尔树（后期讲解）
+        tx                 []           交易的详细信息集合
+        time               uint32       块的时间
+        nonce              uint32       随机数（最大2^32，后期讲解）
+        bits               string       当前目标hash值
+        difficulty         float64      难度系数（用于挖矿控制，后期讲解）
+        previousblockhash  string       上一个区块的hash
+}
+ 
+# pram 交易的结构
+type tx struct {
+        hex                 string              交易的十六进制
+        txid                string              交易的id
+        version             uint64              版本号
+        locktime            uint64              锁定时间（后期在脚本中会讲解）
+        vin                 []                  交易的输入
+        vout                []                  交易的输出
+        blockhash           string              所在的块的hash
+        confirmations       uint32              交易确认的次数
+        time                uint32              交易的时间
+        blocktime           uint32              所在快的时间
+}
+
+# pram 交易的输入（挖矿所得的币）结构
+type vin_coinbase struct {
+        coinbase            string              挖矿所得的备注说明
+        sequence            uint32              序列
+}
+
+# pram 交易的输入（交易所得的币）结构
+type vin_tx struct {
+        txid                string             交易的id
+        vout                uint32             交易的索引（和vout中的n对应）
+        sequence            uint32             输入序列（后期在脚本中会讲解）
+        scriptSig           map                解锁脚本
+        {   
+            asm =&gt; &quot;私钥签名&quot;,
+            hex =&gt; &quot;16进制&quot;
+        }
+}
+
+# pram 交易的输出结构
+type vout struct {
+        value               uint32           交易金额
+        n                   uint32           交易引用索引           
+        scriptPubKey        map              锁定脚本 
+        {
+            asm =&gt; &quot;脚本code&quot;,
+            hex =&gt; &quot;签名验证16进制&quot;,
+            reqSigs =&gt; &quot;签名个数，默认至少为1&quot;,
+            type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证&quot;,
+            addresses =&gt; [&quot;钱包的地址&quot;]
+        }                 
+}
+</code></pre>
+
+<ol>
 <li><p>首先如何获得第一个比特币</p>
-<p>挖矿basecoin<br/>
+<p>挖矿得到basecoin<br/>
 场外交易</p></li>
-<li><p>怎么计算自己的余额</p>
+<li><p>怎么计算余额</p>
+<p>假设自己的钱包是全节点的客户端；</p>
+<blockquote>
+<p>得到自己的钱包地址</p>
+</blockquote>
+<p>遍历所有的区块，得到区块中的所有交易的输出 <br/>
+匹配交易里面包含addresses字段，是一个数组结构（具体交易结构在交易细节中查看）<br/>
+得到当前钱包地址匹配出来的交易，然后，在当前块中，查询是否有交易的输入包含该txid<br/>
+如果没有包含，就加入未花费的交易(UTXO)的HashMap集合中<br/>
+累加所有的未花费的交易(UTXO)的值，得到钱包中的余额</p>
+<p>优化建议：</p>
+<p><code>生成钱包时候，指定位数标记当前最大的区块高度（或时间戳）<br/>
+    例如钱包的格式：1GdK9UzpHBzqzX2A9JFP3Di4weBwqgmoQA[37676/1535624845]<br/>
+</code> </p>
 <p>未花费的交易(UTXO)<br/>
 交易没有被引用</p></li>
 <li><p>怎么转账</p>
@@ -419,8 +497,8 @@ base58(1个字节版本号0x00+公钥哈希值+校验码)<br/>
 <p>生活中我们都有自己的银行账户，转账是在银行账户之间进行的。同样，比特币转账就是把比特币从一个比特币地址转移到另一个比特币地址上的过程。如果你想要转账比特币给别人，你需要在比特币交易平台、比特币钱包或者比特币客户端中，输入你的比特币地址、接收方地址、转账金额和手续费金额。确定支付后交易信息会在比特币网络进行全网广播。矿工每隔10分钟会将比特币网络中未被记账的交易打包进一个区块，这就完成了一次确认，此时比特币已转到对方账户。通常需要经过6次确认，确保交易记录不能被任何人窜改，转账才算真正完成。</p>
 
 <ol>
-<li><p>交易的本质</p></li>
-<li><p>交易的输入和输出</p></li>
+<li><p>块的数据结构</p></li>
+<li><p>交易的数据结构</p></li>
 <li><p>交易费</p></li>
 <li><p>如何找零</p></li>
 <li><p>一个完整的交易例子说明</p></li>
@@ -818,6 +896,167 @@ nonce的最大值2<sup>32次方</sup><br/>
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="15358583883222.html">
+                
+                  <h1>一篇对比特币交易的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>要了解比特币，首先要来指导</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358584238347.html">
+                
+                  <h1>一篇对比特币脚本的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358584946404.html">
+                
+                  <h1>一篇对比特币挖矿的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358585289735.html">
+                
+                  <h1>一篇对比特币网络的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358586085164.html">
+                
+                  <h1>一篇对比特币的应用案例分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
@@ -920,6 +1159,16 @@ nonce的最大值2<sup>32次方</sup><br/>
 			        <a href="15348479167538.html">区块链的基本概念</a>
 			      </li>
 		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
 		  
 		      
 		  
