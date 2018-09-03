@@ -904,7 +904,156 @@ nonce的最大值2<sup>32次方</sup><br/>
                       
                       <div class="a-content-text">
                         
-                        	<p>要了解比特币，首先要来指导</p>
+                        	<p>要想了解比特币，首先要知道是他是如何交易的，以及底层的结构和数据脚本是如何实现的；<br/>
+本文主要是对比特币交易系统的分析；</p>
+
+<pre class="line-numbers"><code class="language-mermaid">    graph LR
+         
+        subgraph b_c交易
+        subgraph 
+        b交易的输入 --scriptSig--&gt; 索引0:交易B1
+        end  
+        subgraph 
+        b交易的输出 --索引0--&gt; 钱包C地址
+        end 
+        end  
+          
+        subgraph UTXO
+        交易a_b
+        end 
+        subgraph B钱包的UTXO 
+        交易a_b --&gt; 交易b1
+        交易b1 --&gt;  b交易的输入
+        end
+        subgraph A钱包的UTXO 
+        交易a_b --&gt; 交易a5 
+        end
+         
+        subgraph a_b交易
+        subgraph 
+        交易的输入 --scriptSig--&gt;  索引0:交易a1
+        交易的输入 --scriptSig--&gt;  索引0:交易a2
+        交易的输入 --scriptSig--&gt;  索引1:交易a3
+        end
+        
+        subgraph 
+        交易的输出 --索引1--&gt; 钱包B地址
+        交易的输出 --索引0--&gt; 钱包A地址
+        end 
+        end
+         
+        subgraph A钱包的UTXO 
+        交易a1  --&gt; 交易的输入
+        交易a2  --&gt; 交易的输入
+        交易a3  --&gt; 交易的输入
+        交易a4
+        交易...
+        end    
+         
+        
+</code></pre>
+
+<p>交易是如何产生的概述 </p>
+
+<pre class="line-numbers"><code class="language-mermaid">    graph TB
+    A[Christmas方括号]--&gt;B(Go shopping圆括号)
+    B--&gt;|选择括号|C{Let me think}
+    C---|直线| D[Laptop]
+    C--&gt;|箭头| E[iPhone]
+    C--&gt;|标签三| F[Car]
+</code></pre>
+
+<h3 id="toc_0">1.首先要知道钱包是如何创建的</h3>
+
+<pre class="line-numbers"><code class="language-text">私钥                  随机32位字符（256位随机数）
+公钥                  椭圆曲线加密SECP2561算法
+公钥哈希值           SHA256(公钥哈希)
+公钥哈希值              Ripemd160(公钥哈希值)
+校验码                SHA256(SHA256(1个字节版本号0x00+公钥哈希值))，取前4个字节
+钱包地址              base58(1个字节版本号0x00+公钥哈希值+校验码)
+例如:1LYBoAY8u4sCrNEpVoB3SxkoKDm8aAF5yz
+</code></pre>
+
+<h3 id="toc_1">2.了解比特币涉及到的块，交易的数据结构定义</h3>
+
+<pre class="line-numbers"><code class="language-go">#块的结构
+type Block struct {
+        hash               string       哈希
+        confirmations      string       确认次数
+        size               uint64       块的大小
+        height             uint64       块的高度
+        version            uint32       块的版本
+        merkleroot         string       默克尔树（后期讲解）
+        tx                 []           交易的详细信息集合
+        time               uint32       块的时间
+        nonce              uint32       随机数（最大2^32，后期讲解）
+        bits               string       当前目标hash值
+        difficulty         float64      难度系数（用于挖矿控制，后期讲解）
+        previousblockhash  string       上一个区块的hash
+}
+
+#交易的结构
+type tx struct {
+        hex                 string              交易的十六进制
+        txid                string              交易的id
+        version             uint64              版本号
+        locktime            uint64              锁定时间（后期在脚本中会讲解）
+        vin                 []                  交易的输入
+        vout                []                  交易的输出
+        blockhash           string              所在的块的hash
+        confirmations       uint32              交易确认的次数
+        time                uint32              交易的时间
+        blocktime           uint32              所在快的时间
+}
+
+#交易的输入（挖矿所得的币）结构
+type vin_coinbase struct {
+        coinbase            string              挖矿所得的备注说明
+        sequence            uint32              序列
+}
+
+#交易的输入（交易所得的币）结构
+type vin_tx struct {
+        txid                string             交易的id
+        vout                uint32             交易的索引（和vout中的n对应）
+        sequence            uint32             输入序列（后期在脚本中会讲解）
+        scriptSig           map                解锁脚本
+        {   
+            asm =&gt; &quot;私钥签名&quot;,
+            hex =&gt; &quot;16进制&quot;
+        }
+}
+
+#交易的输出结构
+type vout struct {
+        value               uint32           交易金额
+        n                   uint32           交易引用索引           
+        scriptPubKey        map              锁定脚本 
+        {
+            asm =&gt; &quot;脚本code&quot;,
+            hex =&gt; &quot;签名验证16进制&quot;,
+            reqSigs =&gt; &quot;签名个数，默认至少为1&quot;,
+            type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证&quot;,
+            addresses =&gt; [&quot;钱包的地址&quot;]
+        }                 
+}
+</code></pre>
+
+<h3 id="toc_2">3.挖矿所得的交易</h3>
+
+<h3 id="toc_3">4.普通转账的交易</h3>
+
+<h3 id="toc_4">5.获取自己的钱包余额</h3>
+
+<h3 id="toc_5">6.获取自己的钱包余额</h3>
+
+<h3 id="toc_6">7.交易的验证</h3>
+
+<h3 id="toc_7">8.交易的传输</h3>
+
+<h3 id="toc_8">9.挖矿写入区块链中</h3>
+
+<h3 id="toc_9">10.最终如何确认交易完成</h3>
 
                         
                       </div>
