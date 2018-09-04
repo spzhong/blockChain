@@ -25,6 +25,50 @@
     return true;
   }
 </script>
+
+<link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermaid.css">
+<!--        <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermadidstyle.css">-->
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/jquery.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/rawdeflate.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/encode64.js"></script>
+            <script src="asset/sample-custom-html-charts/echarts.common.min.js"></script>
+            <script src="asset/sample-custom-html-charts/mermaid.min.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                  var mwebii=0;
+                  var mwebChartEleId = 'mweb-chart-ele-';
+                  $('pre>code').each(function(){
+                                     mwebii++;
+                                     var eleiid = mwebChartEleId+mwebii;
+                                     if($(this).hasClass('language-mermaid')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div id="'+eleiid+'"></div>').addClass('mermaid').html($(this).text()).insertAfter(ele);
+                                     }else if($(this).hasClass('language-plantuml')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     var str = unescape(encodeURIComponent($(this).text()));
+                                     var imgURL = "http://www.plantuml.com/plantuml/svg/"+encode64(deflate(str,9));
+                                     var newEle = $('<div id="'+eleiid+'"><img src="'+imgURL+'" /></div>').insertAfter(ele);
+                                     }else if($(this).hasClass('language-js-echarts')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div style="width: 100%;height:400px;" id="'+eleiid+'"></div>').insertAfter(ele);
+                                     var myChart = echarts.init(document.getElementById(eleiid));
+                                     try  {
+                                     eval($(this).text());
+                                     myChart.setOption(option);
+                                     }catch(exception) {}
+                                     }
+                                     });
+                  
+                  mermaid.init({noteMargin: 10}, ".mermaid");
+                  });
+                </script>
+
+
+
   </head>
   <body class="antialiased hide-extras">
     
@@ -232,7 +276,7 @@
 
 <h2 id="toc_10">更多实惠付费内容</h2>
 
-<pre class="line-numbers"><code class="language-text">我建立的一个区块链学习的问答及交流的社区：知识星球《宋培众对区块链的理解》，大家学习过程中遇到的问题可以在星球里提，提问不限于博客文章的内容。同时星友还有一个专属的微信技术交流群方便大家及时的沟通。
+<pre><code class="language-text">我建立的一个区块链学习的问答及交流的社区：知识星球《宋培众对区块链的理解》，大家学习过程中遇到的问题可以在星球里提，提问不限于博客文章的内容。同时星友还有一个专属的微信技术交流群方便大家及时的沟通。
 目前知识星球问答社区定价199，有需要加入的同学请加：spzhong
 
 宋培众对区块链的理解 - 系统学习区块链，打造最好的区块链技术博客。
@@ -410,7 +454,7 @@
 
  <div class="page-bottom clearfix">
   <div class="row">
-   <p class="copyright">Copyright &copy; 2015
+   <p class="copyright">Copyright &copy; 2018
 Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
 Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>

@@ -25,6 +25,50 @@
     return true;
   }
 </script>
+
+<link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermaid.css">
+<!--        <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermadidstyle.css">-->
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/jquery.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/rawdeflate.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/encode64.js"></script>
+            <script src="asset/sample-custom-html-charts/echarts.common.min.js"></script>
+            <script src="asset/sample-custom-html-charts/mermaid.min.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                  var mwebii=0;
+                  var mwebChartEleId = 'mweb-chart-ele-';
+                  $('pre>code').each(function(){
+                                     mwebii++;
+                                     var eleiid = mwebChartEleId+mwebii;
+                                     if($(this).hasClass('language-mermaid')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div id="'+eleiid+'"></div>').addClass('mermaid').html($(this).text()).insertAfter(ele);
+                                     }else if($(this).hasClass('language-plantuml')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     var str = unescape(encodeURIComponent($(this).text()));
+                                     var imgURL = "http://www.plantuml.com/plantuml/svg/"+encode64(deflate(str,9));
+                                     var newEle = $('<div id="'+eleiid+'"><img src="'+imgURL+'" /></div>').insertAfter(ele);
+                                     }else if($(this).hasClass('language-js-echarts')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div style="width: 100%;height:400px;" id="'+eleiid+'"></div>').insertAfter(ele);
+                                     var myChart = echarts.init(document.getElementById(eleiid));
+                                     try  {
+                                     eval($(this).text());
+                                     myChart.setOption(option);
+                                     }catch(exception) {}
+                                     }
+                                     });
+                  
+                  mermaid.init({noteMargin: 10}, ".mermaid");
+                  });
+                </script>
+
+
+
   </head>
   <body class="antialiased hide-extras">
     
@@ -126,11 +170,44 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>要想了解比特币，首先要知道是他是如何交易的，以及底层的结构和数据脚本是如何实现的；<br/>
+      <ul>
+<li>
+<a href="#toc_0">1.首先要知道钱包是如何创建的</a>
+</li>
+<li>
+<a href="#toc_1">2.了解比特币涉及到的块，交易的数据结构定义</a>
+</li>
+<li>
+<a href="#toc_2">3.挖矿所得的交易</a>
+</li>
+<li>
+<a href="#toc_3">4.普通转账的交易</a>
+</li>
+<li>
+<a href="#toc_4">5.获取自己的钱包余额</a>
+</li>
+<li>
+<a href="#toc_5">6.获取自己的钱包余额</a>
+</li>
+<li>
+<a href="#toc_6">7.交易的验证</a>
+</li>
+<li>
+<a href="#toc_7">8.交易的传输</a>
+</li>
+<li>
+<a href="#toc_8">9.挖矿写入区块链中</a>
+</li>
+<li>
+<a href="#toc_9">10.最终如何确认交易完成</a>
+</li>
+</ul>
+
+
+<p>要想了解比特币，首先要知道是如何交易的，以及底层的结构和数据脚本是如何实现的；<br/>
 本文主要是对比特币交易系统的分析；</p>
 
-<pre class="line-numbers"><code class="language-mermaid">    graph LR
-         
+<pre><code class="language-mermaid">    graph LR
         subgraph b_c交易
         subgraph 
         b交易的输入 --scriptSig--&gt; 索引0:交易B1
@@ -170,14 +247,12 @@
         交易a3  --&gt; 交易的输入
         交易a4
         交易...
-        end    
-         
-        
+        end       
 </code></pre>
 
 <p>交易是如何产生的概述 </p>
 
-<pre class="line-numbers"><code class="language-mermaid">    graph TB
+<pre><code class="language-mermaid">    graph TB
     A[Christmas方括号]--&gt;B(Go shopping圆括号)
     B--&gt;|选择括号|C{Let me think}
     C---|直线| D[Laptop]
@@ -187,7 +262,7 @@
 
 <h3 id="toc_0">1.首先要知道钱包是如何创建的</h3>
 
-<pre class="line-numbers"><code class="language-text">私钥                  随机32位字符（256位随机数）
+<pre><code class="language-text">私钥                  随机32位字符（256位随机数）
 公钥                  椭圆曲线加密SECP2561算法
 公钥哈希值           SHA256(公钥哈希)
 公钥哈希值              Ripemd160(公钥哈希值)
@@ -198,7 +273,7 @@
 
 <h3 id="toc_1">2.了解比特币涉及到的块，交易的数据结构定义</h3>
 
-<pre class="line-numbers"><code class="language-go">#块的结构
+<pre><code class="language-go">#块的结构
 type Block struct {
         hash               string       哈希
         confirmations      string       确认次数
@@ -435,7 +510,7 @@ type vout struct {
 
  <div class="page-bottom clearfix">
   <div class="row">
-   <p class="copyright">Copyright &copy; 2015
+   <p class="copyright">Copyright &copy; 2018
 Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
 Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
   </div>
