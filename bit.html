@@ -581,19 +581,16 @@ nonce的最大值2<sup>32次方</sup><br/>
 <a href="#toc_5">6.获取自己的钱包余额</a>
 </li>
 <li>
-<a href="#toc_6">7.获取自己的钱包余额</a>
+<a href="#toc_6">7.交易的验证</a>
 </li>
 <li>
-<a href="#toc_7">8.交易的验证</a>
+<a href="#toc_7">8.交易的传输</a>
 </li>
 <li>
-<a href="#toc_8">9.交易的传输</a>
+<a href="#toc_8">9.挖矿写入区块链中</a>
 </li>
 <li>
-<a href="#toc_9">10.挖矿写入区块链中</a>
-</li>
-<li>
-<a href="#toc_10">11.最终如何确认交易完成</a>
+<a href="#toc_9">10.最终如何确认交易完成</a>
 </li>
 </ul>
 
@@ -658,10 +655,10 @@ nonce的最大值2<sup>32次方</sup><br/>
 <p>整个交易的过程中，其实最难理解是索引和输入输出，接下来我分别介绍一下</p>
 
 <ul>
-<li>  输出：通常理解为锁定脚本，决定谁可以花费这币交易</li>
-<li>  输入：通常理解为解锁脚本，证明我已经花费这币交易</li>
-<li>  UTXO：未花费交易，获取输出脚本为当前钱包地址的所有交易信息列表，然后加上<code>索引</code>，匹配所有交易的输入是否被引用，否的话称为“UTXO”</li>
-<li>  索引：在一个交易中，可能会被分解为多个UTXO,就是通过索引来确定该交易属于那个钱包地址的UTXO</li>
+<li>  <strong>输出</strong>：通常理解为锁定脚本，决定谁可以花费这币交易</li>
+<li>  <strong>输入</strong>：通常理解为解锁脚本，证明我已经花费这币交易</li>
+<li>  <strong>UTXO</strong>：未花费交易，获取输出脚本为当前钱包地址的所有交易信息列表，然后加上<code>索引</code>，匹配所有交易的输入是否被引用，否的话称为“UTXO”</li>
+<li>  <strong>索引</strong>：在一个交易中，可能会被分解为多个UTXO,就是通过索引来确定该交易属于那个钱包地址的UTXO</li>
 </ul>
 
 <h3 id="toc_1">2.首先要知道钱包是如何创建的</h3>
@@ -742,19 +739,119 @@ type vout struct {
 
 <h3 id="toc_3">4.挖矿所得的交易</h3>
 
+<pre><code class="language-javascript"> {
+    &quot;hex&quot; : &quot;01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff070439f3001b0134ffffffff014034152a010000004341045b3aaa284d169c5ae2d20d0b0673468ed3506aa8fea5976eacaf1ff304456f6522fbce1a646a24005b8b8e771a671f564ca6c03e484a1c394bf96e2a4ad01dceac00000000&quot;,
+    &quot;txid&quot; : &quot;be8f08d7f519eb863a68cf292ca51dbab7c9b49f50a96d13f2db32e432db363e&quot;,
+    &quot;version&quot; : 1,
+    &quot;locktime&quot; : 0,
+    &quot;vin&quot; : [
+            {
+                &quot;coinbase&quot; : &quot;0439f3001b0134&quot;,
+                &quot;sequence&quot; : 4294967295
+            }
+    ],
+    &quot;vout&quot; : [
+            {
+                &quot;value&quot; : 50.01000000,
+                &quot;n&quot; : 0,
+                &quot;scriptPubKey&quot; : {
+                    &quot;asm&quot; : &quot;045b3aaa284d169c5ae2d20d0b0673468ed3506aa8fea5976eacaf1ff304456f6522fbce1a646a24005b8b8e771a671f564ca6c03e484a1c394bf96e2a4ad01dce OP_CHECKSIG&quot;,
+                    &quot;hex&quot; : &quot;41045b3aaa284d169c5ae2d20d0b0673468ed3506aa8fea5976eacaf1ff304456f6522fbce1a646a24005b8b8e771a671f564ca6c03e484a1c394bf96e2a4ad01dceac&quot;,
+                    &quot;reqSigs&quot; : 1,
+                    &quot;type&quot; : &quot;pubkey&quot;,
+                    &quot;addresses&quot; : [
+                            &quot;1LgZTvoTJ6quJNCURmBUaJJkWWQZXkQnDn&quot;
+                    ]
+                }
+            }
+    ],
+    &quot;blockhash&quot; : &quot;0000000000007c639f2cbb23e4606a1d022fa4206353b9d92e99f5144bd74611&quot;,
+    &quot;confirmations&quot; : 145029,
+    &quot;time&quot; : 1301705313,
+    &quot;blocktime&quot; : 1301705313
+}
+</code></pre>
+
 <h3 id="toc_4">5.普通转账的交易</h3>
+
+<pre><code class="language-javascript">{
+    &quot;hex&quot; : &quot;0100000003c9f3b07ebfca68fd1a6339d0808fbb013c90c6095fc93901ea77410103489ab7000000008a473044022055bac1856ecbc377dd5e869b1a84ed1d5228c987b098c095030c12431a4d5249022055523130a9d0af5fc27828aba43b464ecb1991172ba2a509b5fbd6cac97ff3af0141048aefd78bba80e2d1686225b755dacea890c9ca1be10ec98173d7d5f2fefbbf881a6e918f3b051f8aaaa3fcc18bbf65097ce8d30d5a7e5ef8d1005eaafd4b3fbeffffffffc9f3b07ebfca68fd1a6339d0808fbb013c90c6095fc93901ea77410103489ab7010000008a47304402206b993231adec55e6085e75f7dc5ca6c19e42e744cd60abaff957b1c352b3ef9a022022a22fec37dfa2c646c78d9a0753d56cb4393e8d0b22dc580ef1aa6cccef208d0141042ff65bd6b3ef04253225405ccc3ab2dd926ff2ee48aac210819698440f35d785ec3cec92a51330eb0c76cf49e9e474fb9159ab41653a9c1725c031449d31026affffffffc98620a6c40fc7b3a506ad79af339541762facd1dd80ff0881d773fb72b230da010000008b483045022040a5d957e087ed61e80f1110bcaf4901b5317c257711a6cbc54d6b98b6a8563f02210081e3697031fe82774b8f44dd3660901e61ac5a99bff2d0efc83ad261da5b4f1d014104a7d1a57e650613d3414ebd59e3192229dc09d3613e547bdd1f83435cc4ca0a11c679d96456cae75b1f5563728ec7da1c1f42606db15bf554dbe8a829f3a8fe2fffffffff0200bd0105000000001976a914634228c26cf40a02a05db93f2f98b768a8e0e61b88acc096c7a6030000001976a9147514080ab2fcac0764de3a77d10cb790c71c74c288ac00000000&quot;,
+    &quot;txid&quot; : &quot;028cfae228f8a4b0caee9c566bd41aed36bcd237cdc0eb18f0331d1e87111743&quot;,
+    &quot;version&quot; : 1,
+    &quot;locktime&quot; : 0,
+    &quot;vin&quot; : [
+        {
+            &quot;txid&quot; : &quot;b79a4803014177ea0139c95f09c6903c01bb8f80d039631afd68cabf7eb0f3c9&quot;,
+            &quot;vout&quot; : 0,
+            &quot;scriptSig&quot; : {
+                    &quot;asm&quot; : &quot;3044022055bac1856ecbc377dd5e869b1a84ed1d5228c987b098c095030c12431a4d5249022055523130a9d0af5fc27828aba43b464ecb1991172ba2a509b5fbd6cac97ff3af01 048aefd78bba80e2d1686225b755dacea890c9ca1be10ec98173d7d5f2fefbbf881a6e918f3b051f8aaaa3fcc18bbf65097ce8d30d5a7e5ef8d1005eaafd4b3fbe&quot;,
+                    &quot;hex&quot; : &quot;473044022055bac1856ecbc377dd5e869b1a84ed1d5228c987b098c095030c12431a4d5249022055523130a9d0af5fc27828aba43b464ecb1991172ba2a509b5fbd6cac97ff3af0141048aefd78bba80e2d1686225b755dacea890c9ca1be10ec98173d7d5f2fefbbf881a6e918f3b051f8aaaa3fcc18bbf65097ce8d30d5a7e5ef8d1005eaafd4b3fbe&quot;
+            },
+            &quot;sequence&quot; : 4294967295
+        },
+        {
+            &quot;txid&quot; : &quot;b79a4803014177ea0139c95f09c6903c01bb8f80d039631afd68cabf7eb0f3c9&quot;,
+            &quot;vout&quot; : 1,
+            &quot;scriptSig&quot; : {
+                &quot;asm&quot; : &quot;304402206b993231adec55e6085e75f7dc5ca6c19e42e744cd60abaff957b1c352b3ef9a022022a22fec37dfa2c646c78d9a0753d56cb4393e8d0b22dc580ef1aa6cccef208d01 042ff65bd6b3ef04253225405ccc3ab2dd926ff2ee48aac210819698440f35d785ec3cec92a51330eb0c76cf49e9e474fb9159ab41653a9c1725c031449d31026a&quot;,
+                &quot;hex&quot; : &quot;47304402206b993231adec55e6085e75f7dc5ca6c19e42e744cd60abaff957b1c352b3ef9a022022a22fec37dfa2c646c78d9a0753d56cb4393e8d0b22dc580ef1aa6cccef208d0141042ff65bd6b3ef04253225405ccc3ab2dd926ff2ee48aac210819698440f35d785ec3cec92a51330eb0c76cf49e9e474fb9159ab41653a9c1725c031449d31026a&quot;
+            },
+            &quot;sequence&quot; : 4294967295
+        },
+        {
+            &quot;txid&quot; : &quot;da30b272fb73d78108ff80ddd1ac2f76419533af79ad06a5b3c70fc4a62086c9&quot;,
+            &quot;vout&quot; : 1,
+            &quot;scriptSig&quot; : {
+                &quot;asm&quot; : &quot;3045022040a5d957e087ed61e80f1110bcaf4901b5317c257711a6cbc54d6b98b6a8563f02210081e3697031fe82774b8f44dd3660901e61ac5a99bff2d0efc83ad261da5b4f1d01 04a7d1a57e650613d3414ebd59e3192229dc09d3613e547bdd1f83435cc4ca0a11c679d96456cae75b1f5563728ec7da1c1f42606db15bf554dbe8a829f3a8fe2f&quot;,
+                &quot;hex&quot; : &quot;483045022040a5d957e087ed61e80f1110bcaf4901b5317c257711a6cbc54d6b98b6a8563f02210081e3697031fe82774b8f44dd3660901e61ac5a99bff2d0efc83ad261da5b4f1d014104a7d1a57e650613d3414ebd59e3192229dc09d3613e547bdd1f83435cc4ca0a11c679d96456cae75b1f5563728ec7da1c1f42606db15bf554dbe8a829f3a8fe2f&quot;
+            },
+            &quot;sequence&quot; : 4294967295
+        }
+    ],
+    &quot;vout&quot; : [
+        {
+            &quot;value&quot; : 0.84000000,
+            &quot;n&quot; : 0,
+            &quot;scriptPubKey&quot; : {
+                &quot;asm&quot; : &quot;OP_DUP OP_HASH160 634228c26cf40a02a05db93f2f98b768a8e0e61b OP_EQUALVERIFY OP_CHECKSIG&quot;,
+                &quot;hex&quot; : &quot;76a914634228c26cf40a02a05db93f2f98b768a8e0e61b88ac&quot;,
+                &quot;reqSigs&quot; : 1,
+                &quot;type&quot; : &quot;pubkeyhash&quot;,
+                &quot;addresses&quot; : [
+                    &quot;1A3q9pDtR4h8wpvyb8SVpiNPpT8ZNbHY8h&quot;
+                ]
+            }
+        },
+        {
+            &quot;value&quot; : 156.83000000,
+            &quot;n&quot; : 1,
+            &quot;scriptPubKey&quot; : {
+                &quot;asm&quot; : &quot;OP_DUP OP_HASH160 7514080ab2fcac0764de3a77d10cb790c71c74c2 OP_EQUALVERIFY OP_CHECKSIG&quot;,
+                &quot;hex&quot; : &quot;76a9147514080ab2fcac0764de3a77d10cb790c71c74c288ac&quot;,
+                &quot;reqSigs&quot; : 1,
+                &quot;type&quot; : &quot;pubkeyhash&quot;,
+                &quot;addresses&quot; : [
+                    &quot;1Bg44FZsoTeYteRykC1XHz8facWYKhGvQ8&quot;
+                ]
+            }
+        }
+    ],
+    &quot;blockhash&quot; : &quot;0000000000007c639f2cbb23e4606a1d022fa4206353b9d92e99f5144bd74611&quot;,
+    &quot;confirmations&quot; : 147751,
+    &quot;time&quot; : 1301705313,
+    &quot;blocktime&quot; : 1301705313
+}
+</code></pre>
 
 <h3 id="toc_5">6.获取自己的钱包余额</h3>
 
-<h3 id="toc_6">7.获取自己的钱包余额</h3>
+<h3 id="toc_6">7.交易的验证</h3>
 
-<h3 id="toc_7">8.交易的验证</h3>
+<h3 id="toc_7">8.交易的传输</h3>
 
-<h3 id="toc_8">9.交易的传输</h3>
+<h3 id="toc_8">9.挖矿写入区块链中</h3>
 
-<h3 id="toc_9">10.挖矿写入区块链中</h3>
-
-<h3 id="toc_10">11.最终如何确认交易完成</h3>
+<h3 id="toc_9">10.最终如何确认交易完成</h3>
 
                         
                       </div>
