@@ -8,7 +8,7 @@
   一篇对比特币交易的理解 - 我对区块链的理解
   
   </title>
-  
+  <meta name="keywords" content="比特币 交易" />
   
   <link href="atom.xml" rel="alternate" title="我对区块链的理解" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -178,7 +178,9 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <ul>
+      <p>要想了解比特币，首先要知道是如何交易的，以及底层的结构和数据脚本是如何实现的；本文主要是对比特币交易系统的分析，分别从钱包的创建，交易的数据结构，挖矿交易，普通交易的数据分析；</p>
+
+<ul>
 <li>
 <a href="#toc_0">1.交易是如何产生的概述</a>
 </li>
@@ -211,9 +213,6 @@
 </li>
 </ul>
 
-
-<p>要想了解比特币，首先要知道是如何交易的，以及底层的结构和数据脚本是如何实现的；<br/>
-本文主要是对比特币交易系统的分析；</p>
 
 <h3 id="toc_0">1.交易是如何产生的概述</h3>
 
@@ -273,7 +272,7 @@
 
 <ul>
 <li>  <strong>输出</strong>：通常理解为锁定脚本，决定谁可以花费这币交易</li>
-<li>  <strong>输入</strong>：通常理解为解锁脚本，证明我已经花费这币交易</li>
+<li>  <strong>输入</strong>：通常理解为解锁脚本，证明我拥这笔交易的所有权</li>
 <li>  <strong>UTXO</strong>：未花费交易，获取输出脚本为当前钱包地址的所有交易信息列表，然后加上<code>索引</code>，匹配所有交易的输入是否被引用，否的话称为“UTXO”</li>
 <li>  <strong>索引</strong>：在一个交易中，可能会被分解为多个UTXO,就是通过索引来确定该交易属于那个钱包地址的UTXO</li>
 </ul>
@@ -309,7 +308,7 @@ type Block struct {
 
 #交易的结构
 type tx struct {
-        hex                 string              交易的十六进制
+        hex                 string              交易的十六进制（序列化）
         txid                string              交易的id
         version             uint64              版本号
         locktime            uint64              锁定时间（后期在脚本中会讲解）
@@ -346,7 +345,7 @@ type vout struct {
         scriptPubKey        map              锁定脚本 
         {
             asm =&gt; &quot;脚本code&quot;,
-            hex =&gt; &quot;签名验证16进制&quot;,
+            hex =&gt; &quot;签名验证16进制（序列化）&quot;,
             reqSigs =&gt; &quot;签名个数，默认至少为1&quot;,
             type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证&quot;,
             addresses =&gt; [&quot;钱包的地址&quot;]
@@ -388,6 +387,38 @@ type vout struct {
     &quot;blocktime&quot; : 1301705313
 }
 </code></pre>
+
+<p>挖矿所得的交易实际上并不是一个交易，coinbase交易需要经过后续100块（10min*100=大约需要17小时）确认，方能真正的使用该币交易，防止出现多个矿工同时挖出块，最终会以最长块的为准；</p>
+
+<p><strong>coinbase</strong>该字段由挖出此Block的人填写，这是一种“特权”;</p>
+
+<p><strong>sequence</strong>交易的序列，该值的范围是0-2<sup>32-1，该值往往是和下面的locktime配合使用的，当sequence=2<sup>32</sup></sup> -1，则就忽略locktime的功能；这个主要是为了解决提前解锁，锁定的未来交易，通常的做法是再发起一个相同的交易，将sequence设为2<sup>32</sup> -1，矿工就会议忽略sequence为其它的交易，将sequence=2<sup>32</sup> -1进行打包写入块中</p>
+
+<p><strong>locktime</strong>在将来的脚本，智能合约中运用的比较多，后续在脚本语言详细的介绍</p>
+
+<table>
+<thead>
+<tr>
+<th>locktime</th>
+<th>定义</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>0</td>
+<td>该交易立即生效，可以矿工打包</td>
+</tr>
+<tr>
+<td>&lt; 5亿</td>
+<td>未来block的高度，当小于该block高度之前处于锁定状态</td>
+</tr>
+<tr>
+<td>&gt;= 5亿</td>
+<td>未来Unix时间戳，当小于该Unix时间戳之前处于锁定状态</td>
+</tr>
+</tbody>
+</table>
 
 <h3 id="toc_4">5.普通转账的交易</h3>
 
@@ -525,9 +556,9 @@ type vout struct {
 
 
 
+<a target="_blank" class="weibo" href="https://weibo.com" title="weibo">Weibo</a>
 
-
-
+<a target="_blank" class="github" target="_blank" href="https://github.com" title="GitHub">GitHub</a>
 <a target="_blank" class="email" href="mailto:spzhongwin@google.com" title="Email">Email</a>
   <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
                 
