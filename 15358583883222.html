@@ -277,6 +277,8 @@
 <li>  <strong>索引</strong>：在一个交易中，可能会被分解为多个UTXO,就是通过索引来确定该交易属于那个钱包地址的UTXO</li>
 </ul>
 
+<p>输入和输出，是那个先产生的呢？严格来说先产生输出，因为可以把创造新别特币的交易理解为没有输入，但是可以生产出输出，所以我们理解的交易也是现从输出开始的</p>
+
 <h3 id="toc_1">2.首先要知道钱包是如何创建的</h3>
 
 <pre><code class="language-text">私钥                  随机32位字符（256位随机数）
@@ -341,13 +343,13 @@ type vin_tx struct {
 #交易的输出结构
 type vout struct {
         value               uint32           交易金额
-        n                   uint32           交易引用索引           
+        n                   uint32           交易引用索引（0- 2^32 -1）           
         scriptPubKey        map              锁定脚本 
         {
             asm =&gt; &quot;脚本code&quot;,
             hex =&gt; &quot;签名验证16进制（序列化）&quot;,
             reqSigs =&gt; &quot;签名个数，默认至少为1&quot;,
-            type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证&quot;,
+            type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证，scriptHash:脚本签名验证（后续在脚本说明中会讲解到）&quot;,
             addresses =&gt; [&quot;钱包的地址&quot;]
         }                 
 }
@@ -390,12 +392,17 @@ type vout struct {
 
 <p>挖矿所得的交易实际上并不是一个交易，coinbase交易需要经过后续100块（10min*100=大约需要17小时）确认，方能真正的使用该币交易，防止出现多个矿工同时挖出块，最终会以最长块的为准；</p>
 
-<p><strong>coinbase</strong>该字段由挖出此Block的人填写，这是一种“特权”;</p>
-
-<p><strong>sequence</strong>交易的序列，该值的范围是0-2<sup>32-1，该值往往是和下面的locktime配合使用的，当sequence=2<sup>32</sup></sup> -1，则就忽略locktime的功能；这个主要是为了解决提前解锁，锁定的未来交易，通常的做法是再发起一个相同的交易，将sequence设为2<sup>32</sup> -1，矿工就会议忽略sequence为其它的交易，将sequence=2<sup>32</sup> -1进行打包写入块中</p>
-
-<p><strong>locktime</strong>在将来的脚本，智能合约中运用的比较多，后续在脚本语言详细的介绍</p>
-
+<ul>
+<li><p><strong>coinbase</strong>该字段由挖出此Block的人填写，这是一种“特权”;</p>
+<blockquote>
+<p>coinbase字段可以是最小2字节，最大100字节的任意字符</p>
+</blockquote></li>
+<li><p><strong>sequence</strong>交易的序列，该值的范围是0-2<sup>32</sup> -1，该值往往是和下面的locktime配合使用的，当sequence=2<sup>32</sup> -1，则就忽略locktime的功能&gt; </p>
+<blockquote>
+<p>这个字段的作用主要是为了解决提前解锁未来交易，通常的做法是再发起一个相同的交易，将sequence设为2<sup>32</sup> -1，矿工就会忽略sequence为其它的交易，将sequence=2<sup>32</sup> -1（表示最终确认的交易）打包写入块中</p>
+</blockquote></li>
+<li><p><strong>locktime</strong>在将来的脚本，智能合约中运用的比较多，后续在脚本语言详细的介绍</p>
+<blockquote>
 <table>
 <thead>
 <tr>
@@ -403,7 +410,6 @@ type vout struct {
 <th>定义</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>0</td>
@@ -419,6 +425,8 @@ type vout struct {
 </tr>
 </tbody>
 </table>
+</blockquote></li>
+</ul>
 
 <h3 id="toc_4">5.普通转账的交易</h3>
 
@@ -491,13 +499,122 @@ type vout struct {
 }
 </code></pre>
 
+<p>上面的数据结构是一个常见的普通交易，3个交易的输入，2个交易的输出，注意多个</p>
+
+<ul>
+<li><strong>hex</strong>记录了所有相关信息，后面显示的是hex解析出来的各类字段信息</li>
+<li><p><strong>vin</strong>交易输入集合，细心的同学会发现上面的交易输入中，含有两个相同的txid，但是vout不一致</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>txid</td>
+<td>be8f0c26...b363ec26</td>
+<td>上个交易的id</td>
+</tr>
+<tr>
+<td>vout</td>
+<td>0～(2<sup>32</sup> -1)</td>
+<td>上个交易输出的序号</td>
+</tr>
+<tr>
+<td>scriptSig</td>
+<td>publicKey+privateSign</td>
+<td>公钥地址+(私钥对当前交易的签名)</td>
+</tr>
+<tr>
+<td>sequence</td>
+<td>2<sup>32</sup> -1</td>
+<td>输入交易的序号，确认该交易有效</td>
+</tr>
+</tbody>
+</table>
+</blockquote></li>
+<li><p><strong>vout</strong>交易输出集合</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>0～2<sup>32</sup></td>
+<td>交易金额</td>
+</tr>
+<tr>
+<td>n</td>
+<td>0～(2<sup>32</sup> -1)</td>
+<td>输出的序号，用于区分一个交易下多个输出</td>
+</tr>
+<tr>
+<td>scriptPubKey</td>
+<td>asm</td>
+<td>OP_DUP  OP_HASH160  publicKey  OP_EQUALVERIFY  OP_CHEACKSIG <br>脚本语言，后续会讲解到</td>
+</tr>
+<tr>
+<td></td>
+<td>reqSigs</td>
+<td>？</td>
+</tr>
+<tr>
+<td></td>
+<td>type</td>
+<td>锁定脚本的类型<br> pubkey:支付到公钥<br>pubkeyhash:支付到公钥HASH<br>scriptHash:支付到脚本</td>
+</tr>
+<tr>
+<td></td>
+<td>addresses</td>
+<td>钱包地址集合，初步认为和reqSigs对应，应用于多重签名多个钱包的场景</td>
+</tr>
+</tbody>
+</table>
+</blockquote></li>
+</ul>
+
 <h3 id="toc_5">6.获取自己的钱包余额</h3>
 
 <h3 id="toc_6">7.交易的验证</h3>
 
+<blockquote>
+<ul>
+<li> 交易的语法和数据结构必须正确。 </li>
+<li> 输入与输出列表都不能为空。 </li>
+<li> 交易的字节大小是小于MAX_BLOCK_SIZE的。 </li>
+<li> 每一个输出值，以及总量，必须在规定值的范围内 （小于2,100万个币，大于0）。 </li>
+<li> 没有哈希等于0，N等于-1的输入（coinbase交易不应当被中继）。 </li>
+<li> nLockTime是小于或等于INT_MAX的。 </li>
+<li> 交易的字节大小是大于或等于100的。 </li>
+<li> 交易中的签名数量应小于签名操作数量上限。 </li>
+<li> 解锁脚本（scriptSig）只能够将数字压入栈中，并且锁定脚本（scriptPubkey）必须要符合isStandard的格式 （该格式将会拒绝非标准交易）。 </li>
+<li> 池中或位于主分支区块中的一个匹配交易必须是存在的。 </li>
+<li> 对于每一个输入，如果引用的输出存在于池中任何的交易，该交易将被拒绝。 </li>
+<li> 对于每一个输入，在主分支和交易池中寻找引用的输出交易。如果输出交易缺少任何一个输入，该交易将成为一个孤立的交易。如果与其匹配的交易还没有出现在池中，那么将被加入到孤立交易池中。 </li>
+<li> 对于每一个输入，如果引用的输出交易是一个coinbase输出，该输入必须至少获得COINBASE_MATURITY (100)个确认。 </li>
+<li> 对于每一个输入，引用的输出是必须存在的，并且没有被花费。 </li>
+<li> 使用引用的输出交易获得输入值，并检查每一个输入值和总值是否在规定值的范围内 （小于2100万个币，大于0）。 </li>
+<li> 如果输入值的总和小于输出值的总和，交易将被中止。 </li>
+<li> 如果交易费用太低以至于无法进入一个空的区块，交易将被拒绝。 </li>
+<li> 每一个输入的解锁脚本必须依据相应输出的锁定脚本来验证。</li>
+</ul>
+</blockquote>
+
 <h3 id="toc_7">8.交易的传输</h3>
 
 <h3 id="toc_8">9.挖矿写入区块链中</h3>
+
+<p><a href="https://blog.csdn.net/taifei/article/details/74382718">https://blog.csdn.net/taifei/article/details/74382718</a></p>
 
 <h3 id="toc_9">10.最终如何确认交易完成</h3>
 
