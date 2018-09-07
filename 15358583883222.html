@@ -194,6 +194,8 @@
 <a href="#toc_3">4.挖矿所得的交易</a>
 <ul>
 <li>
+<ul>
+<li>
 <a href="#toc_4"><strong>coinbase</strong></a>
 </li>
 <li>
@@ -204,8 +206,12 @@
 </li>
 </ul>
 </li>
+</ul>
+</li>
 <li>
 <a href="#toc_7">5.普通转账的交易</a>
+<ul>
+<li>
 <ul>
 <li>
 <a href="#toc_8"><strong>hex</strong>交易序列化</a>
@@ -218,8 +224,12 @@
 </li>
 </ul>
 </li>
+</ul>
+</li>
 <li>
 <a href="#toc_11">6.获取自己的钱包余额</a>
+<ul>
+<li>
 <ul>
 <li>
 <a href="#toc_12">遍历所有区块数据</a>
@@ -229,6 +239,8 @@
 </li>
 <li>
 <a href="#toc_14">得到钱包中余额</a>
+</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -428,7 +440,7 @@ type vout struct {
 
 <p>挖矿所得的交易实际上并不是一个交易，coinbase交易需要经过后续100块（10min*100=大约需要17小时）确认，方能真正的使用该币交易，防止出现多个矿工同时挖出块，最终会以最长块的为准；</p>
 
-<h3 id="toc_4"><strong>coinbase</strong></h3>
+<h4 id="toc_4"><strong>coinbase</strong></h4>
 
 <p>该字段由挖出此Block的人填写，这是一种“特权”;</p>
 
@@ -436,7 +448,7 @@ type vout struct {
 <p>coinbase字段可以是最小2字节，最大100字节的任意字符</p>
 </blockquote>
 
-<h3 id="toc_5"><strong>sequence</strong></h3>
+<h4 id="toc_5"><strong>sequence</strong></h4>
 
 <p>交易的序列，该值的范围是0-2<sup>32</sup> -1，该值往往是和下面的locktime配合使用的，当sequence=2<sup>32</sup> -1，则就忽略locktime的功能；<br>当locktime是未来的时间，且sequence&lt;2<sup>32</sup> -1的时候，那么到了loacktime的时候，以sequence最大的准，其它的交易将会从交易池中移除</p>
 
@@ -444,7 +456,7 @@ type vout struct {
 <p>这个字段的作用主要是为了解决提前解锁未来交易，通常的做法是再发起一个相同的交易，将sequence设为2<sup>32</sup> -1，矿工就会忽略sequence为其它的交易，将sequence=2<sup>32</sup> -1（表示最终确认的交易）打包写入块中</p>
 </blockquote>
 
-<h3 id="toc_6"><strong>locktime</strong></h3>
+<h4 id="toc_6"><strong>locktime</strong></h4>
 
 <p>在将来的脚本，智能合约中运用的比较多，后续在脚本语言详细的介绍</p>
 
@@ -547,11 +559,11 @@ type vout struct {
 
 <p>上面的数据结构是一个常见的普通交易，3个交易的输入，2个交易的输出，注意多个输入的sequence与交易的locktime之间的关系；</p>
 
-<h3 id="toc_8"><strong>hex</strong>交易序列化</h3>
+<h4 id="toc_8"><strong>hex</strong>交易序列化</h4>
 
 <p>记录了所有相关信息，后面显示的是hex解析出来的各类字段信息</p>
 
-<h3 id="toc_9"><strong>vin</strong>交易输入集合</h3>
+<h4 id="toc_9"><strong>vin</strong>交易输入集合</h4>
 
 <p>细心的同学会发现上面的交易输入中，含有两个相同的txid，但是vout不一致</p>
 
@@ -590,7 +602,7 @@ type vout struct {
 </table>
 </blockquote>
 
-<h3 id="toc_10"><strong>vout</strong>交易输出集合</h3>
+<h4 id="toc_10"><strong>vout</strong>交易输出集合</h4>
 
 <blockquote>
 <table>
@@ -642,7 +654,7 @@ type vout struct {
 <p>当有了上面的两个交易，那么我们的钱包中就拥有了比特币，接下来怎么计算自己的钱包余额呢？<br/>
 首先确保你的节点是一个全节点（包含全部的区块数据）</p>
 
-<h3 id="toc_12">遍历所有区块数据</h3>
+<h4 id="toc_12">遍历所有区块数据</h4>
 
 <p>获取指定钱包地址的交易输出：匹配交易中scriptPubKey中的addresses字段，得到该<code>交易的id，交易序号，及交易金额</code>，将其存放到HashMap中(交易的id+交易序号作为key)</p>
 
@@ -653,14 +665,14 @@ type vout struct {
     4.如何快速遍历区块的数据也是一门学问，例如内存问题，多线程查询等等
 </code></pre>
 
-<h3 id="toc_13">得到未花费的交易输出</h3>
+<h4 id="toc_13">得到未花费的交易输出</h4>
 
 <p>遍历得到的HashMap，根据交易的id和交易序号，查询区块中是否引用了该交易，执行的方法就是交易的id和交易序号是否在其他交易的输入中，未被引用的交易输出就是未被花费的交易输出（简称UTXO）<br/>
      &gt; 优化建议思考：<br/>
      1.存储区块交易的时候，可将<code>交易的id+交易序号</code>作为区块中交易HashKey<br/>
      2.遍历<code>大于</code>最早产生交易的块</p>
 
-<h3 id="toc_14">得到钱包中余额</h3>
+<h4 id="toc_14">得到钱包中余额</h4>
 
 <p>累加UTXO中的所有交易金额，就是该钱包的余额</p>
 
