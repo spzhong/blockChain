@@ -551,6 +551,44 @@ type vout struct {
 
 <p>记录了所有相关信息，后面显示的是hex解析出来的各类字段信息</p>
 
+<pre><code class="language-php">01000000   // 版本号，UINT32
+03         // Tx输入数量，变长INT。3个输入。
+/*** 第一组Input Tx ***/
+// Tx Hash，固定32字节
+c9f3b07ebfca68fd1a6339d0808fbb013c90c6095fc93901ea77410103489ab7
+00000000  // 消费的Tx位于前向交易输出的第0个，UINT32，固定4字节
+8a        // 签名的长度, 0x8A = 138字节
+// 138字节长度的签名，含有两个部分：公钥+签名
+47       // 签名长度，0x47 = 71字节
+3044022055bac1856ecbc377dd5e869b1a84ed1d5228c987b098c095030c12431a4d5249022055523130a9d0af5fc27828aba43b464ecb1991172ba2a509b5fbd6cac97ff3af01
+41       // 公钥长度，0x41 = 65字节
+048aefd78bba80e2d1686225b755dacea890c9ca1be10ec98173d7d5f2fefbbf881a6e918f3b051f8aaaa3fcc18bbf65097ce8d30d5a7e5ef8d1005eaafd4b3fbe
+ffffffff  // sequence，0xffffffff = 4294967295， UINT32, 固定4字节
+/*** 第二组Input Tx。与上同理，省略分解 ***/
+c9f3b07ebfca68fd1a6339d0808fbb013c90c6095fc93901ea77410103489ab7010000008a47304402206b993231adec55e6085e75f7dc5ca6c19e42e744cd60abaff957b1c352b3ef9a022022a22fec37dfa2c646c78d9a0753d56cb4393e8d0b22dc580ef1aa6cccef208d0141042ff65bd6b3ef04253225405ccc3ab2dd926ff2ee48aac210819698440f35d785ec3cec92a51330eb0c76cf49e9e474fb9159ab41653a9c1725c031449d31026affffffff
+/*** 第三组Input Tx ***/
+c98620a6c40fc7b3a506ad79af339541762facd1dd80ff0881d773fb72b230da010000008b483045022040a5d957e087ed61e80f1110bcaf4901b5317c257711a6cbc54d6b98b6a8563f02210081e3697031fe82774b8f44dd3660901e61ac5a99bff2d0efc83ad261da5b4f1d014104a7d1a57e650613d3414ebd59e3192229dc09d3613e547bdd1f83435cc4ca0a11c679d96456cae75b1f5563728ec7da1c1f42606db15bf554dbe8a829f3a8fe2fffffffff
+02  // Tx输出数量，变长INT。两个输出。
+/*** 第一组输出 ***/
+00bd010500000000    // 输出的币值，UINT64，8个字节。字节序需翻转，~= 0x000000000501bd00 = 84000000 satoshi
+19                  // 输出目的地址字节数, 0x19 = 25字节，由一些操作码与数值构成
+// 目标地址
+// 0x76 -&gt; OP_DUP(stack ops)
+// 0xa9 -&gt; OP_HASH160(crypto)
+// 0x14 -&gt; 长度，0x14 = 20字节
+76 a9 14 
+// 地址的HASH160值，20字节
+634228c26cf40a02a05db93f2f98b768a8e0e61b 
+// 0x88 -&gt; OP_EQUALVERIFY(bit logic)
+// 0xac -&gt; OP_CHECKSIG(crypto)
+88 ac
+/*** 第二组输出 ***/
+c096c7a603000000
+19
+76 a9 14 7514080ab2fcac0764de3a77d10cb790c71c74c2 88 ac
+00000000  // lock_time，UINT32，固定4字节
+</code></pre>
+
 <h3 id="toc_9"><strong>vin</strong>交易输入集合</h3>
 
 <p>细心的同学会发现上面的交易输入中，含有两个相同的txid，但是vout不一致</p>
@@ -661,7 +699,7 @@ type vout struct {
 <blockquote>
 <p>优化建议思考：<br/>
      1.存储区块交易的时候，可将<code>交易的id+交易序号</code>作为区块中交易HashKey<br/>
-     2.遍历<code>大于</code>最早产生交易的块</p>
+     2.遍历<strong>大于</strong>最早产生交易的块</p>
 </blockquote>
 
 <h3 id="toc_14">得到钱包中余额</h3>
