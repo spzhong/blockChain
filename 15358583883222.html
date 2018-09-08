@@ -248,10 +248,10 @@
 <a href="#toc_19">脚本语言有哪些特点</a>
 </li>
 <li>
-<a href="#toc_20">脚本是怎么执行的</a>
+<a href="#toc_20">一个简单的脚本</a>
 </li>
 <li>
-<a href="#toc_21">一个简单的脚本</a>
+<a href="#toc_21">交易的输入和输出脚本是怎么执行的</a>
 </li>
 </ul>
 </li>
@@ -281,7 +281,6 @@
 <h2 id="toc_0">1.交易是如何产生的概述</h2>
 
 <pre><code class="language-mermaid">    graph LR
-
         subgraph a_d交易
         subgraph 
         a_d交易的输入 --&gt; 索引1:交易a_b
@@ -786,11 +785,134 @@ c096c7a603000000
 
 <h3 id="toc_18">什么是脚本语言</h3>
 
+<p>是一种类似Forth的逆波兰表达式的基于堆栈的执行语言，在比特币交易中的输出和输入都是基于堆栈的执行的语言编写的。当一笔交易在验证的时候，每一个输入值的解锁脚本与对应的输出锁定脚本进行匹配执行</p>
+
 <h3 id="toc_19">脚本语言有哪些特点</h3>
 
-<h3 id="toc_20">脚本是怎么执行的</h3>
+<p>编程语言简单，可在硬件上执行，安全</p>
 
-<h3 id="toc_21">一个简单的脚本</h3>
+<ul>
+<li>图灵非完备性：包含了许多的操作码，但故意限定为一种模式除了有条件的流控制以外，美哟循环或复杂的控制能力</li>
+<li>去中心化验证：脚本语言没有中心主体，自然也不会有中心主体会在脚本被执行后对其进行保存（与其对应的是runtime动态编程的语言），所以一个脚本在任何系统上都以相同的方式执行</li>
+</ul>
+
+<h3 id="toc_20">一个简单的脚本</h3>
+
+<p>例如脚本：2 3 OP_ADD 5 OP_EQUAL<br/>
+执行的顺序是从左至右依次进行入栈</p>
+
+<table>
+<thead>
+<tr>
+<th>栈</th>
+<th>脚本</th>
+<th>说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>2</td>
+<td><font color="#1272B9">2</font>   3 OP_ADD 5 OP_EQUAL</td>
+<td>2入栈，且有1个元素</td>
+</tr>
+<tr>
+<td>3</td>
+<td><font color="#999999"> 2 </font><font color="#1272B9">3</font>  OP_ADD 5 OP_EQUAL</td>
+<td>3入栈，且有2个元素</td>
+</tr>
+<tr>
+<td>3<br>2</td>
+<td><font color="#999999"> 2 3 </font><font color="#1272B9">OP_ADD</font> 5 OP_EQUAL</td>
+<td>执行栈顶中两个元素相加<br>栈顶为5，且有1个元素</td>
+</tr>
+<tr>
+<td>5</td>
+<td><font color="#999999"> 2 3 OP_ADD</font> <font color="#1272B9">5</font> OP_EQUAL</td>
+<td>5入栈，且有2个元素</td>
+</tr>
+<tr>
+<td>5<br>5</td>
+<td><font color="#999999"> 2 3 OP_ADD 5</font> <font color="#1272B9">OP_EQUAL</font></td>
+<td>执行栈中元素匹配是否相等</td>
+</tr>
+<tr>
+<td>TRUE</td>
+<td><font color="#999999"> 2 3 OP_ADD 5 OP_EQUAL</font></td>
+<td>脚本验证成功</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_21">交易的输入和输出脚本是怎么执行的</h3>
+
+<p>脚本的类型有：<br/>
+<strong>TX_NULL_DATA</strong> <br><strong>TX_WITNESS_UNKNOWN</strong>         <br><strong>TX_PUBKEY</strong>       锁定脚本是P2PK类型         <br><strong>TX_PUBKEYHASH</strong>   锁定脚本是P2PKH类型         <br><strong>TX_SCRIPTHASH</strong>   锁定脚本是P2SH类型         <br><strong>TX_MULTISIG</strong>     锁定脚本是MultiSig（多重签名）         <br><strong>TX_WITNESS_V0_KEYHASH</strong>   锁定脚本是P2WKH类型         <br><strong>TX_WITNESS_V0_SCRIPTHASH</strong>    锁定脚本是P2WSH类型</p>
+
+<p>接下来以常见的<strong>TX_PUBKEYHASH</strong>类型支付脚本为例子，付款至公钥哈希(Pay-to-Public-Key-Hash)</p>
+
+<ul>
+<li><p>锁定脚本：是一个放在在输出上面的花费的条件，他指定了今后花费这笔交易必须满足的条件，由于脚本中含有一个比特币的地址，也称为脚本公钥；</p>
+<blockquote>
+<p>OP_DUP OP_HASH160 7514080ab2fcac0764de3a77d10cb790c71c74c2 OP_EQUALVERIFY OP_CHECKSIG </p>
+</blockquote></li>
+<li><p>解锁脚本：是一个“解决”或满足被锁定脚本在一个输出上设定的花费条件的脚本，它将允许输出被花费。解锁脚本是每一笔比特币交易输入的一部分，而且往往包含一个用私钥的数字签名，也称为脚本签名；</p>
+<blockquote>
+<p>3044022055bac1856ecbc377dd5e869b1a84ed1d5228c987b098c095030c12431a4d5249022055523130a9d0af5fc27828aba43b464ecb1991172ba2a509b5fbd6cac97ff3af01 048aefd78bba80e2d1686225b755dacea890c9ca1be10ec98173d7d5f2fefbbf881a6e918f3b051f8aaaa3fcc18bbf65097ce8d30d5a7e5ef8d1005eaafd4b3fbe</p>
+</blockquote></li>
+<li><p>脚本的验证：每个比特币节点通过同时执行锁定和解锁脚本来验证一笔交易<br/>
+Unlocking Script + Locking Script</p>
+<blockquote>
+<p>{Sig+Pubkey} + {OP_DUP HASH160 PubKHash OP_EQUALVERIFY CHECKSIG} </p>
+</blockquote></li>
+<li><p>脚本的执行过程：Unlocking Script + Locking Script</p>
+<table>
+<thead>
+<tr>
+<th>栈</th>
+<th>脚本</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sig</td>
+<td><font color="#1272B9">Sig</font> Pubkey OP_DUP HASH160 PubKHash OP_EQUALVERIFY CHECKSIG</td>
+<td>用私钥对交易进行签名</td>
+</tr>
+<tr>
+<td>Pubkey<br>Sig</td>
+<td><font color="#999999">Sig </font><font color="#1272B9">Pubkey</font> OP_DUP HASH160  PubKHash  OP_EQUALVERIFY CHECKSIG</td>
+<td>公钥Hash</td>
+</tr>
+<tr>
+<td>Pubkey<br>Pubkey<br>Sig</td>
+<td><font color="#999999">Sig Pubkey </font><font color="#1272B9">OP_DUP</font> HASH160 PubKHash  OP_EQUALVERIFY CHECKSIGL</td>
+<td>执行栈顶的拷贝，及时对公钥Hash拷贝再次入栈</td>
+</tr>
+<tr>
+<td>HASH160(Pubkey)<br>Pubkey<br>Sig</td>
+<td><font color="#999999">Sig Pubkey OP_DUP </font> <font color="#1272B9">HASH160 </font>PubKHash  OP_EQUALVERIFY  CHECKSIG</td>
+<td>将栈顶元素进行HASH160，注意栈顶元素的变化</td>
+</tr>
+<tr>
+<td>PubKHash<br>HASH160(Pubkey)<br>Pubkey<br>Sig</td>
+<td><font color="#999999">Sig Pubkey OP_DUP HASH160 </font>  <font color="#1272B9">PubKHash</font> OP_EQUALVERIFY CHECKSIG</td>
+<td>将公钥的HASH入栈</td>
+</tr>
+<tr>
+<td>Pubkey<br>Sig</td>
+<td><font color="#999999">Sig Pubkey OP_DUP HASH160 PubKHash</font>  <font color="#1272B9">OP_EQUALVERIFY</font> CHECKSIG</td>
+<td>执行栈顶两个元素匹配是否相等，注意栈顶元素的变化</td>
+</tr>
+<tr>
+<td>TRUE</td>
+<td><font color="#999999">Sig Pubkey OP_DUP HASH160 PubKHash OP_EQUALVERIFY</font><font color="#1272B9"> CHECKSIG</font></td>
+<td>检查验证签名，验证成功</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
 
 <h2 id="toc_22">10.交易的数字签名</h2>
 
