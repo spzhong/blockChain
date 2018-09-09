@@ -259,13 +259,13 @@
 <a href="#toc_22">10.交易的数字签名</a>
 <ul>
 <li>
-<a href="#toc_23">数字签名是如何工作的</a>
+<a href="#toc_23">什么是数字签名</a>
 </li>
 <li>
-<a href="#toc_24">如何验证数字签名</a>
+<a href="#toc_24">数字签名是如何工作的</a>
 </li>
 <li>
-<a href="#toc_25">数字签名有哪些类型</a>
+<a href="#toc_25">数字签名哈希（SIGHASH）</a>
 </li>
 <li>
 <a href="#toc_26">ECDSA数学</a>
@@ -276,6 +276,9 @@
 </ul>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_28">小结</a>
 
 
 <h2 id="toc_0">1.交易是如何产生的概述</h2>
@@ -743,7 +746,8 @@ c096c7a603000000
 <li><p>累加交易输出的交易金额&gt;=转账金额进行break</p></li>
 <li><p>组装交易的输出，如果有可能需要找零，再多加一个输出指定到自己钱包中，具体的数据结构请参考<a href="#vout%E4%BA%A4%E6%98%93%E8%BE%93%E5%87%BA%E9%9B%86%E5%90%88">普通转账的交易</a></p>
 <blockquote>
-<p>每笔交易都需要交易费，即是给矿工打包点小费，交易费=输入的总和-输出的总和</p>
+<p>每笔交易都需要交易费，即是给矿工打包点小费，交易费=输入的总和-输出的总和;<br/>
+交易费是按照交易的字节长度而变化，大约10个satoshi/byte（目前增加了），一笔常规的交易大约两百多个字节，那么大约普通的一笔交易费大约2000个satoshi(0.00002BTC)</p>
 </blockquote>
 <p>如果忘记了给自己构造交易中找零的输出，那么系统会将（输入的总和-输出的总和）作为交易费，实际意思就是“不用找了”</p></li>
 <li><p>得到完整的交易信息，在进行<a href="#8.%E4%BA%A4%E6%98%93%E7%9A%84%E9%AA%8C%E8%AF%81">交易的验证</a></p></li>
@@ -916,15 +920,192 @@ Unlocking Script + Locking Script</p>
 
 <h2 id="toc_22">10.交易的数字签名</h2>
 
-<h3 id="toc_23">数字签名是如何工作的</h3>
+<h3 id="toc_23">什么是数字签名</h3>
 
-<h3 id="toc_24">如何验证数字签名</h3>
+<ul>
+<li><p>数字签名的定义</p>
+<blockquote>
+<p>维基百科：数字签名是用于证明数组消息或文档的真实性的数学方案，有效的数字签名给一个容易接受的理由去相信；</p>
+<blockquote>
+<p>1.消息是由已知的发送者创建(<strong>身份认证性</strong>)<br/>
+2.发送者不可否认已发送的消息(<strong>不可否认性</strong>)<br/>
+3.消息在传输中未被更改(<strong>数据完整性</strong>)</p>
+</blockquote>
+</blockquote></li>
+<li><p>比特币使用的数字签名算法是椭圆曲线数字签名算法（ECDSA）,是用于基于椭圆曲线私钥/公钥对的数字签名的算法</p></li>
+<li><p>数字签名在脚本语言中运用，脚本函数如下，这些脚本函数会在后续的脚本中详细说明   </p>
+<blockquote>
+<p>OP_CHECKSIG<br/>
+OP_CHECKSIGVERIFY<br/>
+OP_CHECKMULLSIG<br/>
+OP_CHECKMULTISGVERIFY</p>
+</blockquote></li>
+<li><p>数字签名的用处<br/>
+签名证明私钥的所有者，授权证明是不可否认的，签名证明交易在签字之后没有也不可能被任何人修改</p></li>
+</ul>
 
-<h3 id="toc_25">数字签名有哪些类型</h3>
+<h3 id="toc_24">数字签名是如何工作的</h3>
+
+<ul>
+<li><p>创建数字签名</p>
+<blockquote>
+<p>Sig = F{sig}(F{hash}(m),dA)</p>
+<blockquote>
+<p>dA是签名私钥<br/>
+m是交易（或其部分）<br/>
+F{hash}是散列函数<br/>
+F{sig}是签名算法<br/>
+Sig是结果签名</p>
+</blockquote>
+</blockquote>
+<p>函数F{sig}产生由两个值组成的签名sig，通常称为R(公钥)和S(签名)，<code>Sig结果 = (R,S)</code><br/>
+这只是一个简单的数字签名，实际的算法过程较为复杂，想了解更多的同学请Google</p></li>
+<li><p>签名序列化(DER)</p>
+<blockquote>
+<p>3045022100884d142d86652a3f47ba4746ec719bbfbd040a570b1deccbb6498c75c4ae24cb022<br/>
+04b9f039ff08df09cbe9f6addac960298cad530a863ea8f53982c09db8f6e381301</p>
+<blockquote>
+<p>0x30:表示DER序列的开始<br/>
+0x45:序列的长度（69个字节）<br/>
+0x02:一个整数值<br/>
+0x21:整数的长度（33个字节）<br/>
+R:00884d142d86652a3f47ba4746ec719bbfbd040a570b1deccbb6498c75c4ae24cb<br/>
+0x02:一个整数值<br/>
+0x20:整数的长度（32个字节）<br/>
+S签名:04b9f039ff08df09cbe9f6addac960298cad530a863ea8f53982c09db8f6e3813<br/>
+0x01:后缀表示使用的哈希的类型</p>
+</blockquote>
+</blockquote></li>
+<li><p>如何验证签名</p>
+<p>验证签名，必须有签名(R和S)，序列化交易和公钥（对应于创建签名的私钥），本质上签名的验证意味着“只有生成此公钥的私钥的所有者，才能在此交易上产生此签名”</p>
+<p>签名验证算法采用消息（交易或其部分的哈希值），签名者的公钥和签名(R和S值)，如果签名对该消息和公钥有效，则返回TRUE值</p>
+<p>具体的验证方法参考<a href="#ECDSA%E6%95%B0%E5%AD%A6">ECDSA数学</a></p></li>
+</ul>
+
+<h3 id="toc_25">数字签名哈希（SIGHASH）</h3>
+
+<ul>
+<li><p>有三个SIGHASH标志：ALL,NONE和SINGLE</p>
+<table>
+<thead>
+<tr>
+<th>SIGHASH FLAG</th>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALL</td>
+<td>0x01</td>
+<td>签名用于所有的输入和输出</td>
+</tr>
+<tr>
+<td>NONE</td>
+<td>0x02</td>
+<td>签名用于所有的输入，但是不包含输出</td>
+</tr>
+<tr>
+<td>SINGLE</td>
+<td>0x03</td>
+<td>签名应用于所有的输入，但只有一个输入作为相同的索引数的输出</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>修饰符ANYONECANPAY与SIGHASH进行组合，通过OR运算</p>
+<table>
+<thead>
+<tr>
+<th>SIGHASH FLAG</th>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ANYONECANPAY</td>
+<td>0x80</td>
+<td>只有一个输入被签名，其余的（及序列号）打以进行修改</td>
+</tr>
+<tr>
+<td>ALL<strong>|</strong>ANYONECANPAY</td>
+<td>0x81</td>
+<td>签名用于所有的输入和输出</td>
+</tr>
+<tr>
+<td>NONE<strong>|</strong>ANYONECANPAY</td>
+<td>0x82</td>
+<td>签名用于所有的输入，但是不包含输出</td>
+</tr>
+<tr>
+<td>SINGLE<strong>|</strong>ANYONECANPAY</td>
+<td>0x83</td>
+<td>签名应用于一个输入，并且输出作为相同的索引</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>SIGHASH标示在签名和验证期间应用的方式是建立交易的副本和删节其中的某些字段（设置长度为零并清空）</p>
+<blockquote>
+<p>ALL | ANYONECANPAY    </p>
+<blockquote>
+<p>可以做“众筹”交易，试图筹集资金的人可以用单笔输出来构建一个交易，单笔输出将“目标”金额付给发起人。这样的交易显然是无效的，因为没有输入，但是其他人可以通过添加自己的输入作为捐赠来修改他们，他们用ALL | ANYONECANPAY签署自己的输入，除非收集到足够的输入以达到输出的价值，否则交易无效，每次捐赠都是一项“抵押”，直到募集整个目标金额</p>
+</blockquote>
+<p>NONE  </p>
+<blockquote>
+<p>该结构用于创建特定数量的“不记名支票”或“空白支票”，它对输入进行承若，但允许输出锁定脚本被更改。任何人都可以将自己的比特币地址写入输出锁定脚本并兑换交易。然而，输出值本身被签名锁定。</p>
+</blockquote>
+<p>NONE | ANYONECANPAY   </p>
+<blockquote>
+<p>这种构造可以用来建造一个“吸尘器”，在他们的钱包中拥有微小的UTXO的用户无法花费的这些费用，因为手续费超过了这些微小的价值。借助这种类类型的签名，微小UTXO可以为任何人捐赠，以便随时的收集和消费</p>
+</blockquote>
+</blockquote></li>
+</ul>
 
 <h3 id="toc_26">ECDSA数学</h3>
 
+<ul>
+<li><p>公钥和私钥</p>
+<blockquote>
+<p>公钥的主要作用：加密，验证签名<br/>
+    私钥的主要作用：签名，解密</p>
+</blockquote>
+<p>特性：通过私钥可以计算出公钥，反之则不行   </p>
+<p>公钥加密：公钥加密的内容可以用私钥解密--只有私钥持有者才能解密，可逆向的到明文</p>
+<p>私钥签名：私钥签名的内容可以用公钥验证--公钥能验证的签名均视为私钥持有人所签署    </p></li>
+<li><p>椭圆曲线数字签名算法(ECDSA)</p>
+<blockquote>
+<p>用户密钥对：pubkey,privkey<br/>
+待签名的信息：M<br/>
+签名：Signature(M) = (r,s)</p>
+</blockquote>
+<pre><code class="language-text">签名过程：
+1、根据ECC算法随机生成一个密钥对(k, R), R=(xR, yR)<br/>
+2、令 r = xR mod n，如果r = 0，则返回步骤1<br/>
+3、计算 H = Hash(M)<br/>
+4、按照数据类型转换规则，将H转化为一个big endian的整数e<br/>
+5、s = k^-1 (e + rd) mod n，若s = 0, 则返回步骤1<br/>
+6、输出的S =(r,s)即为签名
+</code></pre>
+<pre><code class="language-text">验证过程：
+1、计算 H = Hash(M)<br/>
+2、按照数据类型转换规则，将H转化为一个big endian的整数e<br/>
+3、计算 u1 = es^-1 mod n, u2 = rs^-1 mod n<br/>
+4、计算 R = (xR, yR) = u1G + u2Q, 如果R = 零点，则验证该签名无效<br/>
+5、令 v = xR mod n<br/>
+6、若 v == r，则签名有效，若 v ≠ r, 则签名无效
+</code></pre>
+<p>备注：具体参考<a href="https://blog.csdn.net/taifei/article/details/73160350">比特币系统的公钥密码学方案和ECDSA签名算法介绍</a></p></li>
+</ul>
+
 <h3 id="toc_27">随机性在签名中的重要性</h3>
+
+<p>在ECDSA Math中，签名生成算法使用随机密钥k作为临时私钥-公钥对的基础。k值不重要，只要它是随机的；如果使用相同的值k在不同的消息（交易）上产生两个签名，那么签名私钥可以由任何人计算，这样会导致私钥的泄漏。</p>
+
+<p>比特币中签署的交易算法，则必须使用RFC6979或类似的确定性随机算法来确保为每个交易生成不同的k值</p>
+
+<h1 id="toc_28">小结</h1>
+
+<p>这篇文章主要讲解了比特币交易的原理，而后面的两节<a href="#%E4%BA%A4%E6%98%93%E8%84%9A%E6%9C%AC%E7%9A%84%E5%88%9D%E7%AA%A5">交易脚本的初窥</a>和<a href="#%E4%BA%A4%E6%98%93%E7%9A%84%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D">交易的数字签名</a>两篇问题是作为下面脚本和数字签名两篇文章的引子，开始看不明白的同学可以先行跳过，不过需要大致的了解到比特币的交易，从表面上看来比较简单，实际上具体的实现及原理要比我们想象的复杂，所以要真正的了解比特币，就必须要深入</p>
 
 
     
@@ -1052,6 +1233,8 @@ Unlocking Script + Locking Script</p>
 			        <a href="15348479167538.html">区块链的基本概念</a>
 			      </li>
 		     
+		  
+		      
 		  
 		      
 		  
