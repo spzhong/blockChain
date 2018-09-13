@@ -156,6 +156,587 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15365050797831.html">
+                
+                  <h1>一篇对数字签名的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>比特币是基于密码学的，密码学这门科学不仅包含被称之为“秘密写作的”加密学，也可以用来证明秘密的知识，而不会泄漏秘密（数字签名），或证明数据的真实性（数字指纹），接下来介绍一下比特币中来控制资金的所有权的密码学，包括了密钥，地址和钱包。</p>
+
+<ul>
+<li>
+<a href="#toc_0">数字签名</a>
+<ul>
+<li>
+<a href="#toc_1">简介</a>
+</li>
+<li>
+<a href="#toc_2">公钥加密和加密货币</a>
+</li>
+<li>
+<a href="#toc_3">私钥和公钥</a>
+</li>
+<li>
+<a href="#toc_4">私钥</a>
+</li>
+<li>
+<a href="#toc_5">公钥</a>
+</li>
+<li>
+<a href="#toc_6">椭圆曲线密码学(Elliptic Curve Cryptography)</a>
+</li>
+<li>
+<a href="#toc_7">生成公钥</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_8">比特币地址</a>
+</li>
+<li>
+<a href="#toc_9">用Python实现密钥和比特币地址</a>
+</li>
+<li>
+<a href="#toc_10">高级密钥和地址</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">数字签名</h2>
+
+<h3 id="toc_1">简介</h3>
+
+<p>比特币的所有权是通过数字密钥，比特币地址和数字签名来确定的，数字密钥实际上不是存储在网络中的，而是由用户独立生成的，存储在钱包文件中或是数据库中；密钥实现了比特币的许多趣味性，包括去中心化信任和控制，所有权认证和基于密码学证明的安全模型</p>
+
+<p>大多数比特币交易都需要一个有效的签名才会被存储在区块链中，只有有效的密钥才能产生有效的数字签名，因此拥有-密钥就拥有了对该账户的比特币的控制权，那么交易中的见证数据证明了所用资金的真正归谁所有</p>
+
+<p>密钥是成对出现的，有一个私钥和公钥所组成</p>
+
+<p>首先我们先介绍密码学并解释比特币中使用的数学知识，然后了解密钥如何被产生的，存储和管理的，代表私钥和公钥，地址和脚本地址的各种编码格式，最后，说一下密钥和地址的高级用途：比特币靓号，多重签名以及脚本地址和纸钱包</p>
+
+<h3 id="toc_2">公钥加密和加密货币</h3>
+
+<p>公钥加密发明于20世纪70年代，它是计算机和信息安全的数学基础。<br/>
+例如，素数幂和椭圆曲线乘法，这些函数都是不可逆的，很容易向一个方向计算，但是不可以向反方向倒推。比特币正使用椭圆曲线乘法作为公钥加密的基础</p>
+
+<p>支付比特币时，比特币的当前所有者需要交易中提交其公钥和签名（每次交易的签名都不同，但均是同一个私钥生成的），所有比特币网络中的所有人都可通过提交的公钥和签名进行验证，并确认该交易是否有效，即支付者拥有该交易的比特币的所有权</p>
+
+<blockquote>
+<p>大多数比特币钱包工具为了方便将私钥和公钥以密钥对的形式存储在一起，然而公钥可以由私钥计算的到，所以只存储私钥即可</p>
+</blockquote>
+
+<h3 id="toc_3">私钥和公钥</h3>
+
+<p>一个比特币钱包中包含一系列的密钥对，每个密钥对包括一个私钥和一个公钥，私钥(k)是一个数字，通常是随机选的，有了私钥通过椭圆曲线乘法这个单向加密的函数产生一个公钥，然后使用一个单向加密哈希函数生成比特币地址</p>
+
+<p>为什么要使用非对称加密（公钥/私钥）？<br/>
+非对称密码学适用性使得任何人都可以验证每笔交易的每个签名，同时确保只有私钥的所有者可以产生有效的签名</p>
+
+<h3 id="toc_4">私钥</h3>
+
+<p>私钥就是一个随机选出的数字而已。私钥必须始终保持机密，因为一旦泄漏给第三方，那么就相当于将该私钥下的控制的比特币所有权拱手于人；私钥还必须要备份，一旦丢失同理也是弃掉了将该私钥下的控制的比特币所有权</p>
+
+<blockquote>
+<p>私钥生成，随机256位的二进制数字（32位的16进制）<br/>
+    用该私钥进一步生成公钥</p>
+</blockquote>
+
+<h3 id="toc_5">公钥</h3>
+
+<h3 id="toc_6">椭圆曲线密码学(Elliptic Curve Cryptography)</h3>
+
+<h3 id="toc_7">生成公钥</h3>
+
+<h2 id="toc_8">比特币地址</h2>
+
+<h2 id="toc_9">用Python实现密钥和比特币地址</h2>
+
+<h2 id="toc_10">高级密钥和地址</h2>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/9</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15365050797831.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15360563845824.html">
+                
+                  <h1>关于</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>人往往把自己置身于空闲中，有一种了然的焦虑，但遗弃了自我；</p>
+
+<p>人往往把自己置身于忙碌中，有一种麻木的踏实，但丧失了真实；</p>
+
+<p>那么如何完成真实的自我呢？<br/>
+心之所向，然后有一种从心灵深处满溢出来的不懊悔也不羞耻的平和与喜悦。</p>
+
+<p>一个人要知道自己想要什么，并且坚定不移的去做，一直做，一直做。。。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/4</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='about.html'>关于</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15360563845824.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358586085164.html">
+                
+                  <h1>一篇对比特币的应用案例分析</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15358586085164.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358585289735.html">
+                
+                  <h1>一篇对比特币网络的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15358585289735.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358584946404.html">
+                
+                  <h1>一篇对比特币挖矿的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15358584946404.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358584238347.html">
+                
+                  <h1>一篇对比特币脚本的理解</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15358584238347.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15358583883222.html">
+                
+                  <h1>一篇对比特币交易的理解</h1>
+                  <div class="a-content">
+                      
+		                  <div class="a-content-img">
+                      		<img src="asset/img/0d31920756c0c05f083afc22379b5057.png" />
+                      	  </div>
+		              
+                      <div class="a-content-text">
+                        
+                        	要想了解比特币，首先要知道是如何交易的，以及底层的结构和数据脚本是如何实现的；本文主要是对比特币交易系统的分析，分别从钱包的创建，交易的数据结构，挖矿交易，普通交易的数据分析；
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/9/2</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15358583883222.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15353573374570.html">
+                
+                  <h1>拜占庭将军(BPFT)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/27</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15353573374570.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15353573030349.html">
+                
+                  <h1>股份授权证明机制(DPOS)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/27</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15353573030349.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15353572275978.html">
+                
+                  <h1>工作量证明(POW)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.jianshu.com/p/8c8cedc84220">https://www.jianshu.com/p/8c8cedc84220</a><br/>
+<a href="https://zhuanlan.zhihu.com/p/30008641">https://zhuanlan.zhihu.com/p/30008641</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/27</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15353572275978.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15353571670713.html">
+                
+                  <h1>股份证明机制(POS)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/27</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15353571670713.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15350288973049.html">
+                
+                  <h1>分布式共识算法思考</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/23</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15350288973049.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15349170311253.html">
+                
+                  <h1>搭建智能合约开发环境Remix IDE及使用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/22</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15349170311253.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15348504281449.html">
+                
+                  <h1>比特币的开发环境配置</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/8/21</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15348504281449.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15348479167262.html">
                 
                   <h1>区块链技术学习指引</h1>
@@ -647,41 +1228,6 @@ nonce的最大值2<sup>32次方</sup><br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15348479167500.html">
-                
-                  <h1>智能合约开发环境搭建及hello world合约</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>测试代码2</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348479167500.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15348479167538.html">
                 
                   <h1>区块链的基本概念</h1>
@@ -731,14 +1277,15 @@ nonce的最大值2<sup>32次方</sup><br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15348504281449.html">
+                <a class="clearlink" href="15348479167500.html">
                 
-                  <h1>比特币的开发环境配置</h1>
+                  <h1>智能合约开发环境搭建及hello world合约</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<p>测试代码2</p>
+
                         
                       </div>
                   </div>
@@ -749,469 +1296,13 @@ nonce的最大值2<sup>32次方</sup><br/>
                     <span class="date">2018/8/21</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348504281449.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15349170311253.html">
-                
-                  <h1>搭建智能合约开发环境Remix IDE及使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
           					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="15349170311253.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15350288973049.html">
-                
-                  <h1>分布式共识算法思考</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15350288973049.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15353571670713.html">
-                
-                  <h1>股份证明机制(POS)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15353571670713.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15353572275978.html">
-                
-                  <h1>工作量证明(POW)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><a href="https://www.jianshu.com/p/8c8cedc84220">https://www.jianshu.com/p/8c8cedc84220</a><br/>
-<a href="https://zhuanlan.zhihu.com/p/30008641">https://zhuanlan.zhihu.com/p/30008641</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15353572275978.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15353573030349.html">
-                
-                  <h1>股份授权证明机制(DPOS)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15353573030349.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15353573374570.html">
-                
-                  <h1>拜占庭将军(BPFT)</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/27</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15353573374570.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15358583883222.html">
-                
-                  <h1>一篇对比特币交易的理解</h1>
-                  <div class="a-content">
-                      
-		                  <div class="a-content-img">
-                      		<img src="asset/img/0d31920756c0c05f083afc22379b5057.png" />
-                      	  </div>
-		              
-                      <div class="a-content-text">
-                        
-                        	要想了解比特币，首先要知道是如何交易的，以及底层的结构和数据脚本是如何实现的；本文主要是对比特币交易系统的分析，分别从钱包的创建，交易的数据结构，挖矿交易，普通交易的数据分析；
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15358583883222.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15358584238347.html">
-                
-                  <h1>一篇对比特币脚本的理解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15358584238347.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15358584946404.html">
-                
-                  <h1>一篇对比特币挖矿的理解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15358584946404.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15358585289735.html">
-                
-                  <h1>一篇对比特币网络的理解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15358585289735.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15358586085164.html">
-                
-                  <h1>一篇对比特币的应用案例分析</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/2</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15358586085164.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15360563845824.html">
-                
-                  <h1>关于</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>人往往把自己置身于空闲中，有一种了然的焦虑，但遗弃了自我；</p>
-
-<p>人往往把自己置身于忙碌中，有一种麻木的踏实，但丧失了真实；</p>
-
-<p>那么如何完成真实的自我呢？<br/>
-心之所向，然后有一种从心灵深处满溢出来的不懊悔也不羞耻的平和与喜悦。</p>
-
-<p>一个人要知道自己想要什么，并且坚定不移的去做，一直做，一直做。。。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/4</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='about.html'>关于</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15360563845824.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15365050797831.html">
-                
-                  <h1>一篇对数字签名的理解</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/9/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15365050797831.html#disqus_thread">comments</a>
+                        <a href="15348479167500.html#disqus_thread">comments</a>
                       
 
                        
@@ -1297,31 +1388,31 @@ nonce的最大值2<sup>32次方</sup><br/>
 	      
 		      
 			      <li class="post">
-			        <a href="15348479167262.html">区块链技术学习指引</a>
+			        <a href="15365050797831.html">一篇对数字签名的理解</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15348479167321.html">比特币</a>
+			        <a href="15360563845824.html">关于</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15348479167359.html">以太坊开发入门</a>
+			        <a href="15358586085164.html">一篇对比特币的应用案例分析</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15348479167500.html">智能合约开发环境搭建及hello world合约</a>
+			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15348479167538.html">区块链的基本概念</a>
+			        <a href="15358584946404.html">一篇对比特币挖矿的理解</a>
 			      </li>
 		     
 		  
