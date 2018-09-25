@@ -202,19 +202,24 @@
 <li>
 <a href="#toc_6">椭圆曲线密码学(Elliptic Curve Cryptography)</a>
 </li>
+</ul>
+</li>
 <li>
-<a href="#toc_7">生成公钥</a>
+<a href="#toc_7">比特币地址</a>
+<ul>
+<li>
+<a href="#toc_8">Base58和Base58Check编码</a>
+</li>
+<li>
+<a href="#toc_9">密钥格式</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_8">比特币地址</a>
+<a href="#toc_10">用Python实现密钥和比特币地址</a>
 </li>
 <li>
-<a href="#toc_9">用Python实现密钥和比特币地址</a>
-</li>
-<li>
-<a href="#toc_10">高级密钥和地址</a>
+<a href="#toc_11">高级密钥和地址</a>
 </li>
 </ul>
 
@@ -254,21 +259,58 @@
 <p>私钥就是一个随机选出的数字而已。私钥必须始终保持机密，因为一旦泄漏给第三方，那么就相当于将该私钥下的控制的比特币所有权拱手于人；私钥还必须要备份，一旦丢失同理也是弃掉了将该私钥下的控制的比特币所有权</p>
 
 <blockquote>
-<p>私钥生成，随机256位的二进制数字（32位的16进制）<br/>
-    用该私钥进一步生成公钥</p>
+<p>私钥生成，随机256位的二进制数字（64位的16进制）</p>
+
+<blockquote>
+<p>2<sup>256</sup> 是一个非常大数字，用十进制表示的话大约10<sup>77</sup> ，而可见宇宙被估计只含有10<sup>80</sup> 个原子</p>
+</blockquote>
 </blockquote>
 
 <h3 id="toc_5">公钥</h3>
 
+<p>通过椭圆曲线乘法可以从私钥计算得到公钥，这个过程不可逆转：K = k*G (k是私钥，G被称为生成点点常数点，而K是所得的公钥)<br/>
+通过私钥，可以计算得到公钥，但是由于过程不可逆，无法通过公钥得到私钥</p>
+
 <h3 id="toc_6">椭圆曲线密码学(Elliptic Curve Cryptography)</h3>
 
-<h3 id="toc_7">生成公钥</h3>
+<p>椭圆曲线加密法是一种基于离散对数问题的非对称加密法，可以用对椭圆曲线上的点进行加法或乘法运算来表达。</p>
 
-<h2 id="toc_8">比特币地址</h2>
+<blockquote>
+<p>y<sup>2</sup> = x<sup>3</sup> + ax + b<br/>
+<img src="media/15365050797831/20170801154403156.gif" alt="20170801154403156"/><br/>
+备注：动态效果图参看<a href="https://blog.csdn.net/dianqu6970/article/details/76534222">椭圆曲线加密学习</a></p>
+</blockquote>
 
-<h2 id="toc_9">用Python实现密钥和比特币地址</h2>
+<p><img src="media/15365050797831/121401537009791_.pic_hd.jpg" alt="121401537009791_.pic_hd"/></p>
 
-<h2 id="toc_10">高级密钥和地址</h2>
+<h2 id="toc_7">比特币地址</h2>
+
+<p>以公钥K为输入，计算其SHA256哈希值，并以此结果计算RIPEMD160哈希值，得到一个长度160位（20字节）的数字：</p>
+
+<blockquote>
+<p>A = RIPEMD160(SHA256(K))<br/>
+  address = Base58 Encode(A)</p>
+</blockquote>
+
+<h3 id="toc_8">Base58和Base58Check编码</h3>
+
+<p>为了更简洁方便表示长串的数字，使用更少的符号，许多计算机会使用一种以数字和字母组成的大于十进制的表示法；<br/>
+Base64使用了26个大小写字母，10个数字及两个符号（+ /）<br/>
+Base58是一种基于文本的二进制编码格式，这种编码格式不仅实现了数据压缩，保持了易读性，Base58不包含数字0，字母o，大小写i，以及+ / ，比Base64少了6个字符</p>
+
+<p><img src="media/15365050797831/1411537524443_.pic_hd.png" alt="1411537524443_.pic_hd"/></p>
+
+<h3 id="toc_9">密钥格式</h3>
+
+<h2 id="toc_10">用Python实现密钥和比特币地址</h2>
+
+<h2 id="toc_11">高级密钥和地址</h2>
+
+<p><a href="https://blog.csdn.net/taifei/article/details/74382718">https://blog.csdn.net/taifei/article/details/74382718</a><br/>
+<a href="https://blog.csdn.net/taifei/article/details/73880736">https://blog.csdn.net/taifei/article/details/73880736</a><br/>
+<a href="https://blog.csdn.net/ztemt_sw2/article/details/81101717">https://blog.csdn.net/ztemt_sw2/article/details/81101717</a><br/>
+<a href="https://github.com/cyhhao/eth-canvas">https://github.com/cyhhao/eth-canvas</a><br/>
+<a href="https://blog.csdn.net/j3t9z7h/article/details/80970818">https://blog.csdn.net/j3t9z7h/article/details/80970818</a></p>
 
 
     

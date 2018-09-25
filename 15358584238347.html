@@ -178,7 +178,536 @@
       </div><!-- article -->
 
       <div class="article-content">
-      
+      <p>在比特币交易的理解中，我们简单的介绍了脚本及脚本语言是如何运行的，那么这篇文章我具体的讲讲脚本的类型用法，及扩展</p>
+
+<ul>
+<li>
+<a href="#toc_0">1.比特币脚本的特点及基本语法</a>
+<ul>
+<li>
+<a href="#toc_1">脚本的本质</a>
+</li>
+<li>
+<a href="#toc_2">脚本的常见关键字字段</a>
+</li>
+<li>
+<a href="#toc_3">脚本的流控制关键字字段</a>
+</li>
+<li>
+<a href="#toc_4">其它重要的字段说明</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_5">2.比特币脚本支付有哪些类型</a>
+<ul>
+<li>
+<a href="#toc_6">付款到公钥哈希（Pay-to-Public-Key-Hash）</a>
+</li>
+<li>
+<a href="#toc_7">多重签名</a>
+</li>
+<li>
+<a href="#toc_8">付款到脚本P2SH（Pay-to-Script-Hash）</a>
+<ul>
+<li>
+<a href="#toc_9">P2SH地址</a>
+</li>
+<li>
+<a href="#toc_10">P2SH的优点</a>
+</li>
+<li>
+<a href="#toc_11">赎回脚本和标准确认</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_12">数据记录输出（RETURN操作符）</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_13">时间锁</a>
+<ul>
+<li>
+<a href="#toc_14">交易锁定时间</a>
+</li>
+<li>
+<a href="#toc_15">检查锁定时间验证</a>
+</li>
+<li>
+<a href="#toc_16">相对时间锁</a>
+</li>
+<li>
+<a href="#toc_17">nSequence相对时间锁</a>
+</li>
+<li>
+<a href="#toc_18">带CSV的相对时间锁</a>
+</li>
+<li>
+<a href="#toc_19">中位时间过去Median-Time-Past</a>
+</li>
+<li>
+<a href="#toc_20">针对费用阻击（Fee Sniping）的时间锁定</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_21">具有流量控制的脚本（条件字句）</a>
+</li>
+<li>
+<a href="#toc_22">复杂的脚本的运用</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1.比特币脚本的特点及基本语法</h2>
+
+<p>比特币在交易中使用的脚本系统，于FORTH（一种编译语言）一样，脚本是简单的，基于堆栈的，并且是从左向右处理的，特意设计成非图灵完整的形式，没有LOOP（循环）语句</p>
+
+<h3 id="toc_1">脚本的本质</h3>
+
+<p>实际上脚本本质上是众多指令的列表，交易上的脚本本质是也是输入和输出的入栈的操作指令，使得操作指令False表示0，True表示非0</p>
+
+<h3 id="toc_2">脚本的常见关键字字段</h3>
+
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>操作码</th>
+<th>十六进制</th>
+<th>输入</th>
+<th>输出</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OP_0</td>
+<td>0</td>
+<td>0x00</td>
+<td>无</td>
+<td>空</td>
+<td>一个字节空串被推到栈中（并非no-op操作，这里有一个元素被压入堆栈中）</td>
+</tr>
+<tr>
+<td>N/A</td>
+<td>1-75</td>
+<td>0x01-0x4b</td>
+<td>特殊</td>
+<td>数据</td>
+<td>下一个操作码字节被压入堆栈的数据</td>
+</tr>
+<tr>
+<td>OP_PUSHDATA1</td>
+<td>76</td>
+<td>0x4c</td>
+<td>特殊</td>
+<td>数据</td>
+<td>下一个字节被压入堆栈的数据的长度</td>
+</tr>
+<tr>
+<td>OP_PUSHDATA2</td>
+<td>77</td>
+<td>0x4d</td>
+<td>特殊</td>
+<td>数据</td>
+<td>下两个字节被压入堆栈的数据的长度</td>
+</tr>
+<tr>
+<td>OP_PUSHDATA4</td>
+<td>78</td>
+<td>0x4e</td>
+<td>特殊</td>
+<td>数据</td>
+<td>下四个字节被压入堆栈的数据的长度</td>
+</tr>
+<tr>
+<td>OP_1NEGATE</td>
+<td>79</td>
+<td>0x4f</td>
+<td>无</td>
+<td>-1</td>
+<td>数字-1被压入堆栈</td>
+</tr>
+<tr>
+<td>OP_1</td>
+<td>81</td>
+<td>0x51</td>
+<td>无</td>
+<td>1</td>
+<td>数字1被压入堆栈</td>
+</tr>
+<tr>
+<td>OP_2-OP_16</td>
+<td>82-96</td>
+<td>0x52-0x60</td>
+<td>无</td>
+<td>2-16</td>
+<td>关键名对应的数字被压入栈</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_3">脚本的流控制关键字字段</h3>
+
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>操作码</th>
+<th>十六进制</th>
+<th>输入 / 输出</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OP_NOP</td>
+<td>97</td>
+<td>0x61</td>
+<td>无</td>
+<td>无任何操作</td>
+</tr>
+<tr>
+<td>OP_IF</td>
+<td>99</td>
+<td>0x63</td>
+<td><expression>if[statements][else[statements]] endif</td>
+<td>如果栈顶元素值不为0，则语句将被执行，栈顶元素将被删除</td>
+</tr>
+<tr>
+<td>OP_NOTIF</td>
+<td>100</td>
+<td>0x64</td>
+<td><expression>if[statements][else[statements]] endif</td>
+<td>如果栈顶元素值为0，则语句将被执行，栈顶元素将被删除</td>
+</tr>
+<tr>
+<td>OP_ELSE</td>
+<td>103</td>
+<td>0x67</td>
+<td><expression>if[statements][else[statements]] endif</td>
+<td>如果前述的OP_IF或OP_NOTIF或OP_ELSE未被执行，那么这些语句就会执行，如果执行了，则表示这些语句不会被执行</td>
+</tr>
+<tr>
+<td>OP_ENDIF</td>
+<td>104</td>
+<td>0x68</td>
+<td><expression>if[statements][else[statements]] endif</td>
+<td>结束if/else语言块</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_4">其它重要的字段说明</h3>
+
+<p>脚本的字段关键字有好些，有些操作码已被禁入，我们主要了解一些关键的及常用的字段就可以了。</p>
+
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>操作码</th>
+<th>十六进制</th>
+<th>输入</th>
+<th>输出</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OP_VERIFY</td>
+<td>105</td>
+<td>0x69</td>
+<td>TRUE/FALSE</td>
+<td>无/FALSE</td>
+<td>如果栈顶原色值非真，则标记交易无效，TRUE会被删除，FALSE不会删除</td>
+</tr>
+<tr>
+<td>OP_RETUEN</td>
+<td>106</td>
+<td>0x6a</td>
+<td>无</td>
+<td>无</td>
+<td>标记交易无效</td>
+</tr>
+<tr>
+<td>OP_IFDUP</td>
+<td>115</td>
+<td>0x73</td>
+<td>--</td>
+<td>--</td>
+<td>如果栈顶元素不为0，则复制该元素值</td>
+</tr>
+<tr>
+<td>OP_DROP</td>
+<td>117</td>
+<td>0x75</td>
+<td>--</td>
+<td>--</td>
+<td>删除栈顶元素</td>
+</tr>
+<tr>
+<td>OP_DUP</td>
+<td>118</td>
+<td>0x75</td>
+<td>--</td>
+<td>--</td>
+<td>复制栈顶元素</td>
+</tr>
+<tr>
+<td>OP_SWAP</td>
+<td>124</td>
+<td>0x7c</td>
+<td>--</td>
+<td>--</td>
+<td>栈顶的两个元素交换</td>
+</tr>
+<tr>
+<td>OP_2DROP</td>
+<td>109</td>
+<td>0x6d</td>
+<td>--</td>
+<td>--</td>
+<td>删除栈顶的两个元素</td>
+</tr>
+<tr>
+<td>OP_2DUP</td>
+<td>110</td>
+<td>0x6e</td>
+<td>--</td>
+<td>--</td>
+<td>复制栈顶的两个元素</td>
+</tr>
+<tr>
+<td>OP_EQUAL</td>
+<td>135</td>
+<td>0x87</td>
+<td>x1 x2</td>
+<td>true/false</td>
+<td>如果输入的两个数相等，则返回1，否则返回0</td>
+</tr>
+<tr>
+<td>OP_EQUALVERIFY</td>
+<td>136</td>
+<td>0x88</td>
+<td>x1 x2</td>
+<td>true/false</td>
+<td>与OP_EQUAL一样，之后运行OP_VERIFY</td>
+</tr>
+<tr>
+<td>OP_RIPEMD160</td>
+<td>166</td>
+<td>0xa6</td>
+<td>in</td>
+<td>hash</td>
+<td>输入用RIPEMD-160算法散列</td>
+</tr>
+<tr>
+<td>OP_SH256</td>
+<td>168</td>
+<td>0xa8</td>
+<td>in</td>
+<td>hash</td>
+<td>输入用HAS-256算法散列</td>
+</tr>
+<tr>
+<td>OP_HASH160</td>
+<td>169</td>
+<td>0xa9</td>
+<td>in</td>
+<td>hash</td>
+<td>输入两次散列哈希，先用SHA-256,再用RIPEMD-160</td>
+</tr>
+<tr>
+<td>OP_HASH256</td>
+<td>168</td>
+<td>0xa8</td>
+<td>in</td>
+<td>hash</td>
+<td>输入两次SHA-256</td>
+</tr>
+<tr>
+<td>OP_CHECKSIG</td>
+<td>172</td>
+<td>0xac</td>
+<td>sig pubkey</td>
+<td>true/false</td>
+<td>全部交易的输出，输入和脚本都被散列，使用的签名必须是该Hash值和公钥的有效签名，返回1或0</td>
+</tr>
+<tr>
+<td>OP_CHECKSIGVERIFY</td>
+<td>173</td>
+<td>0xad</td>
+<td>sig pubkey</td>
+<td>true/false</td>
+<td>与OP_CHECKSIG一样，但之后执行OP_VERIFY</td>
+</tr>
+<tr>
+<td>OP_CHECKMULTISIG</td>
+<td>174</td>
+<td>0xae</td>
+<td>x sig1 sig2 ... number of signatures pub1 pub2 number of public of public keys</td>
+<td>true/false</td>
+<td>多重签名</td>
+</tr>
+<tr>
+<td>OP_CHECKMULTISIGVERIFY</td>
+<td>175</td>
+<td>0xaf</td>
+<td>x sig1 sig2 ... number of signatures pub1 pub2 number of public of public keys</td>
+<td>true/false</td>
+<td>与OP_CHECKMULTISIG一样，但之后执行OP_VERIFY</td>
+</tr>
+<tr>
+<td>OP_VERIF</td>
+<td>101</td>
+<td>0x65</td>
+<td>--</td>
+<td>--</td>
+<td>交易无效，即使发生在未执行的OP_IF分支</td>
+</tr>
+<tr>
+<td>OP_VERNOTIF</td>
+<td>102</td>
+<td>0x66</td>
+<td>--</td>
+<td>--</td>
+<td>交易无效，即使发生在未执行的OP_IF分支</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_5">2.比特币脚本支付有哪些类型</h2>
+
+<h3 id="toc_6">付款到公钥哈希（Pay-to-Public-Key-Hash）</h3>
+
+<p>这种交易的脚本类型，在<a href="./15358583883222.html#%E4%BA%A4%E6%98%93%E7%9A%84%E8%84%9A%E6%9C%AC%E5%88%9D%E7%AA%A5">一篇对比特币交易的理解-交易的脚本初窥</a>)有具体的说明</p>
+
+<h3 id="toc_7">多重签名</h3>
+
+<p>多重签名脚本设置了一个条件，其中N个公钥被记录在脚本中，并且至少有M个必须提供签名来解锁资金。也称为&quot;m-n方案&quot;，其中n是密钥的总数，m是验证签名所需的签名数量<br/>
+设置M-N多重签名条件的锁定脚本的一般是：</p>
+
+<pre><code class="language-text">M &lt;public key 1&gt; &lt;public key 2&gt; ... &lt;public key N&gt; N OP_CHEACKMULTSIG
+</code></pre>
+
+<p>或者说3个存档公钥中的任意2个相一致的私钥签名组合给予解锁，输入和输出组合将形成一个验证的脚本：</p>
+
+<pre><code class="language-text">0 &lt;Signature B&gt; &lt;Signature C&gt; 2 &lt;Public key A&gt; &lt;Public key B&gt; &lt;Public key C&gt; 3 OP_CHECKMULTSIG
+</code></pre>
+
+<blockquote>
+<p>multsig解锁脚本如果看到一个额外的0开始，其目的是解决一个bug，即保证例子中3个私钥签名（其中2个有效签名，其中一个为0的无效签名）对应3个公钥用于检查多重签名，从而保证脚本不产生bug</p>
+</blockquote>
+
+<h3 id="toc_8">付款到脚本P2SH（Pay-to-Script-Hash）</h3>
+
+<p>P2SH在2012年被作为一种新型，强大，且能大大简化复杂交易脚本类型而引入的<br/>
+上面我讲述了多重签名的应用，虽然满足资金的多方管理，但是同时带来很多的不便，例如必须在客户付款前将该脚本发送给每一个客户，而且每一位客户也必须使用特制能产生交易脚本的比特币钱包的软件，每位顾客还得学会如何利用脚本来完成交易。</p>
+
+<p>另外，脚本可能包含特别长的公钥，最终的交易也比较大给客户的造成费用的负担</p>
+
+<p>最后，一个长的交易脚本记录在UTXO中，这种复杂输出脚本使得实际交易中变的困难重重</p>
+
+<p>P2SH，正是为了解决这一实际的难题而引入的，复杂的锁定脚本被电子指纹（密码学中的哈希）所取代，在P2SH交易中，锁定脚本由哈希运算后的20个字节的散列值取代，被称为赎回脚本，因为它在系统中是赎回时出现而不是以锁定脚本模式出现的</p>
+
+<p>1.不含P2SH的复杂脚本</p>
+
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>code</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>锁定脚本</td>
+<td>2 pubkey1 pubkey2 pubkey3 pubkey4 pubkey5 5 OP_CHECKMULSIG</td>
+</tr>
+<tr>
+<td>解锁脚本</td>
+<td>sig1 sig2</td>
+</tr>
+</tbody>
+</table>
+
+<p>2.P2SH的复杂脚本</p>
+
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>code</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>赎回脚本</td>
+<td>2 pubkey1 pubkey2 pubkey3 pubkey4 pubkey5 5 OP_CHECKMULSIG</td>
+</tr>
+<tr>
+<td>锁定脚本</td>
+<td>OP_HASH160 <20-btye hash of 赎回脚本> OP_EQUAL</td>
+</tr>
+<tr>
+<td>解锁脚本</td>
+<td>sig1 sig2 赎回脚本</td>
+</tr>
+</tbody>
+</table>
+
+<p>3.对比上面两种类型脚本</p>
+
+<p>可以看出复杂的脚本不会在锁定脚本中显示，而且对于其它的随机节点也方便了验证，同时也减少了字节，同时使得给矿工的交易费用从发送发转移到收款方，复杂的计算及验证的工作也是由发送发转移到收款方</p>
+
+<h4 id="toc_9">P2SH地址</h4>
+
+<p>将脚本哈希编译为一个地址，P2SH地址是基于Base58编码的一个含有20个字节的哈希，P2SH地址隐藏了所有的复杂性，因此，运用进行支付的人将不会看到脚本</p>
+
+<h4 id="toc_10">P2SH的优点</h4>
+
+<ol>
+<li>交易输出中，复杂的脚本由简短的电子指纹取代，使得交易代码变短</li>
+<li>脚本能编译为地址，支付指令发出着和支付者的比特币钱包不需要复杂的工序就可执行</li>
+<li>将构建脚本的重担转移至接收方，而非发送发</li>
+<li>将长脚本数据存储负担从输出方（存储UTXO，影响内存）转移至输入方（存储在区块链里面）</li>
+<li>将长脚本数据存储的重担从当前转移到未来</li>
+<li>交易费从发送发转移至接收方，接收方使用该币资金时，必须含有赎回脚本</li>
+</ol>
+
+<h4 id="toc_11">赎回脚本和标准确认</h4>
+
+<h3 id="toc_12">数据记录输出（RETURN操作符）</h3>
+
+<h2 id="toc_13">时间锁</h2>
+
+<h3 id="toc_14">交易锁定时间</h3>
+
+<h3 id="toc_15">检查锁定时间验证</h3>
+
+<h3 id="toc_16">相对时间锁</h3>
+
+<h3 id="toc_17">nSequence相对时间锁</h3>
+
+<h3 id="toc_18">带CSV的相对时间锁</h3>
+
+<h3 id="toc_19">中位时间过去Median-Time-Past</h3>
+
+<h3 id="toc_20">针对费用阻击（Fee Sniping）的时间锁定</h3>
+
+<h2 id="toc_21">具有流量控制的脚本（条件字句）</h2>
+
+<h2 id="toc_22">复杂的脚本的运用</h2>
+
 
     
 
