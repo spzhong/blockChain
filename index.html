@@ -498,13 +498,13 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 <a href="#toc_5">2.比特币脚本支付有哪些类型</a>
 <ul>
 <li>
-<a href="#toc_6">付款到公钥哈希（Pay-to-Public-Key-Hash）</a>
+<a href="#toc_6">付款到公钥哈希</a>
 </li>
 <li>
 <a href="#toc_7">多重签名</a>
 </li>
 <li>
-<a href="#toc_8">付款到脚本P2SH（Pay-to-Script-Hash）</a>
+<a href="#toc_8">付款到脚本P2SH</a>
 <ul>
 <li>
 <a href="#toc_9">P2SH地址</a>
@@ -518,41 +518,59 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 </ul>
 </li>
 <li>
-<a href="#toc_12">数据记录输出（RETURN操作符）</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_13">时间锁</a>
+<a href="#toc_12">如何存储数据到区块链上</a>
 <ul>
 <li>
-<a href="#toc_14">交易锁定时间</a>
+<a href="#toc_13">多重签名</a>
 </li>
 <li>
-<a href="#toc_15">检查锁定时间验证</a>
+<a href="#toc_14">数据记录输出（OP_RETURN操作符）</a>
 </li>
-<li>
-<a href="#toc_16">相对时间锁</a>
-</li>
-<li>
-<a href="#toc_17">nSequence相对时间锁</a>
-</li>
-<li>
-<a href="#toc_18">带CSV的相对时间锁</a>
-</li>
-<li>
-<a href="#toc_19">中位时间过去Median-Time-Past</a>
-</li>
-<li>
-<a href="#toc_20">针对费用阻击（Fee Sniping）的时间锁定</a>
+</ul>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_21">具有流量控制的脚本（条件字句）</a>
+<a href="#toc_15">3.时间锁</a>
+<ul>
+<li>
+<a href="#toc_16">交易锁定时间</a>
 </li>
 <li>
-<a href="#toc_22">复杂的脚本的运用</a>
+<a href="#toc_17">检查锁定时间验证</a>
+</li>
+<li>
+<a href="#toc_18">相对时间锁</a>
+<ul>
+<li>
+<a href="#toc_19">nSequence相对时间锁</a>
+</li>
+<li>
+<a href="#toc_20">带CSV的相对时间锁</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_21">中位时间过去Median-Time-Past</a>
+</li>
+<li>
+<a href="#toc_22">针对费用阻击（Fee Sniping）的时间锁定</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_23">4.具有流量控制的脚本（条件字句）</a>
+<ul>
+<li>
+<a href="#toc_24">VERIFY操作码的条件字句</a>
+</li>
+<li>
+<a href="#toc_25">在脚本中使用流控制</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_26">5.复杂的脚本的运用</a>
 </li>
 </ul>
 
@@ -881,9 +899,10 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 
 <h2 id="toc_5">2.比特币脚本支付有哪些类型</h2>
 
-<h3 id="toc_6">付款到公钥哈希（Pay-to-Public-Key-Hash）</h3>
+<h3 id="toc_6">付款到公钥哈希</h3>
 
-<p>这种交易的脚本类型，在<a href="./15358583883222.html#%E4%BA%A4%E6%98%93%E7%9A%84%E8%84%9A%E6%9C%AC%E5%88%9D%E7%AA%A5">一篇对比特币交易的理解-交易的脚本初窥</a>)有具体的说明</p>
+<p>（Pay-to-Public-Key-Hash）<br/>
+这种交易的脚本类型，在<a href="./15358583883222.html#%E4%BA%A4%E6%98%93%E7%9A%84%E8%84%9A%E6%9C%AC%E5%88%9D%E7%AA%A5">一篇对比特币交易的理解-交易的脚本初窥</a>)有具体的说明</p>
 
 <h3 id="toc_7">多重签名</h3>
 
@@ -902,9 +921,10 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 <p>multsig解锁脚本如果看到一个额外的0开始，其目的是解决一个bug，即保证例子中3个私钥签名（其中2个有效签名，其中一个为0的无效签名）对应3个公钥用于检查多重签名，从而保证脚本不产生bug</p>
 </blockquote>
 
-<h3 id="toc_8">付款到脚本P2SH（Pay-to-Script-Hash）</h3>
+<h3 id="toc_8">付款到脚本P2SH</h3>
 
-<p>P2SH在2012年被作为一种新型，强大，且能大大简化复杂交易脚本类型而引入的<br/>
+<p>（Pay-to-Script-Hash）<br/>
+P2SH在2012年被作为一种新型，强大，且能大大简化复杂交易脚本类型而引入的<br/>
 上面我讲述了多重签名的应用，虽然满足资金的多方管理，但是同时带来很多的不便，例如必须在客户付款前将该脚本发送给每一个客户，而且每一位客户也必须使用特制能产生交易脚本的比特币钱包的软件，每位顾客还得学会如何利用脚本来完成交易。</p>
 
 <p>另外，脚本可能包含特别长的公钥，最终的交易也比较大给客户的造成费用的负担</p>
@@ -965,6 +985,63 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 
 <p>可以看出复杂的脚本不会在锁定脚本中显示，而且对于其它的随机节点也方便了验证，同时也减少了字节，同时使得给矿工的交易费用从发送发转移到收款方，复杂的计算及验证的工作也是由发送发转移到收款方</p>
 
+<p>4.多重签名的脚本详解（m-n Multisig）<br/>
+ 用一个交易作为示例：<a href="http://blockmeta.com/tx/c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc">http://blockmeta.com/tx/c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc</a><br/>
+c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc </p>
+
+<ul>
+<li>3Ae2TYfyHvwH11pUy6HaK7rBYn9GfGZ3Fk（Input）</li>
+<li>17EFZ829NBT2WETLj3wJ5YUfXVaGckuUgs（Input） </li>
+<li>1BQpsoxUq7N5Hv57QCnzLBbZSHGtqafaFy（Output） </li>
+<li>3Ae2TYfyHvwH11pUy6HaK7rBYn9GfGZ3Fk（Output）<br/></li>
+</ul>
+
+<p>第一个输入</p>
+
+<pre><code class="language-text">00 （OP_FALSE，约定为P2SH方式）
+48 （第1个签名的字节数)
+304502210080075aa29c42f8062f75cf6ab32004944417af974775581719008052c78719710220409fee54c6ddf2ca83e090077e443f95b427a63cc1ad87fca2625951b789d1c2 (第1个签名）
+01 （约定所签名的数据为HASH_ALL（tx))
+49（第2个签名的字节数)
+3046022100b61d8f206d17efd6db32dad106f754f231ee8a16882929b1eb39a58bfd36b39e022100c62cff92dd6fb22b373025fc9b87044cf1b33502acc9de707e5f54d1c8a042a7 （第2个签名）
+01 （约定所签名的数据为HASH_ALL（tx))
+47 （支付合同脚本的字节数）
+52 （OP_2, 表明m-n签名中的m = 2)
+21  (第1个公钥的字节数）
+0293baf0397588acc1aba056e868fd188dc0eea7554b45370aae862f9d2493a4c1
+21  (第2个公钥的字节数）
+020ab7517cf22a46b503ee8dcae7f9f109ec4cd19f0ab9d77c89c607554f3d5aa9（第一个公钥）
+52（OP_2, 表明m-n签名中的n = 2, 说明这是一个2-2签名)
+ae（OP_CHECKSIGVERIFY)
+</code></pre>
+
+<p>第二个输入</p>
+
+<pre><code class="language-text">48 （签名的字节数）
+304502203fe5f04a013512a4773414b25edc8c7915473dd5cf87bc73d28e1aaffdb4d14f022100e16156d526d1498f2cf5eb02d53e02f7fd5cf1dfdd25e4b032fdc5c59c9fd27b （签名）
+01 （约定所签名的数据为HASH_ALL（tx))
+21 （公钥的字节数）
+0203635e5c184951e14fcfecc83b15960594f4fceec729e09a4a517b0a03a7f4b9 （公钥）
+</code></pre>
+
+<p>第一个输出</p>
+
+<pre><code class="language-text">OP_DUP
+OP_HASH160
+14 (字节数，0x14 = 20L, 网站在显示时省略了这一字节）
+7232ca33e0797405a512fa872934cd922c812965 （20字节的哈希值）
+OP_EQUALVERIFY
+OP_CHECKSIG
+</code></pre>
+
+<p>第二个输出</p>
+
+<pre><code class="language-text">OP_HASH160
+14 (字节数，0x14 = 20L, 网站在显示时省略了这一字节）
+622854939d571b63df97f47e8302b700ab2932b6 （20字节的哈希值）
+OP_EQUAL
+</code></pre>
+
 <h4 id="toc_9">P2SH地址</h4>
 
 <p>将脚本哈希编译为一个地址，P2SH地址是基于Base58编码的一个含有20个字节的哈希，P2SH地址隐藏了所有的复杂性，因此，运用进行支付的人将不会看到脚本</p>
@@ -982,27 +1059,314 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 
 <h4 id="toc_11">赎回脚本和标准确认</h4>
 
-<h3 id="toc_12">数据记录输出（RETURN操作符）</h3>
+<blockquote>
+<p>P2SH锁定脚本包含一个赎回脚本的哈希，该脚本对于赎回脚本本身未提供任何的描述。P2SH交易即便在赎回脚本无效的情况下也会被认为有效，如果处理不当，可能会出现一个事故，即你的比特币可能会锁死在P2SH这个交易中，导致你以后再也不能花费这笔交易了，同时也会导致内存中UTXO变大 </p>
+</blockquote>
 
-<h2 id="toc_13">时间锁</h2>
+<p>支付到脚本的类型验证的方式：<br/>
+1.验证赎回脚本和锁定脚本是否匹配<br/>
+2.通过后在执行赎回的脚本</p>
 
-<h3 id="toc_14">交易锁定时间</h3>
+<blockquote>
+<p>以下是执行的脚本顺序<br/>
+例如：<br/>
+赎回脚本： <2 PK1 PK2 PK3 PK4 PK5 5 CHECKMULTISIG><br/>
+锁定脚本：OP_HASH160  &lt;赎回脚本 scriptHash&gt; OP_EQUEAL<br/>
+解锁脚本：Sig1 Sig2 <2 PK1 PK2 PK3 PK4 PK5 5 CHECKMULTISIG><br/>
+那么整个脚本执行入栈的依次顺序是：<br/>
+赎回脚本入栈，锁定脚本入栈，解锁脚本入栈</p>
+</blockquote>
 
-<h3 id="toc_15">检查锁定时间验证</h3>
+<h3 id="toc_12">如何存储数据到区块链上</h3>
 
-<h3 id="toc_16">相对时间锁</h3>
+<p>将数据存储到区块链上，同时也叫做数据零知识证明</p>
 
-<h3 id="toc_17">nSequence相对时间锁</h3>
+<h4 id="toc_13">多重签名</h4>
 
-<h3 id="toc_18">带CSV的相对时间锁</h3>
+<p>Multi-Signaturnes，可用部分公钥作为数据的存储，又称为外带数据<br/>
+例如：一个交易的输出为：</p>
 
-<h3 id="toc_19">中位时间过去Median-Time-Past</h3>
+<p><strong>1 Publickey OP_HASH160(外带数据) 2 OP_CHECKMULTSIGN</strong></p>
 
-<h3 id="toc_20">针对费用阻击（Fee Sniping）的时间锁定</h3>
+<p>该交易的输出证明，只有有人证明该公钥对应的私钥拥有者，就说明了外带数据是由私钥拥有者所有</p>
 
-<h2 id="toc_21">具有流量控制的脚本（条件字句）</h2>
+<h4 id="toc_14">数据记录输出（OP_RETURN操作符）</h4>
 
-<h2 id="toc_22">复杂的脚本的运用</h2>
+<p>2013年，比特币协议引进了一项新的功能，即创建一种名为OP_RETURN的交易，可以嵌入40个字节小段数据（目前已经是80字节）</p>
+
+<p>这个功能最初是把情景信息加入比特币交易中，比如配送信息等，后来发展为更具有创造性的用法，即创造最小量的交易（0.00000001BTC的交易费），并且可以嵌入任何你想放进去的信息</p>
+
+<p>例如：交易号：793430203367a558101239a5719043230205367a558100039a57190</p>
+
+<p><strong>OP_RETURN 43430205367a558100039a57190</strong></p>
+
+<blockquote>
+<p>利用这个功能产生一个有趣的应用就是，存在性证明(Proof of Existence) <br/>
+不过需要注意的是，OP_TRUEN交易输出是不进入UTXO集合中，所以是无法再次交易的<br/>
+一个标准的交易（通过isStandard()函数检验的）只能有一个RETURN输出，不过单个OP_RETURN可以和任意类型的输出交易进行组合</p>
+</blockquote>
+
+<h2 id="toc_15">3.时间锁</h2>
+
+<p>时间锁（timelocks）是允许一段时间后才允许支出交易；<br/>
+比特币一开始有一个交易级的时间锁定功能（nlocktime）<br/>
+2015年低和2016年中推出了两个新的时间锁定功能，提供UTXO级别的时间锁定功能，分别是<strong>CHECKLOCKTIMEVERIFY</strong>和<strong>CHECKEQUENCEVERIFY</strong></p>
+
+<h3 id="toc_16">交易锁定时间</h3>
+
+<p>nlocktime，大多数交易中将其设置为零，表示即时的传播和执行<br/>
+如果nlocktime不为零，低于5亿，则将其解释为块的高度，这意味着小于该区块高度交易无效<br/>
+如果超过了5亿，它被解释为Unix时间戳，并且小于当前时间戳交易无效</p>
+
+<p>通常nlocktime和<strong>sequence</strong>同时使用</p>
+
+<blockquote>
+<p>交易的序列，该值的范围是0-232 -1，该值往往是和下面的locktime配合使用的，当sequence=232 -1，则就忽略locktime的功能；</p>
+
+<p>当locktime是未来的时间，且sequence&lt;232 -1的时候，那么到了loacktime的时候，以sequence最大的准，其它的交易将会从交易池中移除</p>
+</blockquote>
+
+<p>关于交易时间限制的问题说明<br/>
+例如小宋给小李签署一笔交易，将交易的时间nlocktime设定为3个月</p>
+
+<blockquote>
+<ul>
+<li>在3个月内，小李不能使用该笔交易</li>
+<li>小李可以在3个月之后接受交易</li>
+</ul>
+</blockquote>
+
+<p>然而</p>
+
+<blockquote>
+<ul>
+<li>小宋可以再创建一个交易，双重花费相同的输入，而不需要锁定时间，因此小宋可以在3个月过去之前花费相同的UTXO</li>
+<li>小李不能保证小宋不会这样做</li>
+</ul>
+</blockquote>
+
+<p>所以唯一保证的是小李3个月之内无法兑换此交易，也就是说不能保证小李一定可以得到资金，为了实现这样的保证，时间限制必须放在UTXO本身上，并称为锁定脚本的一部分，而不仅仅是交易。</p>
+
+<h3 id="toc_17">检查锁定时间验证</h3>
+
+<p>check lock time verify (CLTV)<br/>
+2015年12月，引入了一种新的形式的时间锁进行比特币的分叉升级，CLTV允许再应用时间锁的方式上具有更大的灵活性，简单的说通过在输出的赎回脚本中添加CLTV操作码来限制输出，从而只能在指定的时间后使用。</p>
+
+<blockquote>
+<p>当nlocktime是交易级时间锁定时，CLTV则是基于输出的时间锁</p>
+</blockquote>
+
+<pre><code class="language-text">OP_DUP HASH160 &lt;public key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</code></pre>
+
+<pre><code class="language-text">&lt;now + 3 months&gt; OP_CHECKLOCKTIMEVERIFY OP_DROP 
+OP_DUP HASH160 &lt;public key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</code></pre>
+
+<p>CLTV不会取代nlocktime的，而是限制特定的UTXO;<br/>
+CLTV和nlocktime同时使用的话，CLTV的时间小于等于nLocktime的时间，CLTV和nlocktime（块的高度和Unix纪元时间）保持相同的格式</p>
+
+<p>CLTV和nlocktime的场景组合使用，从使用的角度来说交易锁的级别是大于输出锁的</p>
+
+<ul>
+<li><p>场景描述：A给B转账，要求立即到账，但是B需要3个月后方花费这笔交易（解决双花问题）</p>
+<pre><code class="language-text">交易锁nlocktime = 0，CLTV = Now+3Month
+</code></pre></li>
+<li><p>场景描述：A给B转账，要求3个月后到账</p>
+<pre><code class="language-text"> 方式一：交易锁nlocktime = Now+3Month，CLTV = Now+3Month（CLTV可加，可不加）
+ 方式二：交易锁nlocktime = Now+3Month，nsenquece &lt; 2^32 -1（容易出现双花）
+</code></pre></li>
+<li><p>场景描述：A给B转账，要求3个月后到账，之后B要求立即到账</p>
+<pre><code class="language-text">1.创建第一个交易，
+交易锁nlocktime = Now+3Month，nsenquece &lt; 2^32 -1         <br/>
+2.再创建一个相同的交易，但是设置nsenquece为最大<br/>
+交易锁nlocktime = Now+3Month，nsenquece = 2^32 -1，CLTV=0（如有输出的锁就要忽略）    <br/>
+那么交易锁碰到nsenquece最大的时候，就表示立即执行交易，忽略nlocktime
+</code></pre></li>
+</ul>
+
+<h3 id="toc_18">相对时间锁</h3>
+
+<p>nlocktime和CLTV都是绝对锁，他们是指定的绝对时间点，接下来讲解的是相对锁定</p>
+
+<p>2016年5月份相对时间锁的软分叉升级的共识规则<br/>
+相对锁的主要应用场景，是允许两个或多个相互依赖的交易链在一次，同时对依赖与从先前交易的确认所经过的时间的一个交易施加时间约束。<br/>
+也就是说，在UTXO被记录在块之前，时钟不开始计数，这个功能在双向状态通道和闪电网络中特币有用，后面我们会讲到</p>
+
+<p>相对时间锁，同时也具有交易级别和脚本级别的操作码<br/>
+交易级相对时间锁对应每个交易输入中设置的交易字段nSequence的值共识规则实现<br/>
+脚本级相对时间锁定使用OP_CHECKSEQUENCVERIFY(CSV)操作码来实现的</p>
+
+<h4 id="toc_19">nSequence相对时间锁</h4>
+
+<p>nSequence设计的初心说想让交易能在内存中修改，可惜后面从未使用过，使用nSequence这个字段，如果输入的交易序列小于2<sup>32</sup> (0xffffffff)，就表示尚未“确认”的交易</p>
+
+<p>这样交易将在内存池中保存，直到被另一交易消耗相同输入并具有较大的nSequence值代替，一旦出现了nSequence=2<sup>32</sup> -1，那么将被视为“最终确定”，将会立即进入打包到矿池</p>
+
+<p>一笔输入的交易，当输入的脚本中nSequence &lt; 2<sup>31</sup> 时候，就相当于时间锁定的输入交易，这中交易只有到了相对锁定时间后才生效</p>
+
+<blockquote>
+<p>定义如下：<br/>
+nSequence &lt; 2<sup>31</sup> 表示相对时间锁<br/>
+nSequence &gt;= 2<sup>31</sup> &amp;&amp; nSequence &lt;= 2<sup>32</sup> -1 表示普通的锁，没有相对时间</p>
+</blockquote>
+
+<h4 id="toc_20">带CSV的相对时间锁</h4>
+
+<h3 id="toc_21">中位时间过去Median-Time-Past</h3>
+
+<h3 id="toc_22">针对费用阻击（Fee Sniping）的时间锁定</h3>
+
+<h2 id="toc_23">4.具有流量控制的脚本（条件字句）</h2>
+
+<p>比特币的条件操作码允许我们构建一个具有两种解锁方式的赎回脚本，这取决于苹果逻辑条件的TRUE/FALSE，例如如果x为true，则赎回脚本为A,else赎回脚本为B,此外表达的条件可以无限期的“嵌套”</p>
+
+<pre><code class="language-text">大多数编程语言的流控制
+if（条件）:
+    code to run when 条件 is true
+else:
+    code to run when 条件 is false
+code to run in either case
+ 
+ 
+BitCoin脚本流控制
+条件
+IF
+    code to run when 条件 is true
+ELSE
+    code to run when 条件 is false
+ENDIF
+code to run in either case
+</code></pre>
+
+<h3 id="toc_24">VERIFY操作码的条件字句</h3>
+
+<p>在脚本中一个条件是任何以VERIFY结尾的操作码，表示如果评估的条件不为TRUE，脚本的执行将立即终止，并且该交易被视为无效。<br/>
+与提供代替执行路径的IF字句不同，VERIFY后缀充当保护字句，只有在满足前提的条件下才会继续；</p>
+
+<p>例如，脚本需要用户小a的签名和产生的特定哈希前的数据DATA</p>
+
+<p>方式一：</p>
+
+<pre><code class="language-text">赎回脚本：OP_HASH160 &lt; DATA hash &gt; OP_EQUALVERIFY &lt; a&#39; pubkey &gt; OP_CHECKSIG
+
+锁定脚本： OP_HASH160 &lt;20-btye hash of 赎回脚本&gt; OP_EQUAL
+
+解锁脚本：&lt; a&#39; sig &gt; &lt; 赎回脚本 &gt;
+</code></pre>
+
+<p>方式二：</p>
+
+<pre><code class="language-text">锁定的脚本如下：
+OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL
+IF
+    &lt;a&#39;s pubkey&gt; OP_CHECKSIG
+ENDIF
+
+
+解锁的脚本如下：
+&lt;a&#39;s Sig&gt;  &lt;hash DATA&gt;
+</code></pre>
+
+<p>方式三：</p>
+
+<pre><code class="language-text">赎回脚本：
+OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL
+IF
+    &lt;a&#39;s pubkey&gt; OP_CHECKSIG
+ENDIF
+
+
+锁定脚本：
+OP_HASH160 &lt;赎回脚本 HASH&gt; OP_EQUAL
+
+
+解锁脚本：
+&lt;a&#39;s Sig&gt;  OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL IF &lt;a&#39;s pubkey&gt; OP_CHECKSIG ENDIF
+</code></pre>
+
+<h3 id="toc_25">在脚本中使用流控制</h3>
+
+<p>在脚本流量控制一个非常常见的用途是构建一个提供多个执行路径的赎回脚本，每个脚本都有一种不同的赎回UTXO的方式</p>
+
+<p>例如：1-of-2多重的签名</p>
+
+<pre><code class="language-text">赎回的脚本：
+IF
+    &lt;A&#39;s Pubkey&gt; OP_CHECKSIG
+ELSE
+    &lt;B&#39;s Pubkey&gt; OP_CHECKSIG
+ENDIF
+
+解锁的脚本：
+&lt; A&#39;s Sig &gt; 1
+&lt; B&#39;s Sig &gt; 0
+
+</code></pre>
+
+<p>再例如一个复杂的多重嵌套脚本case</p>
+
+<pre><code class="language-text">赎回脚本：
+IF
+    script A
+ELSE
+    IF
+        script B
+    ELSE
+        script C
+    ENDIF
+ENDIF
+
+解锁的脚本：
+scriptB解锁的路径，1 0
+scriptC解锁的路径，0 0
+scriptA解锁的路径，1
+</code></pre>
+
+<blockquote>
+<p>注意解锁脚本的路径，由于解锁的脚本是先入栈的，所有交互的路径感觉是反着呢</p>
+</blockquote>
+
+<h2 id="toc_26">5.复杂的脚本的运用</h2>
+
+<p>例如，某公司希望创建灵活的规则建立公司的资本账户，多重签名计划的参与者Song，以及他的两个合伙人Zhang和Li，以及公司的律师Lawyer，创建不同级别的授权，具体取决于时间锁定；<br/>
+具体的业务如下：<br/>
+三个合伙人根据多数规则作出决定，因此三种中两个必须同意，然而如果他们的钥匙有问题，他们希望律师能够用三个合伙人获取签名之一收回资金，最后，如果所有的合伙人一段时间都不可用或无行为能力，他们希望律师能够直接管理该账户</p>
+
+<pre><code class="language-text">赎回脚本：
+
+IF
+    IF
+        2
+    ELSE
+        &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP
+        &lt;Lawyer pubkey&gt; OP_CHECKSIGVERIFY
+        1
+    ENDIF
+        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG
+ELSE
+    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁
+    &lt;Lawyer pubkey&gt; OP_CHECKSIG
+ENDIF
+
+
+解锁脚本：
+
+路径1: &lt;Lawyer Sig&gt; 0 (90天之后，律师放可以单独的花费该笔资金)
+路径2: 0 &lt;Song&#39;s Sig&gt; &lt;Zhang&#39;s Sig&gt; 1 1 (三个合伙人中有两个签名就可以花费该笔资金)
+路径3: 0 &lt;Song&#39;s Sig&gt; &lt;Lawyer Sig&gt; 0 1 (超过三十天，律师签名加上三个合伙人中任意一个人就可以花费该笔资金)
+ 
+</code></pre>
+
+<p>针对上面的Case，一些扩展的思考及实现</p>
+
+<ul>
+<li>为什么要用nSequence相对时间锁？而不用脚本CHECKLOCKTIMEVERIFY(CLTV)普通锁？</li>
+<li>CHECKSIG操作码后缀为什么有些有VERIFY，有些没有？</li>
+<li>如果律师失去钥匙，资金是否流失？</li>
+<li>如果91天过去了，律师是否可以直接花费该笔资金？</li>
+<li>合作伙伴如何每隔29天或89天“重置”一次，以防止律师获取资金？</li>
+</ul>
 
                         
                       </div>
