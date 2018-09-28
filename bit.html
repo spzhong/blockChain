@@ -529,6 +529,14 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 </li>
 <li>
 <a href="#toc_26">5.复杂的脚本的运用</a>
+<ul>
+<li>
+<a href="#toc_27">一个case</a>
+</li>
+<li>
+<a href="#toc_28">case问题解答</a>
+</li>
+</ul>
 </li>
 </ul>
 
@@ -1287,6 +1295,8 @@ scriptA解锁的路径，1
 
 <h2 id="toc_26">5.复杂的脚本的运用</h2>
 
+<h3 id="toc_27">一个case</h3>
+
 <p>例如，某公司希望创建灵活的规则建立公司的资本账户，多重签名计划的参与者Song，以及他的两个合伙人Zhang和Li，以及公司的律师Lawyer，创建不同级别的授权，具体取决于时间锁定；<br/>
 具体的业务如下：<br/>
 三个合伙人根据多数规则作出决定，因此三种中两个必须同意，然而如果他们的钥匙有问题，他们希望律师能够用三个合伙人获取签名之一收回资金，最后，如果所有的合伙人一段时间都不可用或无行为能力，他们希望律师能够直接管理该账户</p>
@@ -1324,7 +1334,87 @@ ENDIF
 <li>如果律师失去钥匙，资金是否流失？</li>
 <li>如果91天过去了，律师是否可以直接花费该笔资金？</li>
 <li>合作伙伴如何每隔29天或89天“重置”一次，以防止律师获取资金？</li>
+<li>是否可以让律师有备份的钥匙？</li>
 </ul>
+
+<h3 id="toc_28">case问题解答</h3>
+
+<ol>
+<li><p>为什么要用nSequence相对时间锁？而不用脚本CHECKLOCKTIMEVERIFY(CLTV)普通锁？</p>
+<blockquote>
+<p>相对时间锁，是说明了该交易的输出已经进入了UTXO集合了</p>
+</blockquote></li>
+<li><p>CHECKSIG操作码后缀为什么有些有VERIFY，有些没有？</p>
+<blockquote>
+<p>所有操作码包含VERIFY，就是当执行验证失败则会中断下面等流程，标记交易失败</p>
+</blockquote></li>
+<li><p>如果律师失去钥匙，资金是否流失？</p>
+<blockquote>
+<p>仅仅律师丢了私钥是不会造成资金丢失的，但是如果3个合伙人中丢了两把钥匙，那么这笔资金就永远无法花费了，也就是等同了资金的流失；</p>
+</blockquote>
+<p>增加一定时间后，任何一个合伙人私钥签名即可花费该笔交易，具体实现如下：</p>
+<pre><code class="language-text">赎回脚本：
+IF<br/>
+    IF<br/>
+        2<br/>
+    ELSE<br/>
+        IF<br/>
+            &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
+            &lt;Lawyer pubkey&gt; OP_CHECKSIGVERIFY<br/>
+        ELSE<br/>
+            &lt;60 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
+        ENDIF<br/>
+            1<br/>
+    ENDIF<br/>
+        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG<br/>
+ELSE<br/>
+    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁<br/>
+    &lt;Lawyer pubkey&gt; OP_CHECKSIG<br/>
+ENDIF   <br/>
+解锁脚本：<br/>
+路径1：0 &lt; Song&#39;s Sig &gt; &lt; Lawyer&#39;s Sig &gt;  1 0 1<br/>
+如果超过30天了，那么律师私钥签名+三个合伙人中其中任何一个私钥签名，即可花费该笔交易<br/>
+路径2：0 &lt; Song&#39;s Sig &gt; 0 0 1<br/>
+如果超过60天了，那么三个合伙人中其中任何一个私钥签名，即可花费该笔交易
+</code></pre></li>
+<li><p>如果91天过去了，律师是否可以直接花费该笔资金？</p>
+<blockquote>
+<p>是的</p>
+</blockquote></li>
+<li><p>合作伙伴如何每隔29天或89天“重置”一次，以防止律师获取资金？</p>
+<blockquote>
+<p>目前还没有太好解决思路？</p>
+</blockquote></li>
+<li><p>是否可以让律师有备份的钥匙？</p>
+<blockquote>
+<p>可以让律师有两把钥匙，作为其中一个备份</p>
+</blockquote>
+<pre><code class="language-text">赎回脚本：
+IF<br/>
+    IF<br/>
+        2<br/>
+    ELSE<br/>
+        IF<br/>
+            &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
+            1 &lt;Lawyer pubkey&gt; &lt;Lawyer2 pubkey&gt; 2 OP_CHECKMULTSIGVERIFY<br/>
+        ELSE<br/>
+            &lt;60 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
+        ENDIF<br/>
+            1<br/>
+    ENDIF<br/>
+        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG<br/>
+ELSE<br/>
+    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁<br/>
+    1 &lt;Lawyer pubkey&gt; &lt;Lawyer2 pubkey&gt; 2 OP_CHECKMULTSIG<br/>
+ENDIF   <br/>
+解锁脚本：<br/>
+路径1：0 &lt; Song&#39;s Sig &gt; 0 &lt; Lawyer&#39;s Sig &gt;  1 0 1<br/>
+如果超过30天了，那么律师私钥签名+三个合伙人中其中任何一个私钥签名，即可花费该笔交易<br/>
+路径2：0 &lt; Lawyer&#39;s Sig &gt; 0<br/>
+如果超过了90天后，律师可以用其中两把私钥中任意一个都可以完成私钥签名，即可花费该笔交易<br/>
+```
+</code></pre></li>
+</ol>
 
                         
                       </div>
