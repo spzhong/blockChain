@@ -8,8 +8,8 @@
   一篇对比特币脚本的理解 - 我对区块链的理解
   
   </title>
-  
-  
+  <meta name="keywords" content="脚本" />
+  <meta name="description" content="一篇对比特币脚本的理解" />
   <link href="atom.xml" rel="alternate" title="我对区块链的理解" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
     <link rel="stylesheet" href="asset/css/docs.css" />
@@ -179,6 +179,14 @@
 
       <div class="article-content">
       <p>在比特币交易的理解中，我们简单的介绍了脚本及脚本语言是如何运行的，那么这篇文章我具体的讲讲脚本的类型用法，及扩展</p>
+
+<p>比特币脚本语言不是图灵完备的，具有一定的局限性，它没有循环语句和复杂的条件控制语句。由于语言存在这种局限性，我们也就没办法使用这种语言写一些死循环或者一些能够导致DOS攻击的恶意代码，从而也就避免了比特币网络受到DOS攻击。每一个全节点，都会对交易进行验证。具有这种局限性的脚本语言，使人们无法把这种验证机制看成一个攻击比特币网络的缺陷</p>
+
+<blockquote>
+<p>补一下DOS攻击<br/>
+  Denial of Service的简称，即拒绝服务，其目的使计算机或网络无法提供服务，最常见的Dos攻击有计算机网络带宽攻击和连通性攻击<br/>
+  DDOS是分布式拒绝服务（Distributed Denial of Service）</p>
+</blockquote>
 
 <ul>
 <li>
@@ -1348,6 +1356,12 @@ ENDIF   <br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15385342635688.html">以太坊虚拟机</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15365050797831.html">一篇对数字签名的理解</a>
 			      </li>
 		     
@@ -1369,16 +1383,6 @@ ENDIF   <br/>
 			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
 			      </li>
 		     
-		  
-		      
-			      <li class="post">
-			        <a href="15358584946404.html">一篇对比特币挖矿的理解</a>
-			      </li>
-		     
-		  
-		      
-		  
-		      
 		  
 		      
 		  

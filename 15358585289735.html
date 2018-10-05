@@ -178,7 +178,456 @@
       </div><!-- article -->
 
       <div class="article-content">
-      
+      <ul>
+<li>
+<a href="#toc_0">1.P2P网络架构</a>
+</li>
+<li>
+<a href="#toc_1">2.节点类型及角色</a>
+</li>
+<li>
+<a href="#toc_2">3.扩展比特币网络</a>
+</li>
+<li>
+<a href="#toc_3">4.比特币传播网络</a>
+</li>
+<li>
+<a href="#toc_4">5.网络发现</a>
+<ul>
+<li>
+<a href="#toc_5">p2p握手协议</a>
+</li>
+<li>
+<a href="#toc_6">新节点如何找到对等体</a>
+</li>
+<li>
+<a href="#toc_7">建立连接后地址的传播和发现</a>
+</li>
+<li>
+<a href="#toc_8">异常连接</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">6.全节点</a>
+</li>
+<li>
+<a href="#toc_10">7.交换“库存清单”</a>
+</li>
+<li>
+<a href="#toc_11">8.P2P的连接到数据同步</a>
+</li>
+<li>
+<a href="#toc_12">9.简易支付验证(SPV)节点</a>
+</li>
+<li>
+<a href="#toc_13">10.Bloom过滤器</a>
+</li>
+<li>
+<a href="#toc_14">11.SPV节点如何使用Bloom过滤器</a>
+</li>
+<li>
+<a href="#toc_15">12.SPV节点和隐私</a>
+</li>
+<li>
+<a href="#toc_16">13.加密和认证连接</a>
+</li>
+<li>
+<a href="#toc_17">14.交易池</a>
+</li>
+<li>
+<a href="#toc_18">15.DOS攻击（扩展阅读）</a>
+<ul>
+<li>
+<a href="#toc_19">TCP三次握手</a>
+</li>
+<li>
+<a href="#toc_20">常见的DOS攻击的方式</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1.P2P网络架构</h2>
+
+<p>P2P是指同一网络中的美态计算机都彼此对等，各个节点共同提供网络服务，每个网络节点以&quot;扁平(flat)&quot;的拓扑结构互相连通</p>
+
+<p>P2P网络节点之间交互运作，协同处理，每个节点在对外提供服务的同时也是使用网络中其它节点提供的服务</p>
+
+<p>对于比特币设计的一种点对点数字现金系统，它的网络架构即反应出其特性，通过维持一种扁平化网路共识，来实现去中心化的交易系统</p>
+
+<p>“比特币网络”是按照比特币P2P协议运行的一系列节点的集合，除了比特币协议之外，比特币网络中也包含其它的协议<br/>
+例如Stratum协议，就被应用于挖矿，以及轻量级或移动端的比特币钱包中。网关（gateway）路由服务器提供的这些服务协议</p>
+
+<blockquote>
+<p>例如：Stratum服务器通过Stratum协议将所有的Stratum挖矿节点连接至比特币主网络，并将Stratum协议桥连接(bridge)至比特币p2p协议之上</p>
+</blockquote>
+
+<p>我们所说的比特币网络是指“比特币P2P协议”，“矿池挖矿协议”，“Stratum协议”以及其它连接比特币系统组件相关协议的整体网络机构</p>
+
+<h2 id="toc_1">2.节点类型及角色</h2>
+
+<p>一个比特币全节点是有“路由”，“区块链数据库”，“挖矿”，“钱包”组成；</p>
+
+<ul>
+<li>标准客户端 </li>
+<li>全部数据块节点 </li>
+<li>仅挖矿 </li>
+<li>轻量级钱包SPV</li>
+<li>协议池服务</li>
+<li>挖矿节点</li>
+<li>轻量的底层钱包</li>
+</ul>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>Miner</td>
+<td rowspan=2>【标准客户端】<br>包含一个钱包，挖矿，全部的区块数据，p2p的网络路由节点</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>--</td>
+<td>--</td>
+<td rowspan=2> 【全部数据块节点】<br>包含全部的区块数据，p2p的网络路由节点 </td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>--</td>
+<td>Miner</td>
+<td rowspan=2>【仅挖矿】<br>包含一挖矿，全部的区块数据，p2p的网络路由节点</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>--</td>
+<td rowspan=2> 【轻量级钱包SPV】<br>包含钱包，p2p的网络路由节点 </td>
+</tr>
+<tr>
+<td>--</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Pool Server</td>
+<td>Stratum Server</td>
+<td>【协议池服务】<br> 网关路由器将比特币P2P网络连接到运行其他协议的节点，例如矿池挖掘节点或层节点</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Miner</td>
+<td>Miner</td>
+<td rowspan=2> 【挖矿节点】<br> 包含一个挖矿的功能，没有区块链，包含一个底层协议节点或其它挖矿池的协议节点 </td>
+</tr>
+<tr>
+<td>Stratum node</td>
+<td>Pool node</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>--</td>
+<td rowspan=2> 【轻量的底层钱包】<br> 包含一个钱包和一个底层协议的网络节点 </td>
+</tr>
+<tr>
+<td>--</td>
+<td>StratumNode</td></tr>
+</table>
+
+<h2 id="toc_2">3.扩展比特币网络</h2>
+
+<p>这张复杂的网路架构图我还没有仔细的分析？<br/>
+<img src="media/15358585289735/135734wtwzoomwgbf2a4zb.png" alt="135734wtwzoomwgbf2a4zb"/></p>
+
+<h2 id="toc_3">4.比特币传播网络</h2>
+
+<p>比特币传播网络涉及到了底层网络架构的传输优化（建议了解即可）</p>
+
+<p>比特币网络传播是一种尝试最新小化矿工之间的传输块的延迟网络</p>
+
+<ol>
+<li><p>为了延迟矿工之间快速同步块，该网络由世界各地的亚马逊web服务基础架构上托管的几个专门的节点，并且连接大多数矿工和采矿池</p></li>
+<li><p>2016年比特币传播网络被替换成“Fast Internet Bitcoin Replay Engine”(FIBRE)</p></li>
+<li><p>FIBRE是一种基于UDP的中继网络，可以中继节点网络内的块，FIBRE也是实现了compact(紧凑) block，进一步减少了传输的数据量和网络延迟</p></li>
+<li><p>还有一个提案阶段中继网络是Falcon，使用“直通路由”而不是“存储转发”来减少延迟，通过传播块的部分，而不是等待知道接受到完成的块</p></li>
+</ol>
+
+<blockquote>
+<p>补充一下什么是中继<br/>
+中继（Relay）是连个交换中心之间的一条传输通路，中继线是承载多条逻辑链路的一条物理连接<br/>
+在中继的无线系统中，每个用户只是在呼叫时才分配一个信道，一旦通过终止，原先占用的信道就立即回到可用信道库中</p>
+</blockquote>
+
+<pre><code class="language-text">物理层中继系统：转发器。
+数据链路层中继系统：网桥
+网络层中继系统：路由器
+在网络层以上的中继系统称为网关，网关就是连接两备个网络的设备
+</code></pre>
+
+<p>无线路由器中继与桥接模式的区别？</p>
+
+<p>中继模式，就是利用无线路由器之间的无线连接功能，将无线信号从一个中继点传递到下一个中继点，实现信号的增强，并形成新的无线覆盖区域，最终达到延伸无线网络的覆盖范围的目的。事实上，只要有两台支持中继功能的无线路由器，即可拓展网络覆盖范围。</p>
+
+<p>中继和桥接功能对于无线用户的实际使用基本上是一样的，只是设备有所不同，并非所有无线路由器都可以桥接，无线路由桥接就是把无线路由器当中继器使用。桥接并非无线路由器的主要功能。使用中继模式时，网络SSID号均一致，而在桥接模式时，网络SSID号不同。</p>
+
+<h2 id="toc_4">5.网络发现</h2>
+
+<h3 id="toc_5">p2p握手协议</h3>
+
+<p>当新的网络节点启动后，为了能够参与协同运作，必须发现网络中的其他比特币节点；<br/>
+由于比特币网络的拓扑结构并不基于节点间的地理位置，因此各个节点之间的地理位置信息完全无关，会随机的选择网络中存在的比特币节点与之相连</p>
+
+<p>节点通常采用了TCP协议，通常使用8333端口与已知的对等节点建立连接，在建立连接的时，该节点会通过发送一条包含基本认证内容的version消息开始“握手”通讯</p>
+
+<pre><code class="language-javascript">version:{
+    nVsersion:定义客户端所采用的比特币p2p协议的版本
+    nLocalServices:[
+        一组该节点支持的本地服务列表，当前仅支持NOED_NETWORK
+    ]
+    nTime:当前时间
+    addrYou:当前节点可见的远程节点的IP地址
+    addrMe:本地节点所发现的本机IP地址
+    subver:指示当前节点运行的软件类型子版本号（例如：&quot;/Satoshi:0.9.2.1/&quot;）
+    baseHeight:当前节点区块链的区块高度
+}
+</code></pre>
+
+<p>版本信息始终是任何对等发送给另一个对等的第一条消息，接收版本消息的本地对等将检查远程对等体报告的nVersion，并确定远端对是否兼容，如果兼容则本地等将确认版本消息，并发送一个（ver）ack建立连接</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant a as NodeA
+    participant b as NodeB
+opt 节点A请求连接节点B
+    a--&gt;&gt;b: 节点A的version
+    b--&gt;&gt;b: 验证节点A的version
+    b-&gt;&gt;a: 发送verack
+end  
+opt 节点B请求连接节点A
+    b--&gt;&gt;a: 节点B的version
+    a--&gt;&gt;a: 验证节点A的version
+    a-&gt;&gt;b: 发送verack
+end  
+</code></pre>
+
+<h3 id="toc_6">新节点如何找到对等体</h3>
+
+<ol>
+<li>使用多个“DNS种子”来查询DNS，这些DNS服务器提供比特币节点的IP地址列表，其中一些DNS种子提供了稳定的比特币侦听节点的静态IP地址列表，还有一些DNS种子是BIND，它从搜索器或长时间运行的比特币节点收集的比特币节点地址列表中返回一个随机子集，在BitcoinCore客户端中，使用DNS种子的选项switch-dnsseed控制（默认设置为1，以使用DNS种子）</li>
+<li>不知道网络的引导节点必须被给予至少一个比特币节点的IP地址，之后可以通过进一步来建立连接，命令参数-sendnode可用于连接到一个节点，仅用于将其作为种子</li>
+</ol>
+
+<h3 id="toc_7">建立连接后地址的传播和发现</h3>
+
+<p>当建立一个或者多个连接后，新节点将一条包含自身的ip地址列表的addr消息发送给其它相邻的节点，相邻的节点再将此条addr消息依次转发给其它各自相邻的节点，从而保证新节点信息被多个节点接收，保证连接更稳定；<br/>
+同时，新接入的节点可以向相邻节点发送getaddr消息，要求他们返回已知的对等节点的ip地址列表</p>
+
+<p>由于节点可以随时的加入和离开，通讯路径是不可靠的，因此节点必须持续进行两项工作：在失去已有连接时发现新的节点，并在其他节点启动时为其提供帮助</p>
+
+<p>一个节点无需连接大量的对等节点，在启动完成后，节点会记住它最新连接成功的对等节点，因此，当重新启动后它迅速与先前的对等节点网络重新建立连接，如果先前的网络无应答，则该节点可以使用种子节点进行重启动</p>
+
+<p>bitcoin-cli getpeerInfo</p>
+
+<pre><code class="language-javascript">{
+    &quot;services&quot; : &quot;00000001&quot;,
+    &quot;lastsend&quot; : 1405634126,
+    &quot;lastrecv&quot; : 1405634127,
+    &quot;bytessent&quot; : 23487651,
+    &quot;bytesrecv&quot; : 138679099,
+    &quot;conntime&quot; : 1405021768,
+    &quot;pingtime&quot; : 0.00000000,
+    &quot;version&quot; : 70002,
+    &quot;subver&quot; : &quot;/Satoshi:0.9.2.1/&quot;,
+    &quot;inbound&quot; : false,
+    &quot;startingheight&quot; : 310131,
+    &quot;banscore&quot; : 0,
+    &quot;syncnode&quot; : true
+},
+{
+    &quot;addr&quot; : &quot;58.23.244.20:8333&quot;,
+    &quot;services&quot; : &quot;00000001&quot;,
+    &quot;lastsend&quot; : 1405634127,
+    &quot;lastrecv&quot; : 1405634124,
+    &quot;bytessent&quot; : 4460918,
+    &quot;bytesrecv&quot; : 8903575,
+    &quot;conntime&quot; : 1405559628,
+    &quot;pingtime&quot; : 0.00000000,
+    &quot;version&quot; : 70001,
+    &quot;subver&quot; : &quot;/Satoshi:0.8.6/&quot;,
+    &quot;inbound&quot; : false,
+    &quot;startingheight&quot; : 311074,
+    &quot;banscore&quot; : 0,
+    &quot;syncnode&quot; : false
+  }
+</code></pre>
+
+<h3 id="toc_8">异常连接</h3>
+
+<p>如果已建立的连接没有数据通信，所在的节点会定期发送信息以维持连接，如果节点持续某个连接长达90分钟没有任何的通信，它会被认为从网络中断开，因此，比特币网络会随时根据变化的节点及网络问题进行动态的调整，无需经过中心化的控制即可进行规模增减的有机调整</p>
+
+<h2 id="toc_9">6.全节点</h2>
+
+<p>全节点是指维持包含全部交易信息的完整区块链的节点，又称“完整区块链节点”，在比特币早起，所有的节点都是全节点；</p>
+
+<p>完整区块链节点，从创始块到网络最新的区块，它可以独立自主的校验任何交易的信息</p>
+
+<p>无需借助任何其他系统，就可以完全摆脱中心化管理，获得完全的独立自由</p>
+
+<p>它的代价就是，需要大量的存储空间和内存空间</p>
+
+<h2 id="toc_10">7.交换“库存清单”</h2>
+
+<p>一个全节点连接到对等节点之后，第一件事要做就是构建完整的区块链，如果该节点不包含如何区块链信息，那么新节点需要从创始块开始的数十万块的全部内容下载到新的节点上；</p>
+
+<p>同步区块的过程中从发送的version消息开始，上面包含区块链的高度（区块的数量），对等节点门会叫唤一个getBlocks消息，其中包含他们本地区块链顶端的哈希值，比较其顶端的区块可得到那个节点区块链更长</p>
+
+<p>较长的节点会给短的节点发送invx（inventory库存）消息，将这些区块的哈希传播出去，缺少这些区块的节点便可以通过各自发送的getData消息请求得到全区块的信息</p>
+
+<h2 id="toc_11">8.P2P的连接到数据同步</h2>
+
+<p>首先，为了防止单个节点承受的压力，单个节点最多承受100个节点的对等网络连接</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant a as Node0
+    participant b as Node1
+    participant c as Node2
+    participant d as ...
+opt 1.互相握手ACK
+    a--&gt;&gt;b: 节点的version
+    b--&gt;&gt;b: 验证节点的version
+    b-&gt;&gt;a: 发送verack
+    c--&gt;&gt;d: 节点的version
+    d--&gt;&gt;d: 验证节点的version
+    d-&gt;&gt;c: 发送verack
+end  
+
+opt 2.􏱐􏴡􏱕􏱖􏲔􏱰􏲠􏱐􏴡􏱕􏱖􏲔􏱰􏲠互相传播地址
+    a--&gt;&gt;b: 上报自己addr信息
+    a--&gt;&gt;b: 获取节点getaddr信息
+    a--&gt;&gt;d: 上报自己addr信息
+    a--&gt;&gt;d: 获取节点getaddr信息
+    d--&gt;&gt;c: 上报自己addr信息
+    d--&gt;&gt;c: 获取节点getaddr信息
+end
+
+opt 3.互相􏱐􏴡􏱕􏱖􏲔􏱰􏲠􏱐􏴡􏱕􏱖􏲔􏱰􏲠同步区块
+    a--&gt;&gt;b: 获取getblocks顶端区块的HASH值
+    b--&gt;&gt;a: 获取getblocks顶端区块的HASH值
+    b--&gt;&gt;b: 验证两个区块的高度
+    b-&gt;&gt;a: 发送inv（高于节点0,哈希值列表）
+    a--&gt;&gt;b: 通过缺少的hash值getdata
+    a--&gt;&gt;c: 通过缺少的hash值getdata
+    a--&gt;&gt;d: 通过缺少的hash值getdata
+end
+</code></pre>
+
+<h2 id="toc_12">9.简易支付验证(SPV)节点</h2>
+
+<h2 id="toc_13">10.Bloom过滤器</h2>
+
+<h2 id="toc_14">11.SPV节点如何使用Bloom过滤器</h2>
+
+<h2 id="toc_15">12.SPV节点和隐私</h2>
+
+<h2 id="toc_16">13.加密和认证连接</h2>
+
+<h2 id="toc_17">14.交易池</h2>
+
+<h2 id="toc_18">15.DOS攻击（扩展阅读）</h2>
+
+<p>Dos是一对一<br/>
+DDos是分布式多个节点对抗一个节点</p>
+
+<h3 id="toc_19">TCP三次握手</h3>
+
+<p>完成三次握手，客户端于服务器开始传送数据</p>
+
+<ul>
+<li>第一次握手<br/>
+建立连接时，客户端发送SYN(syn=j)包到服务器，并进入SYN_SENT状态，等待服务器确认 </li>
+<li>第二次握手<br/>
+服务器收到SYN包，必须确认客户的syn(ack=j+1),同时自己也发送一个SYN包（syn=k）,即syn+ack包，此时服务器进入SYN_RECV状态</li>
+<li>第三次握手<br/>
+客户端收到服务器的SYN+ACK包，向服务器端发送确认ACK(ack=k+1),此包发送完毕，客户端和服务器进行ESTABLISHEN(TCP连接成功)状态</li>
+</ul>
+
+<blockquote>
+<p>SYN:同步序列编号（Synchronize Sequence Numbers）  </p>
+</blockquote>
+
+<pre><code class="language-mermaid">sequenceDiagram
+participant a as 客户主机
+participant b as 服务器主机
+a-&gt;&gt;b: 连接请求（SYN=1,seq=client_isn） 
+b-&gt;&gt;a: 授予连接（SYN=1,seq=client_isn）\n ack=client_isn+1
+a-&gt;&gt;b: 确认（SYN=0,seq=client_isn+1）\nack=server_isn+1
+</code></pre>
+
+<h3 id="toc_20">常见的DOS攻击的方式</h3>
+
+<ol>
+<li>SYN FLOOD<br/>
+利用服务器的连接缓冲区，设置TCP的Header,向服务器不断的成倍的发送有SYN标志的TCP请求，当服务器收到的时候，都认为没有建立起来的连接请求，于是排队到缓冲区队列中</li>
+<li>IP欺骗DOS攻击<br/>
+这种攻击是利用RST位来实现，假设有一个合法的用户(1.1.1.1)已经同服务器建立了正常的连接，攻击者构造攻击的TCP数据，伪装自己的IP(1.1.1.1),并向服务器发送一个带有RST位的TCP数据段，服务器收到后会认为1.1.1.1连接有错误，就会清空缓冲区的建立好的连接</li>
+<li>带宽DOS攻击<br/>
+如果你的连接带宽足够大而服务器又不是很大，可以发送大量的请求，来消耗服务器的缓冲区消耗服务器的带款</li>
+<li>自身消耗的DOS攻击<br/>
+这种攻击的方式是利用了老式的系统（win95）自身的BUG,攻击者伪装成自己的服务器端的IP端口，发送给主机，使得主机给自己发送TCP请求和连接，至到把资源耗光</li>
+<li>塞满服务器的硬盘<br/>
+发送垃圾邮件（前提邮件服务器和WEB服务器放在一起）<br/>
+日志记录爆满（入侵者构造大量的错误的信息发送出来）</li>
+</ol>
+
 
     
 
@@ -278,6 +727,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="15385342635688.html">以太坊虚拟机</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15365050797831.html">一篇对数字签名的理解</a>
 			      </li>
 		     
@@ -299,16 +754,6 @@
 			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
 			      </li>
 		     
-		  
-		      
-			      <li class="post">
-			        <a href="15358584946404.html">一篇对比特币挖矿的理解</a>
-			      </li>
-		     
-		  
-		      
-		  
-		      
 		  
 		      
 		  

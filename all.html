@@ -156,6 +156,86 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="15385342635688.html">
+                
+                  <h1>以太坊虚拟机</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><a href="https://www.jianshu.com/p/e45614c25b62?_t=1522874771">https://www.jianshu.com/p/e45614c25b62?_t=1522874771</a></p>
+
+<ul>
+<li>
+<a href="#toc_0">比特币和以太坊的渊源</a>
+</li>
+<li>
+<a href="#toc_1">区块链范式</a>
+</li>
+<li>
+<a href="#toc_2">区块</a>
+</li>
+<li>
+<a href="#toc_3">EVM设计于执行</a>
+</li>
+<li>
+<a href="#toc_4">内存模型</a>
+</li>
+<li>
+<a href="#toc_5">执行模型</a>
+</li>
+<li>
+<a href="#toc_6">错误处理</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">比特币和以太坊的渊源</h2>
+
+<p>对币圈和链圈的人来说，Vitalik Buterin(1994年出生)是无可争议的大神。很多人可能不知道，V神作为早期比特币社区的活跃成员，一开始提议bitcoin需要开发通用的脚本语言来支持丰富功能的应用开发，但没有获得比特币开发团队的支持。于是重起炉灶，2013年发起以太坊项目，有了今天的繁荣的加密token、收藏品游戏、DAO。接下来，我们就先看看，V神不满的比特币脚本系统到底是什么样的？</p>
+
+<blockquote>
+<p>比特币的交易主要依据的UTXOs模型，而以太坊摒弃该模型，采用了类似的bmoney的账户范式</p>
+</blockquote>
+
+<h2 id="toc_1">区块链范式</h2>
+
+<h2 id="toc_2">区块</h2>
+
+<h2 id="toc_3">EVM设计于执行</h2>
+
+<h2 id="toc_4">内存模型</h2>
+
+<h2 id="toc_5">执行模型</h2>
+
+<h2 id="toc_6">错误处理</h2>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/3</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15385342635688.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="15365050797831.html">
                 
                   <h1>一篇对数字签名的理解</h1>
@@ -406,7 +486,456 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<ul>
+<li>
+<a href="#toc_0">1.P2P网络架构</a>
+</li>
+<li>
+<a href="#toc_1">2.节点类型及角色</a>
+</li>
+<li>
+<a href="#toc_2">3.扩展比特币网络</a>
+</li>
+<li>
+<a href="#toc_3">4.比特币传播网络</a>
+</li>
+<li>
+<a href="#toc_4">5.网络发现</a>
+<ul>
+<li>
+<a href="#toc_5">p2p握手协议</a>
+</li>
+<li>
+<a href="#toc_6">新节点如何找到对等体</a>
+</li>
+<li>
+<a href="#toc_7">建立连接后地址的传播和发现</a>
+</li>
+<li>
+<a href="#toc_8">异常连接</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_9">6.全节点</a>
+</li>
+<li>
+<a href="#toc_10">7.交换“库存清单”</a>
+</li>
+<li>
+<a href="#toc_11">8.P2P的连接到数据同步</a>
+</li>
+<li>
+<a href="#toc_12">9.简易支付验证(SPV)节点</a>
+</li>
+<li>
+<a href="#toc_13">10.Bloom过滤器</a>
+</li>
+<li>
+<a href="#toc_14">11.SPV节点如何使用Bloom过滤器</a>
+</li>
+<li>
+<a href="#toc_15">12.SPV节点和隐私</a>
+</li>
+<li>
+<a href="#toc_16">13.加密和认证连接</a>
+</li>
+<li>
+<a href="#toc_17">14.交易池</a>
+</li>
+<li>
+<a href="#toc_18">15.DOS攻击（扩展阅读）</a>
+<ul>
+<li>
+<a href="#toc_19">TCP三次握手</a>
+</li>
+<li>
+<a href="#toc_20">常见的DOS攻击的方式</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">1.P2P网络架构</h2>
+
+<p>P2P是指同一网络中的美态计算机都彼此对等，各个节点共同提供网络服务，每个网络节点以&quot;扁平(flat)&quot;的拓扑结构互相连通</p>
+
+<p>P2P网络节点之间交互运作，协同处理，每个节点在对外提供服务的同时也是使用网络中其它节点提供的服务</p>
+
+<p>对于比特币设计的一种点对点数字现金系统，它的网络架构即反应出其特性，通过维持一种扁平化网路共识，来实现去中心化的交易系统</p>
+
+<p>“比特币网络”是按照比特币P2P协议运行的一系列节点的集合，除了比特币协议之外，比特币网络中也包含其它的协议<br/>
+例如Stratum协议，就被应用于挖矿，以及轻量级或移动端的比特币钱包中。网关（gateway）路由服务器提供的这些服务协议</p>
+
+<blockquote>
+<p>例如：Stratum服务器通过Stratum协议将所有的Stratum挖矿节点连接至比特币主网络，并将Stratum协议桥连接(bridge)至比特币p2p协议之上</p>
+</blockquote>
+
+<p>我们所说的比特币网络是指“比特币P2P协议”，“矿池挖矿协议”，“Stratum协议”以及其它连接比特币系统组件相关协议的整体网络机构</p>
+
+<h2 id="toc_1">2.节点类型及角色</h2>
+
+<p>一个比特币全节点是有“路由”，“区块链数据库”，“挖矿”，“钱包”组成；</p>
+
+<ul>
+<li>标准客户端 </li>
+<li>全部数据块节点 </li>
+<li>仅挖矿 </li>
+<li>轻量级钱包SPV</li>
+<li>协议池服务</li>
+<li>挖矿节点</li>
+<li>轻量的底层钱包</li>
+</ul>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>Miner</td>
+<td rowspan=2>【标准客户端】<br>包含一个钱包，挖矿，全部的区块数据，p2p的网络路由节点</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>--</td>
+<td>--</td>
+<td rowspan=2> 【全部数据块节点】<br>包含全部的区块数据，p2p的网络路由节点 </td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>--</td>
+<td>Miner</td>
+<td rowspan=2>【仅挖矿】<br>包含一挖矿，全部的区块数据，p2p的网络路由节点</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>--</td>
+<td rowspan=2> 【轻量级钱包SPV】<br>包含钱包，p2p的网络路由节点 </td>
+</tr>
+<tr>
+<td>--</td>
+<td>NetWork</td></tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Pool Server</td>
+<td>Stratum Server</td>
+<td>【协议池服务】<br> 网关路由器将比特币P2P网络连接到运行其他协议的节点，例如矿池挖掘节点或层节点</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Miner</td>
+<td>Miner</td>
+<td rowspan=2> 【挖矿节点】<br> 包含一个挖矿的功能，没有区块链，包含一个底层协议节点或其它挖矿池的协议节点 </td>
+</tr>
+<tr>
+<td>Stratum node</td>
+<td>Pool node</td>
+</tr>
+</table>
+
+<table style = "text-align:center">
+<tr>
+<td colspan=2>节点角色</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>--</td>
+<td rowspan=2> 【轻量的底层钱包】<br> 包含一个钱包和一个底层协议的网络节点 </td>
+</tr>
+<tr>
+<td>--</td>
+<td>StratumNode</td></tr>
+</table>
+
+<h2 id="toc_2">3.扩展比特币网络</h2>
+
+<p>这张复杂的网路架构图我还没有仔细的分析？<br/>
+<img src="media/15358585289735/135734wtwzoomwgbf2a4zb.png" alt="135734wtwzoomwgbf2a4zb"/></p>
+
+<h2 id="toc_3">4.比特币传播网络</h2>
+
+<p>比特币传播网络涉及到了底层网络架构的传输优化（建议了解即可）</p>
+
+<p>比特币网络传播是一种尝试最新小化矿工之间的传输块的延迟网络</p>
+
+<ol>
+<li><p>为了延迟矿工之间快速同步块，该网络由世界各地的亚马逊web服务基础架构上托管的几个专门的节点，并且连接大多数矿工和采矿池</p></li>
+<li><p>2016年比特币传播网络被替换成“Fast Internet Bitcoin Replay Engine”(FIBRE)</p></li>
+<li><p>FIBRE是一种基于UDP的中继网络，可以中继节点网络内的块，FIBRE也是实现了compact(紧凑) block，进一步减少了传输的数据量和网络延迟</p></li>
+<li><p>还有一个提案阶段中继网络是Falcon，使用“直通路由”而不是“存储转发”来减少延迟，通过传播块的部分，而不是等待知道接受到完成的块</p></li>
+</ol>
+
+<blockquote>
+<p>补充一下什么是中继<br/>
+中继（Relay）是连个交换中心之间的一条传输通路，中继线是承载多条逻辑链路的一条物理连接<br/>
+在中继的无线系统中，每个用户只是在呼叫时才分配一个信道，一旦通过终止，原先占用的信道就立即回到可用信道库中</p>
+</blockquote>
+
+<pre><code class="language-text">物理层中继系统：转发器。
+数据链路层中继系统：网桥
+网络层中继系统：路由器
+在网络层以上的中继系统称为网关，网关就是连接两备个网络的设备
+</code></pre>
+
+<p>无线路由器中继与桥接模式的区别？</p>
+
+<p>中继模式，就是利用无线路由器之间的无线连接功能，将无线信号从一个中继点传递到下一个中继点，实现信号的增强，并形成新的无线覆盖区域，最终达到延伸无线网络的覆盖范围的目的。事实上，只要有两台支持中继功能的无线路由器，即可拓展网络覆盖范围。</p>
+
+<p>中继和桥接功能对于无线用户的实际使用基本上是一样的，只是设备有所不同，并非所有无线路由器都可以桥接，无线路由桥接就是把无线路由器当中继器使用。桥接并非无线路由器的主要功能。使用中继模式时，网络SSID号均一致，而在桥接模式时，网络SSID号不同。</p>
+
+<h2 id="toc_4">5.网络发现</h2>
+
+<h3 id="toc_5">p2p握手协议</h3>
+
+<p>当新的网络节点启动后，为了能够参与协同运作，必须发现网络中的其他比特币节点；<br/>
+由于比特币网络的拓扑结构并不基于节点间的地理位置，因此各个节点之间的地理位置信息完全无关，会随机的选择网络中存在的比特币节点与之相连</p>
+
+<p>节点通常采用了TCP协议，通常使用8333端口与已知的对等节点建立连接，在建立连接的时，该节点会通过发送一条包含基本认证内容的version消息开始“握手”通讯</p>
+
+<pre><code class="language-javascript">version:{
+    nVsersion:定义客户端所采用的比特币p2p协议的版本
+    nLocalServices:[
+        一组该节点支持的本地服务列表，当前仅支持NOED_NETWORK
+    ]
+    nTime:当前时间
+    addrYou:当前节点可见的远程节点的IP地址
+    addrMe:本地节点所发现的本机IP地址
+    subver:指示当前节点运行的软件类型子版本号（例如：&quot;/Satoshi:0.9.2.1/&quot;）
+    baseHeight:当前节点区块链的区块高度
+}
+</code></pre>
+
+<p>版本信息始终是任何对等发送给另一个对等的第一条消息，接收版本消息的本地对等将检查远程对等体报告的nVersion，并确定远端对是否兼容，如果兼容则本地等将确认版本消息，并发送一个（ver）ack建立连接</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant a as NodeA
+    participant b as NodeB
+opt 节点A请求连接节点B
+    a--&gt;&gt;b: 节点A的version
+    b--&gt;&gt;b: 验证节点A的version
+    b-&gt;&gt;a: 发送verack
+end  
+opt 节点B请求连接节点A
+    b--&gt;&gt;a: 节点B的version
+    a--&gt;&gt;a: 验证节点A的version
+    a-&gt;&gt;b: 发送verack
+end  
+</code></pre>
+
+<h3 id="toc_6">新节点如何找到对等体</h3>
+
+<ol>
+<li>使用多个“DNS种子”来查询DNS，这些DNS服务器提供比特币节点的IP地址列表，其中一些DNS种子提供了稳定的比特币侦听节点的静态IP地址列表，还有一些DNS种子是BIND，它从搜索器或长时间运行的比特币节点收集的比特币节点地址列表中返回一个随机子集，在BitcoinCore客户端中，使用DNS种子的选项switch-dnsseed控制（默认设置为1，以使用DNS种子）</li>
+<li>不知道网络的引导节点必须被给予至少一个比特币节点的IP地址，之后可以通过进一步来建立连接，命令参数-sendnode可用于连接到一个节点，仅用于将其作为种子</li>
+</ol>
+
+<h3 id="toc_7">建立连接后地址的传播和发现</h3>
+
+<p>当建立一个或者多个连接后，新节点将一条包含自身的ip地址列表的addr消息发送给其它相邻的节点，相邻的节点再将此条addr消息依次转发给其它各自相邻的节点，从而保证新节点信息被多个节点接收，保证连接更稳定；<br/>
+同时，新接入的节点可以向相邻节点发送getaddr消息，要求他们返回已知的对等节点的ip地址列表</p>
+
+<p>由于节点可以随时的加入和离开，通讯路径是不可靠的，因此节点必须持续进行两项工作：在失去已有连接时发现新的节点，并在其他节点启动时为其提供帮助</p>
+
+<p>一个节点无需连接大量的对等节点，在启动完成后，节点会记住它最新连接成功的对等节点，因此，当重新启动后它迅速与先前的对等节点网络重新建立连接，如果先前的网络无应答，则该节点可以使用种子节点进行重启动</p>
+
+<p>bitcoin-cli getpeerInfo</p>
+
+<pre><code class="language-javascript">{
+    &quot;services&quot; : &quot;00000001&quot;,
+    &quot;lastsend&quot; : 1405634126,
+    &quot;lastrecv&quot; : 1405634127,
+    &quot;bytessent&quot; : 23487651,
+    &quot;bytesrecv&quot; : 138679099,
+    &quot;conntime&quot; : 1405021768,
+    &quot;pingtime&quot; : 0.00000000,
+    &quot;version&quot; : 70002,
+    &quot;subver&quot; : &quot;/Satoshi:0.9.2.1/&quot;,
+    &quot;inbound&quot; : false,
+    &quot;startingheight&quot; : 310131,
+    &quot;banscore&quot; : 0,
+    &quot;syncnode&quot; : true
+},
+{
+    &quot;addr&quot; : &quot;58.23.244.20:8333&quot;,
+    &quot;services&quot; : &quot;00000001&quot;,
+    &quot;lastsend&quot; : 1405634127,
+    &quot;lastrecv&quot; : 1405634124,
+    &quot;bytessent&quot; : 4460918,
+    &quot;bytesrecv&quot; : 8903575,
+    &quot;conntime&quot; : 1405559628,
+    &quot;pingtime&quot; : 0.00000000,
+    &quot;version&quot; : 70001,
+    &quot;subver&quot; : &quot;/Satoshi:0.8.6/&quot;,
+    &quot;inbound&quot; : false,
+    &quot;startingheight&quot; : 311074,
+    &quot;banscore&quot; : 0,
+    &quot;syncnode&quot; : false
+  }
+</code></pre>
+
+<h3 id="toc_8">异常连接</h3>
+
+<p>如果已建立的连接没有数据通信，所在的节点会定期发送信息以维持连接，如果节点持续某个连接长达90分钟没有任何的通信，它会被认为从网络中断开，因此，比特币网络会随时根据变化的节点及网络问题进行动态的调整，无需经过中心化的控制即可进行规模增减的有机调整</p>
+
+<h2 id="toc_9">6.全节点</h2>
+
+<p>全节点是指维持包含全部交易信息的完整区块链的节点，又称“完整区块链节点”，在比特币早起，所有的节点都是全节点；</p>
+
+<p>完整区块链节点，从创始块到网络最新的区块，它可以独立自主的校验任何交易的信息</p>
+
+<p>无需借助任何其他系统，就可以完全摆脱中心化管理，获得完全的独立自由</p>
+
+<p>它的代价就是，需要大量的存储空间和内存空间</p>
+
+<h2 id="toc_10">7.交换“库存清单”</h2>
+
+<p>一个全节点连接到对等节点之后，第一件事要做就是构建完整的区块链，如果该节点不包含如何区块链信息，那么新节点需要从创始块开始的数十万块的全部内容下载到新的节点上；</p>
+
+<p>同步区块的过程中从发送的version消息开始，上面包含区块链的高度（区块的数量），对等节点门会叫唤一个getBlocks消息，其中包含他们本地区块链顶端的哈希值，比较其顶端的区块可得到那个节点区块链更长</p>
+
+<p>较长的节点会给短的节点发送invx（inventory库存）消息，将这些区块的哈希传播出去，缺少这些区块的节点便可以通过各自发送的getData消息请求得到全区块的信息</p>
+
+<h2 id="toc_11">8.P2P的连接到数据同步</h2>
+
+<p>首先，为了防止单个节点承受的压力，单个节点最多承受100个节点的对等网络连接</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant a as Node0
+    participant b as Node1
+    participant c as Node2
+    participant d as ...
+opt 1.互相握手ACK
+    a--&gt;&gt;b: 节点的version
+    b--&gt;&gt;b: 验证节点的version
+    b-&gt;&gt;a: 发送verack
+    c--&gt;&gt;d: 节点的version
+    d--&gt;&gt;d: 验证节点的version
+    d-&gt;&gt;c: 发送verack
+end  
+
+opt 2.􏱐􏴡􏱕􏱖􏲔􏱰􏲠􏱐􏴡􏱕􏱖􏲔􏱰􏲠互相传播地址
+    a--&gt;&gt;b: 上报自己addr信息
+    a--&gt;&gt;b: 获取节点getaddr信息
+    a--&gt;&gt;d: 上报自己addr信息
+    a--&gt;&gt;d: 获取节点getaddr信息
+    d--&gt;&gt;c: 上报自己addr信息
+    d--&gt;&gt;c: 获取节点getaddr信息
+end
+
+opt 3.互相􏱐􏴡􏱕􏱖􏲔􏱰􏲠􏱐􏴡􏱕􏱖􏲔􏱰􏲠同步区块
+    a--&gt;&gt;b: 获取getblocks顶端区块的HASH值
+    b--&gt;&gt;a: 获取getblocks顶端区块的HASH值
+    b--&gt;&gt;b: 验证两个区块的高度
+    b-&gt;&gt;a: 发送inv（高于节点0,哈希值列表）
+    a--&gt;&gt;b: 通过缺少的hash值getdata
+    a--&gt;&gt;c: 通过缺少的hash值getdata
+    a--&gt;&gt;d: 通过缺少的hash值getdata
+end
+</code></pre>
+
+<h2 id="toc_12">9.简易支付验证(SPV)节点</h2>
+
+<h2 id="toc_13">10.Bloom过滤器</h2>
+
+<h2 id="toc_14">11.SPV节点如何使用Bloom过滤器</h2>
+
+<h2 id="toc_15">12.SPV节点和隐私</h2>
+
+<h2 id="toc_16">13.加密和认证连接</h2>
+
+<h2 id="toc_17">14.交易池</h2>
+
+<h2 id="toc_18">15.DOS攻击（扩展阅读）</h2>
+
+<p>Dos是一对一<br/>
+DDos是分布式多个节点对抗一个节点</p>
+
+<h3 id="toc_19">TCP三次握手</h3>
+
+<p>完成三次握手，客户端于服务器开始传送数据</p>
+
+<ul>
+<li>第一次握手<br/>
+建立连接时，客户端发送SYN(syn=j)包到服务器，并进入SYN_SENT状态，等待服务器确认 </li>
+<li>第二次握手<br/>
+服务器收到SYN包，必须确认客户的syn(ack=j+1),同时自己也发送一个SYN包（syn=k）,即syn+ack包，此时服务器进入SYN_RECV状态</li>
+<li>第三次握手<br/>
+客户端收到服务器的SYN+ACK包，向服务器端发送确认ACK(ack=k+1),此包发送完毕，客户端和服务器进行ESTABLISHEN(TCP连接成功)状态</li>
+</ul>
+
+<blockquote>
+<p>SYN:同步序列编号（Synchronize Sequence Numbers）  </p>
+</blockquote>
+
+<pre><code class="language-mermaid">sequenceDiagram
+participant a as 客户主机
+participant b as 服务器主机
+a-&gt;&gt;b: 连接请求（SYN=1,seq=client_isn） 
+b-&gt;&gt;a: 授予连接（SYN=1,seq=client_isn）\n ack=client_isn+1
+a-&gt;&gt;b: 确认（SYN=0,seq=client_isn+1）\nack=server_isn+1
+</code></pre>
+
+<h3 id="toc_20">常见的DOS攻击的方式</h3>
+
+<ol>
+<li>SYN FLOOD<br/>
+利用服务器的连接缓冲区，设置TCP的Header,向服务器不断的成倍的发送有SYN标志的TCP请求，当服务器收到的时候，都认为没有建立起来的连接请求，于是排队到缓冲区队列中</li>
+<li>IP欺骗DOS攻击<br/>
+这种攻击是利用RST位来实现，假设有一个合法的用户(1.1.1.1)已经同服务器建立了正常的连接，攻击者构造攻击的TCP数据，伪装自己的IP(1.1.1.1),并向服务器发送一个带有RST位的TCP数据段，服务器收到后会认为1.1.1.1连接有错误，就会清空缓冲区的建立好的连接</li>
+<li>带宽DOS攻击<br/>
+如果你的连接带宽足够大而服务器又不是很大，可以发送大量的请求，来消耗服务器的缓冲区消耗服务器的带款</li>
+<li>自身消耗的DOS攻击<br/>
+这种攻击的方式是利用了老式的系统（win95）自身的BUG,攻击者伪装成自己的服务器端的IP端口，发送给主机，使得主机给自己发送TCP请求和连接，至到把资源耗光</li>
+<li>塞满服务器的硬盘<br/>
+发送垃圾邮件（前提邮件服务器和WEB服务器放在一起）<br/>
+日志记录爆满（入侵者构造大量的错误的信息发送出来）</li>
+</ol>
+
                         
                       </div>
                   </div>
@@ -474,1077 +1003,7 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
                       
                       <div class="a-content-text">
                         
-                        	<p>在比特币交易的理解中，我们简单的介绍了脚本及脚本语言是如何运行的，那么这篇文章我具体的讲讲脚本的类型用法，及扩展</p>
-
-<ul>
-<li>
-<a href="#toc_0">1.比特币脚本的特点及基本语法</a>
-<ul>
-<li>
-<a href="#toc_1">脚本的本质</a>
-</li>
-<li>
-<a href="#toc_2">脚本的常见关键字字段</a>
-</li>
-<li>
-<a href="#toc_3">脚本的流控制关键字字段</a>
-</li>
-<li>
-<a href="#toc_4">其它重要的字段说明</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_5">2.比特币脚本支付有哪些类型</a>
-<ul>
-<li>
-<a href="#toc_6">付款到公钥哈希</a>
-</li>
-<li>
-<a href="#toc_7">多重签名</a>
-</li>
-<li>
-<a href="#toc_8">付款到脚本P2SH</a>
-<ul>
-<li>
-<a href="#toc_9">P2SH地址</a>
-</li>
-<li>
-<a href="#toc_10">P2SH的优点</a>
-</li>
-<li>
-<a href="#toc_11">赎回脚本和标准确认</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_12">如何存储数据到区块链上</a>
-<ul>
-<li>
-<a href="#toc_13">多重签名</a>
-</li>
-<li>
-<a href="#toc_14">数据记录输出（OP_RETURN操作符）</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_15">3.时间锁</a>
-<ul>
-<li>
-<a href="#toc_16">交易锁定时间</a>
-</li>
-<li>
-<a href="#toc_17">检查锁定时间验证</a>
-</li>
-<li>
-<a href="#toc_18">相对时间锁</a>
-<ul>
-<li>
-<a href="#toc_19">nSequence相对时间锁</a>
-</li>
-<li>
-<a href="#toc_20">带CSV的相对时间锁</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_21">中位时间过去Median-Time-Past</a>
-</li>
-<li>
-<a href="#toc_22">针对费用狙击（Fee Sniping）的时间锁定</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_23">4.具有流量控制的脚本（条件字句）</a>
-<ul>
-<li>
-<a href="#toc_24">VERIFY操作码的条件字句</a>
-</li>
-<li>
-<a href="#toc_25">在脚本中使用流控制</a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_26">5.复杂的脚本的运用</a>
-<ul>
-<li>
-<a href="#toc_27">一个case</a>
-</li>
-<li>
-<a href="#toc_28">case问题解答</a>
-</li>
-</ul>
-</li>
-</ul>
-
-
-<h2 id="toc_0">1.比特币脚本的特点及基本语法</h2>
-
-<p>比特币在交易中使用的脚本系统，于FORTH（一种编译语言）一样，脚本是简单的，基于堆栈的，并且是从左向右处理的，特意设计成非图灵完整的形式，没有LOOP（循环）语句</p>
-
-<h3 id="toc_1">脚本的本质</h3>
-
-<p>实际上脚本本质上是众多指令的列表，交易上的脚本本质是也是输入和输出的入栈的操作指令，使得操作指令False表示0，True表示非0</p>
-
-<h3 id="toc_2">脚本的常见关键字字段</h3>
-
-<table>
-<thead>
-<tr>
-<th>关键字</th>
-<th>操作码</th>
-<th>十六进制</th>
-<th>输入</th>
-<th>输出</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>OP_0</td>
-<td>0</td>
-<td>0x00</td>
-<td>无</td>
-<td>空</td>
-<td>一个字节空串被推到栈中（并非no-op操作，这里有一个元素被压入堆栈中）</td>
-</tr>
-<tr>
-<td>N/A</td>
-<td>1-75</td>
-<td>0x01-0x4b</td>
-<td>特殊</td>
-<td>数据</td>
-<td>下一个操作码字节被压入堆栈的数据</td>
-</tr>
-<tr>
-<td>OP_PUSHDATA1</td>
-<td>76</td>
-<td>0x4c</td>
-<td>特殊</td>
-<td>数据</td>
-<td>下一个字节被压入堆栈的数据的长度</td>
-</tr>
-<tr>
-<td>OP_PUSHDATA2</td>
-<td>77</td>
-<td>0x4d</td>
-<td>特殊</td>
-<td>数据</td>
-<td>下两个字节被压入堆栈的数据的长度</td>
-</tr>
-<tr>
-<td>OP_PUSHDATA4</td>
-<td>78</td>
-<td>0x4e</td>
-<td>特殊</td>
-<td>数据</td>
-<td>下四个字节被压入堆栈的数据的长度</td>
-</tr>
-<tr>
-<td>OP_1NEGATE</td>
-<td>79</td>
-<td>0x4f</td>
-<td>无</td>
-<td>-1</td>
-<td>数字-1被压入堆栈</td>
-</tr>
-<tr>
-<td>OP_1</td>
-<td>81</td>
-<td>0x51</td>
-<td>无</td>
-<td>1</td>
-<td>数字1被压入堆栈</td>
-</tr>
-<tr>
-<td>OP_2-OP_16</td>
-<td>82-96</td>
-<td>0x52-0x60</td>
-<td>无</td>
-<td>2-16</td>
-<td>关键名对应的数字被压入栈</td>
-</tr>
-</tbody>
-</table>
-
-<h3 id="toc_3">脚本的流控制关键字字段</h3>
-
-<table>
-<thead>
-<tr>
-<th>关键字</th>
-<th>操作码</th>
-<th>十六进制</th>
-<th>输入 / 输出</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>OP_NOP</td>
-<td>97</td>
-<td>0x61</td>
-<td>无</td>
-<td>无任何操作</td>
-</tr>
-<tr>
-<td>OP_IF</td>
-<td>99</td>
-<td>0x63</td>
-<td><expression>if[statements][else[statements]] endif</td>
-<td>如果栈顶元素值不为0，则语句将被执行，栈顶元素将被删除</td>
-</tr>
-<tr>
-<td>OP_NOTIF</td>
-<td>100</td>
-<td>0x64</td>
-<td><expression>if[statements][else[statements]] endif</td>
-<td>如果栈顶元素值为0，则语句将被执行，栈顶元素将被删除</td>
-</tr>
-<tr>
-<td>OP_ELSE</td>
-<td>103</td>
-<td>0x67</td>
-<td><expression>if[statements][else[statements]] endif</td>
-<td>如果前述的OP_IF或OP_NOTIF或OP_ELSE未被执行，那么这些语句就会执行，如果执行了，则表示这些语句不会被执行</td>
-</tr>
-<tr>
-<td>OP_ENDIF</td>
-<td>104</td>
-<td>0x68</td>
-<td><expression>if[statements][else[statements]] endif</td>
-<td>结束if/else语言块</td>
-</tr>
-</tbody>
-</table>
-
-<h3 id="toc_4">其它重要的字段说明</h3>
-
-<p>脚本的字段关键字有好些，有些操作码已被禁入，我们主要了解一些关键的及常用的字段就可以了。</p>
-
-<table>
-<thead>
-<tr>
-<th>关键字</th>
-<th>操作码</th>
-<th>十六进制</th>
-<th>输入</th>
-<th>输出</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>OP_VERIFY</td>
-<td>105</td>
-<td>0x69</td>
-<td>TRUE/FALSE</td>
-<td>无/FALSE</td>
-<td>如果栈顶原色值非真，则标记交易无效，TRUE会被删除，FALSE不会删除</td>
-</tr>
-<tr>
-<td>OP_RETUEN</td>
-<td>106</td>
-<td>0x6a</td>
-<td>无</td>
-<td>无</td>
-<td>标记交易无效</td>
-</tr>
-<tr>
-<td>OP_IFDUP</td>
-<td>115</td>
-<td>0x73</td>
-<td>--</td>
-<td>--</td>
-<td>如果栈顶元素不为0，则复制该元素值</td>
-</tr>
-<tr>
-<td>OP_DROP</td>
-<td>117</td>
-<td>0x75</td>
-<td>--</td>
-<td>--</td>
-<td>删除栈顶元素</td>
-</tr>
-<tr>
-<td>OP_DUP</td>
-<td>118</td>
-<td>0x75</td>
-<td>--</td>
-<td>--</td>
-<td>复制栈顶元素</td>
-</tr>
-<tr>
-<td>OP_SWAP</td>
-<td>124</td>
-<td>0x7c</td>
-<td>--</td>
-<td>--</td>
-<td>栈顶的两个元素交换</td>
-</tr>
-<tr>
-<td>OP_2DROP</td>
-<td>109</td>
-<td>0x6d</td>
-<td>--</td>
-<td>--</td>
-<td>删除栈顶的两个元素</td>
-</tr>
-<tr>
-<td>OP_2DUP</td>
-<td>110</td>
-<td>0x6e</td>
-<td>--</td>
-<td>--</td>
-<td>复制栈顶的两个元素</td>
-</tr>
-<tr>
-<td>OP_EQUAL</td>
-<td>135</td>
-<td>0x87</td>
-<td>x1 x2</td>
-<td>true/false</td>
-<td>如果输入的两个数相等，则返回1，否则返回0</td>
-</tr>
-<tr>
-<td>OP_EQUALVERIFY</td>
-<td>136</td>
-<td>0x88</td>
-<td>x1 x2</td>
-<td>true/false</td>
-<td>与OP_EQUAL一样，之后运行OP_VERIFY</td>
-</tr>
-<tr>
-<td>OP_RIPEMD160</td>
-<td>166</td>
-<td>0xa6</td>
-<td>in</td>
-<td>hash</td>
-<td>输入用RIPEMD-160算法散列</td>
-</tr>
-<tr>
-<td>OP_SH256</td>
-<td>168</td>
-<td>0xa8</td>
-<td>in</td>
-<td>hash</td>
-<td>输入用HAS-256算法散列</td>
-</tr>
-<tr>
-<td>OP_HASH160</td>
-<td>169</td>
-<td>0xa9</td>
-<td>in</td>
-<td>hash</td>
-<td>输入两次散列哈希，先用SHA-256,再用RIPEMD-160</td>
-</tr>
-<tr>
-<td>OP_HASH256</td>
-<td>168</td>
-<td>0xa8</td>
-<td>in</td>
-<td>hash</td>
-<td>输入两次SHA-256</td>
-</tr>
-<tr>
-<td>OP_CHECKSIG</td>
-<td>172</td>
-<td>0xac</td>
-<td>sig pubkey</td>
-<td>true/false</td>
-<td>全部交易的输出，输入和脚本都被散列，使用的签名必须是该Hash值和公钥的有效签名，返回1或0</td>
-</tr>
-<tr>
-<td>OP_CHECKSIGVERIFY</td>
-<td>173</td>
-<td>0xad</td>
-<td>sig pubkey</td>
-<td>true/false</td>
-<td>与OP_CHECKSIG一样，但之后执行OP_VERIFY</td>
-</tr>
-<tr>
-<td>OP_CHECKMULTISIG</td>
-<td>174</td>
-<td>0xae</td>
-<td>x sig1 sig2 ... number of signatures pub1 pub2 number of public of public keys</td>
-<td>true/false</td>
-<td>多重签名</td>
-</tr>
-<tr>
-<td>OP_CHECKMULTISIGVERIFY</td>
-<td>175</td>
-<td>0xaf</td>
-<td>x sig1 sig2 ... number of signatures pub1 pub2 number of public of public keys</td>
-<td>true/false</td>
-<td>与OP_CHECKMULTISIG一样，但之后执行OP_VERIFY</td>
-</tr>
-<tr>
-<td>OP_VERIF</td>
-<td>101</td>
-<td>0x65</td>
-<td>--</td>
-<td>--</td>
-<td>交易无效，即使发生在未执行的OP_IF分支</td>
-</tr>
-<tr>
-<td>OP_VERNOTIF</td>
-<td>102</td>
-<td>0x66</td>
-<td>--</td>
-<td>--</td>
-<td>交易无效，即使发生在未执行的OP_IF分支</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_5">2.比特币脚本支付有哪些类型</h2>
-
-<h3 id="toc_6">付款到公钥哈希</h3>
-
-<p>（Pay-to-Public-Key-Hash）<br/>
-这种交易的脚本类型，在<a href="./15358583883222.html#%E4%BA%A4%E6%98%93%E7%9A%84%E8%84%9A%E6%9C%AC%E5%88%9D%E7%AA%A5">一篇对比特币交易的理解-交易的脚本初窥</a>)有具体的说明</p>
-
-<h3 id="toc_7">多重签名</h3>
-
-<p>多重签名脚本设置了一个条件，其中N个公钥被记录在脚本中，并且至少有M个必须提供签名来解锁资金。也称为&quot;m-n方案&quot;，其中n是密钥的总数，m是验证签名所需的签名数量<br/>
-设置M-N多重签名条件的锁定脚本的一般是：</p>
-
-<pre><code class="language-text">M &lt;public key 1&gt; &lt;public key 2&gt; ... &lt;public key N&gt; N OP_CHEACKMULTSIG
-</code></pre>
-
-<p>或者说3个存档公钥中的任意2个相一致的私钥签名组合给予解锁，输入和输出组合将形成一个验证的脚本：</p>
-
-<pre><code class="language-text">0 &lt;Signature B&gt; &lt;Signature C&gt; 2 &lt;Public key A&gt; &lt;Public key B&gt; &lt;Public key C&gt; 3 OP_CHECKMULTSIG
-</code></pre>
-
-<blockquote>
-<p>multsig解锁脚本如果看到一个额外的0开始，其目的是解决一个bug，即保证例子中3个私钥签名（其中2个有效签名，其中一个为0的无效签名）对应3个公钥用于检查多重签名，从而保证脚本不产生bug</p>
-</blockquote>
-
-<h3 id="toc_8">付款到脚本P2SH</h3>
-
-<p>（Pay-to-Script-Hash）<br/>
-P2SH在2012年被作为一种新型，强大，且能大大简化复杂交易脚本类型而引入的<br/>
-上面我讲述了多重签名的应用，虽然满足资金的多方管理，但是同时带来很多的不便，例如必须在客户付款前将该脚本发送给每一个客户，而且每一位客户也必须使用特制能产生交易脚本的比特币钱包的软件，每位顾客还得学会如何利用脚本来完成交易。</p>
-
-<p>另外，脚本可能包含特别长的公钥，最终的交易也比较大给客户的造成费用的负担</p>
-
-<p>最后，一个长的交易脚本记录在UTXO中，这种复杂输出脚本使得实际交易中变的困难重重</p>
-
-<p>P2SH，正是为了解决这一实际的难题而引入的，复杂的锁定脚本被电子指纹（密码学中的哈希）所取代，在P2SH交易中，锁定脚本由哈希运算后的20个字节的散列值取代，被称为赎回脚本，因为它在系统中是赎回时出现而不是以锁定脚本模式出现的</p>
-
-<p>1.不含P2SH的复杂脚本</p>
-
-<table>
-<thead>
-<tr>
-<th>脚本</th>
-<th>code</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>锁定脚本</td>
-<td>2 pubkey1 pubkey2 pubkey3 pubkey4 pubkey5 5 OP_CHECKMULSIG</td>
-</tr>
-<tr>
-<td>解锁脚本</td>
-<td>sig1 sig2</td>
-</tr>
-</tbody>
-</table>
-
-<p>2.P2SH的复杂脚本</p>
-
-<table>
-<thead>
-<tr>
-<th>脚本</th>
-<th>code</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>赎回脚本</td>
-<td>2 pubkey1 pubkey2 pubkey3 pubkey4 pubkey5 5 OP_CHECKMULSIG</td>
-</tr>
-<tr>
-<td>锁定脚本</td>
-<td>OP_HASH160 <20-btye hash of 赎回脚本> OP_EQUAL</td>
-</tr>
-<tr>
-<td>解锁脚本</td>
-<td>sig1 sig2 赎回脚本</td>
-</tr>
-</tbody>
-</table>
-
-<p>3.对比上面两种类型脚本</p>
-
-<p>可以看出复杂的脚本不会在锁定脚本中显示，而且对于其它的随机节点也方便了验证，同时也减少了字节，同时使得给矿工的交易费用从发送发转移到收款方，复杂的计算及验证的工作也是由发送发转移到收款方</p>
-
-<p>4.多重签名的脚本详解（m-n Multisig）<br/>
- 用一个交易作为示例：<a href="http://blockmeta.com/tx/c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc">http://blockmeta.com/tx/c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc</a><br/>
-c8bc7cff08249ea5f9970e15be64259b0135b0b6e37f1f9f088a719508cbd8bc </p>
-
-<ul>
-<li>3Ae2TYfyHvwH11pUy6HaK7rBYn9GfGZ3Fk（Input）</li>
-<li>17EFZ829NBT2WETLj3wJ5YUfXVaGckuUgs（Input） </li>
-<li>1BQpsoxUq7N5Hv57QCnzLBbZSHGtqafaFy（Output） </li>
-<li>3Ae2TYfyHvwH11pUy6HaK7rBYn9GfGZ3Fk（Output）<br/></li>
-</ul>
-
-<p>第一个输入</p>
-
-<pre><code class="language-text">00 （OP_FALSE，约定为P2SH方式）
-48 （第1个签名的字节数)
-304502210080075aa29c42f8062f75cf6ab32004944417af974775581719008052c78719710220409fee54c6ddf2ca83e090077e443f95b427a63cc1ad87fca2625951b789d1c2 (第1个签名）
-01 （约定所签名的数据为HASH_ALL（tx))
-49（第2个签名的字节数)
-3046022100b61d8f206d17efd6db32dad106f754f231ee8a16882929b1eb39a58bfd36b39e022100c62cff92dd6fb22b373025fc9b87044cf1b33502acc9de707e5f54d1c8a042a7 （第2个签名）
-01 （约定所签名的数据为HASH_ALL（tx))
-47 （支付合同脚本的字节数）
-52 （OP_2, 表明m-n签名中的m = 2)
-21  (第1个公钥的字节数）
-0293baf0397588acc1aba056e868fd188dc0eea7554b45370aae862f9d2493a4c1
-21  (第2个公钥的字节数）
-020ab7517cf22a46b503ee8dcae7f9f109ec4cd19f0ab9d77c89c607554f3d5aa9（第一个公钥）
-52（OP_2, 表明m-n签名中的n = 2, 说明这是一个2-2签名)
-ae（OP_CHECKSIGVERIFY)
-</code></pre>
-
-<p>第二个输入</p>
-
-<pre><code class="language-text">48 （签名的字节数）
-304502203fe5f04a013512a4773414b25edc8c7915473dd5cf87bc73d28e1aaffdb4d14f022100e16156d526d1498f2cf5eb02d53e02f7fd5cf1dfdd25e4b032fdc5c59c9fd27b （签名）
-01 （约定所签名的数据为HASH_ALL（tx))
-21 （公钥的字节数）
-0203635e5c184951e14fcfecc83b15960594f4fceec729e09a4a517b0a03a7f4b9 （公钥）
-</code></pre>
-
-<p>第一个输出</p>
-
-<pre><code class="language-text">OP_DUP
-OP_HASH160
-14 (字节数，0x14 = 20L, 网站在显示时省略了这一字节）
-7232ca33e0797405a512fa872934cd922c812965 （20字节的哈希值）
-OP_EQUALVERIFY
-OP_CHECKSIG
-</code></pre>
-
-<p>第二个输出</p>
-
-<pre><code class="language-text">OP_HASH160
-14 (字节数，0x14 = 20L, 网站在显示时省略了这一字节）
-622854939d571b63df97f47e8302b700ab2932b6 （20字节的哈希值）
-OP_EQUAL
-</code></pre>
-
-<h4 id="toc_9">P2SH地址</h4>
-
-<p>将脚本哈希编译为一个地址，P2SH地址是基于Base58编码的一个含有20个字节的哈希，P2SH地址隐藏了所有的复杂性，因此，运用进行支付的人将不会看到脚本</p>
-
-<h4 id="toc_10">P2SH的优点</h4>
-
-<ol>
-<li>交易输出中，复杂的脚本由简短的电子指纹取代，使得交易代码变短</li>
-<li>脚本能编译为地址，支付指令发出着和支付者的比特币钱包不需要复杂的工序就可执行</li>
-<li>将构建脚本的重担转移至接收方，而非发送发</li>
-<li>将长脚本数据存储负担从输出方（存储UTXO，影响内存）转移至输入方（存储在区块链里面）</li>
-<li>将长脚本数据存储的重担从当前转移到未来</li>
-<li>交易费从发送发转移至接收方，接收方使用该币资金时，必须含有赎回脚本</li>
-</ol>
-
-<h4 id="toc_11">赎回脚本和标准确认</h4>
-
-<blockquote>
-<p>P2SH锁定脚本包含一个赎回脚本的哈希，该脚本对于赎回脚本本身未提供任何的描述。P2SH交易即便在赎回脚本无效的情况下也会被认为有效，如果处理不当，可能会出现一个事故，即你的比特币可能会锁死在P2SH这个交易中，导致你以后再也不能花费这笔交易了，同时也会导致内存中UTXO变大 </p>
-</blockquote>
-
-<p>支付到脚本的类型验证的方式：<br/>
-1.验证赎回脚本和锁定脚本是否匹配<br/>
-2.通过后在执行赎回的脚本</p>
-
-<blockquote>
-<p>以下是执行的脚本顺序<br/>
-例如：<br/>
-赎回脚本： <2 PK1 PK2 PK3 PK4 PK5 5 CHECKMULTISIG><br/>
-锁定脚本：OP_HASH160  &lt;赎回脚本 scriptHash&gt; OP_EQUEAL<br/>
-解锁脚本：Sig1 Sig2 <2 PK1 PK2 PK3 PK4 PK5 5 CHECKMULTISIG><br/>
-那么整个脚本执行入栈的依次顺序是：<br/>
-赎回脚本入栈，锁定脚本入栈，解锁脚本入栈</p>
-</blockquote>
-
-<h3 id="toc_12">如何存储数据到区块链上</h3>
-
-<p>将数据存储到区块链上，同时也叫做数据零知识证明</p>
-
-<h4 id="toc_13">多重签名</h4>
-
-<p>Multi-Signaturnes，可用部分公钥作为数据的存储，又称为外带数据<br/>
-例如：一个交易的输出为：</p>
-
-<p><strong>1 Publickey OP_HASH160(外带数据) 2 OP_CHECKMULTSIGN</strong></p>
-
-<p>该交易的输出证明，只有有人证明该公钥对应的私钥拥有者，就说明了外带数据是由私钥拥有者所有</p>
-
-<h4 id="toc_14">数据记录输出（OP_RETURN操作符）</h4>
-
-<p>2013年，比特币协议引进了一项新的功能，即创建一种名为OP_RETURN的交易，可以嵌入40个字节小段数据（目前已经是80字节）</p>
-
-<p>这个功能最初是把情景信息加入比特币交易中，比如配送信息等，后来发展为更具有创造性的用法，即创造最小量的交易（0.00000001BTC的交易费），并且可以嵌入任何你想放进去的信息</p>
-
-<p>例如：交易号：793430203367a558101239a5719043230205367a558100039a57190</p>
-
-<p><strong>OP_RETURN 43430205367a558100039a57190</strong></p>
-
-<blockquote>
-<p>利用这个功能产生一个有趣的应用就是，存在性证明(Proof of Existence) <br/>
-不过需要注意的是，OP_TRUEN交易输出是不进入UTXO集合中，所以是无法再次交易的<br/>
-一个标准的交易（通过isStandard()函数检验的）只能有一个RETURN输出，不过单个OP_RETURN可以和任意类型的输出交易进行组合</p>
-</blockquote>
-
-<h2 id="toc_15">3.时间锁</h2>
-
-<p>时间锁（timelocks）是允许一段时间后才允许支出交易；<br/>
-比特币一开始有一个交易级的时间锁定功能（nlocktime）<br/>
-2015年低和2016年中推出了两个新的时间锁定功能，提供UTXO级别的时间锁定功能，分别是<strong>CHECKLOCKTIMEVERIFY</strong>和<strong>CHECKEQUENCEVERIFY</strong></p>
-
-<h3 id="toc_16">交易锁定时间</h3>
-
-<p>nlocktime，大多数交易中将其设置为零，表示即时的传播和执行<br/>
-如果nlocktime不为零，低于5亿，则将其解释为块的高度，这意味着小于该区块高度交易无效<br/>
-如果超过了5亿，它被解释为Unix时间戳，并且小于当前时间戳交易无效</p>
-
-<p>通常nlocktime和<strong>sequence</strong>同时使用</p>
-
-<blockquote>
-<p>交易的序列，该值的范围是0-232 -1，该值往往是和下面的locktime配合使用的，当sequence=232 -1，则就忽略locktime的功能；</p>
-
-<p>当locktime是未来的时间，且sequence&lt;232 -1的时候，那么到了loacktime的时候，以sequence最大的准，其它的交易将会从交易池中移除</p>
-</blockquote>
-
-<p>关于交易时间限制的问题说明<br/>
-例如小宋给小李签署一笔交易，将交易的时间nlocktime设定为3个月</p>
-
-<blockquote>
-<ul>
-<li>在3个月内，小李不能使用该笔交易</li>
-<li>小李可以在3个月之后接受交易</li>
-</ul>
-</blockquote>
-
-<p>然而</p>
-
-<blockquote>
-<ul>
-<li>小宋可以再创建一个交易，双重花费相同的输入，而不需要锁定时间，因此小宋可以在3个月过去之前花费相同的UTXO</li>
-<li>小李不能保证小宋不会这样做</li>
-</ul>
-</blockquote>
-
-<p>所以唯一保证的是小李3个月之内无法兑换此交易，也就是说不能保证小李一定可以得到资金，为了实现这样的保证，时间限制必须放在UTXO本身上，并称为锁定脚本的一部分，而不仅仅是交易。</p>
-
-<h3 id="toc_17">检查锁定时间验证</h3>
-
-<p>check lock time verify (CLTV)<br/>
-2015年12月，引入了一种新的形式的时间锁进行比特币的分叉升级，CLTV允许再应用时间锁的方式上具有更大的灵活性，简单的说通过在输出的赎回脚本中添加CLTV操作码来限制输出，从而只能在指定的时间后使用。</p>
-
-<blockquote>
-<p>当nlocktime是交易级时间锁定时，CLTV则是基于输出的时间锁</p>
-</blockquote>
-
-<pre><code class="language-text">OP_DUP HASH160 &lt;public key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</code></pre>
-
-<pre><code class="language-text">&lt;now + 3 months&gt; OP_CHECKLOCKTIMEVERIFY OP_DROP 
-OP_DUP HASH160 &lt;public key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
-</code></pre>
-
-<p>CLTV不会取代nlocktime的，而是限制特定的UTXO;<br/>
-CLTV和nlocktime同时使用的话，CLTV的时间小于等于nLocktime的时间，CLTV和nlocktime（块的高度和Unix纪元时间）保持相同的格式</p>
-
-<p>CLTV和nlocktime的场景组合使用，从使用的角度来说交易锁的级别是大于输出锁的</p>
-
-<ul>
-<li><p>场景描述：A给B转账，要求立即到账，但是B需要3个月后方花费这笔交易（解决双花问题）</p>
-<pre><code class="language-text">交易锁nlocktime = 0，CLTV = Now+3Month
-</code></pre></li>
-<li><p>场景描述：A给B转账，要求3个月后到账</p>
-<pre><code class="language-text"> 方式一：交易锁nlocktime = Now+3Month，CLTV = Now+3Month（CLTV可加，可不加）
- 方式二：交易锁nlocktime = Now+3Month，nsenquece &lt; 2^32 -1（容易出现双花）
-</code></pre></li>
-<li><p>场景描述：A给B转账，要求3个月后到账，之后B要求立即到账</p>
-<pre><code class="language-text">1.创建第一个交易，
-交易锁nlocktime = Now+3Month，nsenquece &lt; 2^32 -1         <br/>
-2.再创建一个相同的交易，但是设置nsenquece为最大<br/>
-交易锁nlocktime = Now+3Month，nsenquece = 2^32 -1，CLTV=0（如有输出的锁就要忽略）    <br/>
-那么交易锁碰到nsenquece最大的时候，就表示立即执行交易，忽略nlocktime
-</code></pre></li>
-</ul>
-
-<h3 id="toc_18">相对时间锁</h3>
-
-<p>nlocktime和CLTV都是绝对锁，他们是指定的绝对时间点，接下来讲解的是相对锁定</p>
-
-<p>2016年5月份相对时间锁的软分叉升级的共识规则<br/>
-相对锁的主要应用场景，是允许两个或多个相互依赖的交易链在一次，同时对依赖与从先前交易的确认所经过的时间的一个交易施加时间约束。<br/>
-也就是说，在UTXO被记录在块之前，时钟不开始计数，这个功能在双向状态通道和闪电网络中特币有用，后面我们会讲到</p>
-
-<p>相对时间锁，同时也具有交易级别和脚本级别的操作码<br/>
-交易级相对时间锁对应每个交易输入中设置的交易字段nSequence的值共识规则实现<br/>
-脚本级相对时间锁定使用OP_CHECKSEQUENCVERIFY(CSV)操作码来实现的</p>
-
-<h4 id="toc_19">nSequence相对时间锁</h4>
-
-<p>nSequence设计的初心说想让交易能在内存中修改，可惜后面从未使用过，使用nSequence这个字段，如果输入的交易序列小于2<sup>32</sup> (0xffffffff)，就表示尚未“确认”的交易</p>
-
-<p>这样交易将在内存池中保存，直到被另一交易消耗相同输入并具有较大的nSequence值代替，一旦出现了nSequence=2<sup>32</sup> -1，那么将被视为“最终确定”，将会立即进入打包到矿池</p>
-
-<p>新的共识规则中适用于任何包含nSenquence值小于2<sup>31</sup> 的输入的交易，如果没有设置为最 高有效的那么他表示一个“相对锁定时间”的标志，否则nSenquence保留其它用途</p>
-
-<blockquote>
-<p>我理解相对时间锁的概念是“当交易完成后（且从输入中引用了UTXO的时间算起），第多少块才有效”<br/>
-nSequence是每个输入的字段，因此交易中可能包含任何数量的时间锁定输入，所有的这些必须具有足够的的时间以使用交易有效</p>
-</blockquote>
-
-<p>nSequence值是以块或秒为单位指定的，与nLocktime中适用的格式略有不同，nSequence类型设置了在第23个最低有效位（ 2<sup>22</sup> ）,如果设置了类型标志，则nSquence值将被解释为512秒的倍数，否则被解释为块数</p>
-
-<p>当将nSequence解释为相对时间锁定时，只考虑16个最低有效位。一旦评估了标志（位32和23），nSequence值通常用16位掩码（例如nSequence＆0x0000FFFF）“屏蔽”。</p>
-
-<table>
-<thead>
-<tr>
-<th><font color=red>31</font></th>
-<th>30</th>
-<th>——</th>
-<th>23</th>
-<th><font color=Orange>22</font></th>
-<th>21</th>
-<th>——</th>
-<th>16</th>
-<th><font color=DodgerBlue>15</font></th>
-<th><font color=DodgerBlue>--</font></th>
-<th><font color=DodgerBlue>0</font></th>
-</tr>
-</thead>
-
-<tbody>
-</tbody>
-</table>
-
-<p>第32位标记nSequence为相对时间<br/>
-第23位标记是类型，为1则表示512秒的倍数<br/>
-第0-15最低的16位表示具体的值<br/>
-所有nSquence的值的范围0-65536块或(0-33554432秒)</p>
-
-<p>补一下基础知识</p>
-
-<blockquote>
-<p>位的运算，及标志位与掩码？<br/>
-六大位运算符号（<code>&amp;</code><code>|</code><code>～</code><code>^</code><code>&lt;&lt;</code><code>&gt;&gt;</code>）</p>
-</blockquote>
-
-<p><strong>标志位</strong>：二进制在特定位设置为1</p>
-
-<p><strong>掩码</strong>：取出二进制指定范围的位置，例如：掩码0x0000ff00表示对一个32位整数的8-15位进行操作<br/>
-a = 0x12345678; mask = 0x0000ff00;<br/>
-将a进行掩码求与操作，然后在进行右移8位得出操作的值，(a &amp; mask) &gt;&gt; 8</p>
-
-<pre><code class="language-text">    1 
-&lt;&lt;  7
--------------------- 向左移7位（ 相当于乘以 2^7 ）
-    1000 0000
-
-    1 
-&gt;&gt;  7
--------------------- 向右移7位
-    0000 0001
-
-    0000 0011
-&amp;   0000 0101
--------------------- 与运算 （相当于相乘）
-    0000 0001
-    
-    0000 0011
-|   0000 0101
--------------------- 或运算 （相当于相加）
-    0000 0111
-    
-    0000 0011
-^   0000 0101
--------------------- 异或运算（相当于相减取正），用于交换两个变量值
-    0000 0110
-
-~   0000 0101
--------------------- 非运算 （相当于取反）
-    1111 1010
-</code></pre>
-
-<h4 id="toc_20">带CSV的相对时间锁</h4>
-
-<p>是一个脚本操作码用于相对时间的锁定，它利用脚本中的nSequence值，该操作码是OP_CHECKEQUENCEVERIFY，在UTXO的赎回脚本中评估时，CSV操作码仅允许在输入nSquence值大于或等于CSV参数的交易中进行消耗，实质上限制了UTXO的消耗，直到UTXO开采时间过一定数量的块或秒</p>
-
-<p>应用场景是，当几个（已经形成链）交易被保留为“脱链”时，创建和签名这几个（已经形成链）交易但不传播的时，CSV的相对时间锁就有用了，在父交易已被传播，直到消耗完相对锁定时间，才能使用子交易</p>
-
-<h3 id="toc_21">中位时间过去Median-Time-Past</h3>
-
-<p>作为激活相对时间锁定的一部分，时间锁定（绝对和相对）的时间方式也发了变化，在比特币中墙上时间(wall time)和共识时间之间存在微妙但非常显著的差异</p>
-
-<p>比特币是一个分散的网络，这意味着每个参与者都有自己的时间，网络延迟必须考虑到每个节点的角度，最终，所有内容都被同步，以创建一个共同的区块链</p>
-
-<p>为了加强时间的安全性，增加了“中位时间过去(Median-time-past)”的共识测量机制，通过最后11个块的时间戳并计算其中位数作为“中位时间过去”的值，这个中间时间就变成了共识时间，并被用余所有的时间计算</p>
-
-<h3 id="toc_22">针对费用狙击（Fee Sniping）的时间锁定</h3>
-
-<p>费用狙击是一种理论攻击情形，矿工试图从将来的块（挑选手续费较高的交易）重写过去的块，实现“狙击”更高费用的交易，以最大限度地提高盈利能力</p>
-
-<p>例如，假设存在的最高是块100000，如果不是试图把100001号的矿区扩大到区块链，那么一些矿工会试图重新挖矿100000，这些矿工可以选择在候选块100000中包括的任何有效的交易（尚未开采），当他们重新创建块100000时，本质上可以将交易从“现在”提取到重写的“过去”中</p>
-
-<p>为了防止“费用狙击”，当Bitcoin Core钱包创建交易时，默认情况下，它使用nLocktime将他们限制为“下一个块”，Bitcoin Core在任何创建的交易上将nLocktime设置为100001，在正常的情况下，交易只能包含在1000001块中，但是区块链分叉攻击的情况下，由于所有的交易被时间锁阻止于100001，所以矿工无法从筹码中提取高额的交易，他们只能在当时的任何交易中重新挖矿100000，这导致实质上不会获取新的费用，为了实现这一点，Bitcoin Core将所有的新交易的nLocktime设置为<current block #+ 1>，并将所有输入的上nSequence设置为0xFFFFFFFFE以启用nLocktime</p>
-
-<h2 id="toc_23">4.具有流量控制的脚本（条件字句）</h2>
-
-<p>比特币的条件操作码允许我们构建一个具有两种解锁方式的赎回脚本，这取决于苹果逻辑条件的TRUE/FALSE，例如如果x为true，则赎回脚本为A,else赎回脚本为B,此外表达的条件可以无限期的“嵌套”</p>
-
-<pre><code class="language-text">大多数编程语言的流控制
-if（条件）:
-    code to run when 条件 is true
-else:
-    code to run when 条件 is false
-code to run in either case
- 
- 
-BitCoin脚本流控制
-条件
-IF
-    code to run when 条件 is true
-ELSE
-    code to run when 条件 is false
-ENDIF
-code to run in either case
-</code></pre>
-
-<h3 id="toc_24">VERIFY操作码的条件字句</h3>
-
-<p>在脚本中一个条件是任何以VERIFY结尾的操作码，表示如果评估的条件不为TRUE，脚本的执行将立即终止，并且该交易被视为无效。<br/>
-与提供代替执行路径的IF字句不同，VERIFY后缀充当保护字句，只有在满足前提的条件下才会继续；</p>
-
-<p>例如，脚本需要用户小a的签名和产生的特定哈希前的数据DATA</p>
-
-<p>方式一：</p>
-
-<pre><code class="language-text">赎回脚本：OP_HASH160 &lt; DATA hash &gt; OP_EQUALVERIFY &lt; a&#39; pubkey &gt; OP_CHECKSIG
-
-锁定脚本： OP_HASH160 &lt;20-btye hash of 赎回脚本&gt; OP_EQUAL
-
-解锁脚本：&lt; a&#39; sig &gt; &lt; 赎回脚本 &gt;
-</code></pre>
-
-<p>方式二：</p>
-
-<pre><code class="language-text">锁定的脚本如下：
-OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL
-IF
-    &lt;a&#39;s pubkey&gt; OP_CHECKSIG
-ENDIF
-
-
-解锁的脚本如下：
-&lt;a&#39;s Sig&gt;  &lt;hash DATA&gt;
-</code></pre>
-
-<p>方式三：</p>
-
-<pre><code class="language-text">赎回脚本：
-OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL
-IF
-    &lt;a&#39;s pubkey&gt; OP_CHECKSIG
-ENDIF
-
-
-锁定脚本：
-OP_HASH160 &lt;赎回脚本 HASH&gt; OP_EQUAL
-
-
-解锁脚本：
-&lt;a&#39;s Sig&gt;  OP_HASH160 &lt;预期的 HASH&gt; OP_EQUAL IF &lt;a&#39;s pubkey&gt; OP_CHECKSIG ENDIF
-</code></pre>
-
-<h3 id="toc_25">在脚本中使用流控制</h3>
-
-<p>在脚本流量控制一个非常常见的用途是构建一个提供多个执行路径的赎回脚本，每个脚本都有一种不同的赎回UTXO的方式</p>
-
-<p>例如：1-of-2多重的签名</p>
-
-<pre><code class="language-text">赎回的脚本：
-IF
-    &lt;A&#39;s Pubkey&gt; OP_CHECKSIG
-ELSE
-    &lt;B&#39;s Pubkey&gt; OP_CHECKSIG
-ENDIF
-
-解锁的脚本：
-&lt; A&#39;s Sig &gt; 1
-&lt; B&#39;s Sig &gt; 0
-
-</code></pre>
-
-<p>再例如一个复杂的多重嵌套脚本case</p>
-
-<pre><code class="language-text">赎回脚本：
-IF
-    script A
-ELSE
-    IF
-        script B
-    ELSE
-        script C
-    ENDIF
-ENDIF
-
-解锁的脚本：
-scriptB解锁的路径，1 0
-scriptC解锁的路径，0 0
-scriptA解锁的路径，1
-</code></pre>
-
-<blockquote>
-<p>注意解锁脚本的路径，由于解锁的脚本是先入栈的，所有交互的路径感觉是反着呢</p>
-</blockquote>
-
-<h2 id="toc_26">5.复杂的脚本的运用</h2>
-
-<h3 id="toc_27">一个case</h3>
-
-<p>例如，某公司希望创建灵活的规则建立公司的资本账户，多重签名计划的参与者Song，以及他的两个合伙人Zhang和Li，以及公司的律师Lawyer，创建不同级别的授权，具体取决于时间锁定；<br/>
-具体的业务如下：<br/>
-三个合伙人根据多数规则作出决定，因此三种中两个必须同意，然而如果他们的钥匙有问题，他们希望律师能够用三个合伙人获取签名之一收回资金，最后，如果所有的合伙人一段时间都不可用或无行为能力，他们希望律师能够直接管理该账户</p>
-
-<pre><code class="language-text">赎回脚本：
-
-IF
-    IF
-        2
-    ELSE
-        &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP
-        &lt;Lawyer pubkey&gt; OP_CHECKSIGVERIFY
-        1
-    ENDIF
-        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG
-ELSE
-    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁
-    &lt;Lawyer pubkey&gt; OP_CHECKSIG
-ENDIF
-
-
-解锁脚本：
-
-路径1: &lt;Lawyer Sig&gt; 0 (90天之后，律师放可以单独的花费该笔资金)
-路径2: 0 &lt;Song&#39;s Sig&gt; &lt;Zhang&#39;s Sig&gt; 1 1 (三个合伙人中有两个签名就可以花费该笔资金)
-路径3: 0 &lt;Song&#39;s Sig&gt; &lt;Lawyer Sig&gt; 0 1 (超过三十天，律师签名加上三个合伙人中任意一个人就可以花费该笔资金)
- 
-</code></pre>
-
-<p>针对上面的Case，一些扩展的思考及实现</p>
-
-<ul>
-<li>为什么要用nSequence相对时间锁？而不用脚本CHECKLOCKTIMEVERIFY(CLTV)普通锁？</li>
-<li>CHECKSIG操作码后缀为什么有些有VERIFY，有些没有？</li>
-<li>如果律师失去钥匙，资金是否流失？</li>
-<li>如果91天过去了，律师是否可以直接花费该笔资金？</li>
-<li>合作伙伴如何每隔29天或89天“重置”一次，以防止律师获取资金？</li>
-<li>是否可以让律师有备份的钥匙？</li>
-</ul>
-
-<h3 id="toc_28">case问题解答</h3>
-
-<ol>
-<li><p>为什么要用nSequence相对时间锁？而不用脚本CHECKLOCKTIMEVERIFY(CLTV)普通锁？</p>
-<blockquote>
-<p>相对时间锁，是说明了该交易的输出已经进入了UTXO集合了</p>
-</blockquote></li>
-<li><p>CHECKSIG操作码后缀为什么有些有VERIFY，有些没有？</p>
-<blockquote>
-<p>所有操作码包含VERIFY，就是当执行验证失败则会中断下面等流程，标记交易失败</p>
-</blockquote></li>
-<li><p>如果律师失去钥匙，资金是否流失？</p>
-<blockquote>
-<p>仅仅律师丢了私钥是不会造成资金丢失的，但是如果3个合伙人中丢了两把钥匙，那么这笔资金就永远无法花费了，也就是等同了资金的流失；</p>
-</blockquote>
-<p>增加一定时间后，任何一个合伙人私钥签名即可花费该笔交易，具体实现如下：</p>
-<pre><code class="language-text">赎回脚本：
-IF<br/>
-    IF<br/>
-        2<br/>
-    ELSE<br/>
-        IF<br/>
-            &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
-            &lt;Lawyer pubkey&gt; OP_CHECKSIGVERIFY<br/>
-        ELSE<br/>
-            &lt;60 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
-        ENDIF<br/>
-            1<br/>
-    ENDIF<br/>
-        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG<br/>
-ELSE<br/>
-    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁<br/>
-    &lt;Lawyer pubkey&gt; OP_CHECKSIG<br/>
-ENDIF   <br/>
-解锁脚本：<br/>
-路径1：0 &lt; Song&#39;s Sig &gt; &lt; Lawyer&#39;s Sig &gt;  1 0 1<br/>
-如果超过30天了，那么律师私钥签名+三个合伙人中其中任何一个私钥签名，即可花费该笔交易<br/>
-路径2：0 &lt; Song&#39;s Sig &gt; 0 0 1<br/>
-如果超过60天了，那么三个合伙人中其中任何一个私钥签名，即可花费该笔交易
-</code></pre></li>
-<li><p>如果91天过去了，律师是否可以直接花费该笔资金？</p>
-<blockquote>
-<p>是的</p>
-</blockquote></li>
-<li><p>合作伙伴如何每隔29天或89天“重置”一次，以防止律师获取资金？</p>
-<blockquote>
-<p>目前还没有太好解决思路？</p>
-</blockquote></li>
-<li><p>是否可以让律师有备份的钥匙？</p>
-<blockquote>
-<p>可以让律师有两把钥匙，作为其中一个备份</p>
-</blockquote>
-<pre><code class="language-text">赎回脚本：
-IF<br/>
-    IF<br/>
-        2<br/>
-    ELSE<br/>
-        IF<br/>
-            &lt;30 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
-            1 &lt;Lawyer pubkey&gt; &lt;Lawyer2 pubkey&gt; 2 OP_CHECKMULTSIGVERIFY<br/>
-        ELSE<br/>
-            &lt;60 days&gt; OP_CHECKQUENCEVERIFY DROP<br/>
-        ENDIF<br/>
-            1<br/>
-    ENDIF<br/>
-        &lt;Song&#39;s pubkey&gt; &lt;Zhang&#39;s pubkey&gt; &lt;Li&#39;s pubkey&gt; 3 OP_CHECKMULTSIG<br/>
-ELSE<br/>
-    &lt;90 days&gt; OP_CHECKQUENCEVERIFY DROP   //注意这是一个相对的时间脚本锁<br/>
-    1 &lt;Lawyer pubkey&gt; &lt;Lawyer2 pubkey&gt; 2 OP_CHECKMULTSIG<br/>
-ENDIF   <br/>
-解锁脚本：<br/>
-路径1：0 &lt; Song&#39;s Sig &gt; 0 &lt; Lawyer&#39;s Sig &gt;  1 0 1<br/>
-如果超过30天了，那么律师私钥签名+三个合伙人中其中任何一个私钥签名，即可花费该笔交易<br/>
-路径2：0 &lt; Lawyer&#39;s Sig &gt; 0<br/>
-如果超过了90天后，律师可以用其中两把私钥中任意一个都可以完成私钥签名，即可花费该笔交易
-</code></pre></li>
-</ol>
-
+                        	一篇对比特币脚本的理解
                         
                       </div>
                   </div>
@@ -1772,40 +1231,6 @@ ENDIF   <br/>
                   <span class="comments">
                       
                         <a href="15350288973049.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15349170311253.html">
-                
-                  <h1>搭建智能合约开发环境Remix IDE及使用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/22</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15349170311253.html#disqus_thread">comments</a>
                       
 
                        
@@ -2306,40 +1731,6 @@ nonce的最大值2<sup>32次方</sup><br/>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="15348479167359.html">
-                
-                  <h1>以太坊开发入门</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348479167359.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
                 <a class="clearlink" href="15348479167538.html">
                 
                   <h1>区块链的基本概念</h1>
@@ -2380,41 +1771,6 @@ nonce的最大值2<sup>32次方</sup><br/>
                   <span class="comments">
                       
                         <a href="15348479167538.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348479167500.html">
-                
-                  <h1>智能合约开发环境搭建及hello world合约</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>测试代码2</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='ethereum.html'>以太坊</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348479167500.html#disqus_thread">comments</a>
                       
 
                        
@@ -2500,6 +1856,12 @@ nonce的最大值2<sup>32次方</sup><br/>
 	      
 		      
 			      <li class="post">
+			        <a href="15385342635688.html">以太坊虚拟机</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15365050797831.html">一篇对数字签名的理解</a>
 			      </li>
 		     
@@ -2521,16 +1883,6 @@ nonce的最大值2<sup>32次方</sup><br/>
 			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
 			      </li>
 		     
-		  
-		      
-			      <li class="post">
-			        <a href="15358584946404.html">一篇对比特币挖矿的理解</a>
-			      </li>
-		     
-		  
-		      
-		  
-		      
 		  
 		      
 		  
