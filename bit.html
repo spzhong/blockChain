@@ -428,27 +428,43 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
 </li>
 <li>
 <a href="#toc_19">10.Bloom过滤器</a>
-</li>
-<li>
-<a href="#toc_20">11.SPV节点如何使用Bloom过滤器</a>
-</li>
-<li>
-<a href="#toc_21">12.SPV节点和隐私</a>
-</li>
-<li>
-<a href="#toc_22">13.加密和认证连接</a>
-</li>
-<li>
-<a href="#toc_23">14.交易池</a>
-</li>
-<li>
-<a href="#toc_24">15.DOS攻击（扩展阅读）</a>
 <ul>
 <li>
-<a href="#toc_25">TCP三次握手</a>
+<a href="#toc_20">什么是Bloom过滤器</a>
 </li>
 <li>
-<a href="#toc_26">常见的DOS攻击的方式</a>
+<a href="#toc_21">Bloom过滤器是如何工作的</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_22">11.SPV节点如何使用Bloom过滤器</a>
+</li>
+<li>
+<a href="#toc_23">12.SPV节点和隐私</a>
+</li>
+<li>
+<a href="#toc_24">13.加密和认证连接</a>
+<ul>
+<li>
+<a href="#toc_25">Tor网络传输</a>
+</li>
+<li>
+<a href="#toc_26">对等认证和加密</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_27">14.交易池</a>
+</li>
+<li>
+<a href="#toc_28">15.DOS攻击（扩展阅读）</a>
+<ul>
+<li>
+<a href="#toc_29">TCP三次握手</a>
+</li>
+<li>
+<a href="#toc_30">常见的DOS攻击的方式</a>
 </li>
 </ul>
 </li>
@@ -869,20 +885,359 @@ SPV节点对特定数据的请求会无意中透漏了钱包里的地址信息�
 
 <h2 id="toc_19">10.Bloom过滤器</h2>
 
-<h2 id="toc_20">11.SPV节点如何使用Bloom过滤器</h2>
+<h3 id="toc_20">什么是Bloom过滤器</h3>
 
-<h2 id="toc_21">12.SPV节点和隐私</h2>
+<p>是一个允许用户描述特定的关键词组合而不必精确表述的基于概率的过滤方法<br/>
+它让用户在有效搜索关键词的同时保护了他们的隐私，这个方法解决了对等节点发送交易信息查询请求，同时交易的地址也不会暴露</p>
 
-<h2 id="toc_22">13.加密和认证连接</h2>
+<p>之前一个陌生人到陌生城市找线路的例子，当陌生人询问“教堂23号在哪里”，其实不经意间暴露了自己的目的地，Bloom过滤器则是这样询问的，附近带有“堂”字的街道吗？或是以“堂”结尾或是以“教”开头的街道</p>
 
-<h2 id="toc_23">14.交易池</h2>
+<h3 id="toc_21">Bloom过滤器是如何工作的</h3>
 
-<h2 id="toc_24">15.DOS攻击（扩展阅读）</h2>
+<p>实现的原理：由一个可变长度(N)的二进制数组（N位进制树构成的一个位域）和数量可变的(M)的一组哈希函数组成；<br/>
+这些哈希函数的输出值始终在1和N之间，该数组与二进制数组相对对应，该函数位确定函数，也就是说任何一个使用相同Bloom过滤器的节点通过该函数能对特定输入得到同一个结果；Blomm过滤器的准确性和私密性通过改变长度(N)和哈希数量(M)来调节</p>
+
+<p>位数组和k散列函数<br/>
+1.位数组<br/>
+初始化状态，BloomFilter是一个长度位M的位数组，每一位都置为0<br/>
+2.添加元素（k个独立的hash函数）<br/>
+添加元素时，对x进行k个哈希函数得到的k个哈希值，对其进行M求余，对应的bit位设置为1<br/>
+3.判断元素是否存在<br/>
+判断y是否属于这个集合，对y使用k个哈希函数得到的k个哈希值，对M求余，所对应的位置都是1，则认为y属于该集合（可能存在误判），否则就认为y不属于该集合</p>
+
+<p>BloomFilter（布隆过滤）算法   </p>
+
+<pre><code class="language-text">已知参数列表如下：
+m 位数组的长度
+n 加入其中元素的数量
+k 哈希函数的个数
+f 错误率
+</code></pre>
+
+<p>公式( 1 - (1 - 1/m)<sup>kn</sup> )<sup>k</sup> ≈ (1 - e<sup>-kn/m</sup> )<sup>k</sup></p>
+
+<p>加入m和n是固定的值的时候，能够使f最小化的k为<br/>
+(m/n)ln(2) ≈ 9m/13n ≈ 0.7m/n</p>
+
+<p>此时给出的f为<br/>
+f = (1/2)<sup>k</sup> ≈ 0.6185<sup>m/n</sup></p>
+
+<p>根据以上公式，对于任意给定的f<br/>
+n = m ln(0.6185)/ln(f)</p>
+
+<p>需要k个hash来达成目标<br/>
+k = -ln(f)/ln(2)</p>
+
+<p>由于k必须是整数，还应该使用上面的公私求得实际的错误率<br/>
+f = (1-e<sup>-kn/m</sup> )<sup>k</sup></p>
+
+<p>使用Hash函数的个数，位数组的大小来降低失误率。</p>
+
+<p><code>以下的运用场景还需要待研究</code></p>
+
+<p>具体参考<a href="https://blog.csdn.net/zdxiq000/article/details/57626464">大量数据去重：Bitmap和布隆过滤器(Bloom Filter)</a></p>
+
+<p>可以使用JDK自带的BitSet来实现，但存在两个问题：OOM和持久化问题。<br/>
+结合Redis的BitMap能够解决，唯一需要注意的是Redis的BitMap只支持2<sup>32</sup> 大小，对应到内存也就是512MB,数组的下标最大只能是2<sup>32-1</sup> 。不过这个限制可以通过构建多个Redis的Bitmap通过hash取模的方式分散一下即可。万分之一的误判率，512MB可以放下2亿条数据。<br/>
+好了，扯了这么多，贴代码！(注：在MagnusS/Java-BloomFilter的基础上加上了Redis持久化的实现)</p>
+
+<pre><code class="language-java">@Component
+public class BloomFilter&lt;E&gt; {
+
+    @Autowired
+    private RedisTemplate&lt;String, E&gt; redisTemplate;
+
+    @Value(&quot;${bloomfilter.expireDays}&quot;)
+    private long expireDays;
+
+    // total length of the Bloom filter
+    private int sizeOfBloomFilter;
+    // expected (maximum) number of elements to be added
+    private int expectedNumberOfFilterElements;
+    // number of hash functions
+    private int numberOfHashFunctions;
+    // encoding used for storing hash values as strings
+    private final Charset charset = Charset.forName(&quot;UTF-8&quot;);
+    // MD5 gives good enough accuracy in most circumstances. Change to SHA1 if it&#39;s needed
+    private static final String hashName = &quot;MD5&quot;;
+    private static final MessageDigest digestFunction;
+
+    // The digest method is reused between instances
+    static {
+        MessageDigest tmp;
+        try {
+            tmp = java.security.MessageDigest.getInstance(hashName);
+        } catch (NoSuchAlgorithmException e) {
+            tmp = null;
+        }
+        digestFunction = tmp;
+    }
+
+    public BloomFilter() {
+        this(0.0001, 600000);
+    }
+
+    /**
+     * Constructs an empty Bloom filter.
+     *
+     * @param m is the total length of the Bloom filter.
+     * @param n is the expected number of elements the filter will contain.
+     * @param k is the number of hash functions used.
+     */
+    public BloomFilter(int m, int n, int k) {
+        this.sizeOfBloomFilter = m;
+        this.expectedNumberOfFilterElements = n;
+        this.numberOfHashFunctions = k;
+    }
+
+    /**
+     * Constructs an empty Bloom filter with a given false positive probability.
+     * The size of bloom filter and the number of hash functions is estimated
+     * to match the false positive probability.
+     *
+     * @param falsePositiveProbability is the desired false positive probability.
+     * @param expectedNumberOfElements is the expected number of elements in the Bloom filter.
+     */
+    public BloomFilter(double falsePositiveProbability, int expectedNumberOfElements) {
+        this((int) Math.ceil((int) Math.ceil(-(Math.log(falsePositiveProbability) / Math.log(2))) * expectedNumberOfElements / Math.log(2)), // m = ceil(kn/ln2)
+                expectedNumberOfElements,
+                (int) Math.ceil(-(Math.log(falsePositiveProbability) / Math.log(2)))); // k = ceil(-ln(f)/ln2)
+    }
+
+    /**
+     * Adds an object to the Bloom filter. The output from the object&#39;s
+     * toString() method is used as input to the hash functions.
+     *
+     * @param element is an element to register in the Bloom filter.
+     */
+    public void add(E element) {
+        add(element.toString().getBytes(charset));
+    }
+
+    /**
+     * Adds an array of bytes to the Bloom filter.
+     *
+     * @param bytes array of bytes to add to the Bloom filter.
+     */
+    public void add(byte[] bytes) {
+        if (redisTemplate.opsForValue().get(RedisConsts.CRAWLER_BLOOMFILTER) == null) {
+            redisTemplate.opsForValue().setBit(RedisConsts.CRAWLER_BLOOMFILTER, 0, false);
+            redisTemplate.expire(RedisConsts.CRAWLER_BLOOMFILTER, expireDays, TimeUnit.DAYS);
+        }
+
+        int[] hashes = createHashes(bytes, numberOfHashFunctions);
+        for (int hash : hashes) {
+            redisTemplate.opsForValue().setBit(RedisConsts.CRAWLER_BLOOMFILTER, Math.abs(hash % sizeOfBloomFilter), true);
+        }
+    }
+
+    /**
+     * Adds all elements from a Collection to the Bloom filter.
+     *
+     * @param c Collection of elements.
+     */
+    public void addAll(Collection&lt;? extends E&gt; c) {
+        for (E element : c) {
+            add(element);
+        }
+    }
+
+    /**
+     * Returns true if the element could have been inserted into the Bloom filter.
+     * Use getFalsePositiveProbability() to calculate the probability of this
+     * being correct.
+     *
+     * @param element element to check.
+     * @return true if the element could have been inserted into the Bloom filter.
+     */
+    public boolean contains(E element) {
+        return contains(element.toString().getBytes(charset));
+    }
+
+    /**
+     * Returns true if the array of bytes could have been inserted into the Bloom filter.
+     * Use getFalsePositiveProbability() to calculate the probability of this
+     * being correct.
+     *
+     * @param bytes array of bytes to check.
+     * @return true if the array could have been inserted into the Bloom filter.
+     */
+    public boolean contains(byte[] bytes) {
+        int[] hashes = createHashes(bytes, numberOfHashFunctions);
+        for (int hash : hashes) {
+            if (!redisTemplate.opsForValue().getBit(RedisConsts.CRAWLER_BLOOMFILTER, Math.abs(hash % sizeOfBloomFilter))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if all the elements of a Collection could have been inserted
+     * into the Bloom filter. Use getFalsePositiveProbability() to calculate the
+     * probability of this being correct.
+     *
+     * @param c elements to check.
+     * @return true if all the elements in c could have been inserted into the Bloom filter.
+     */
+    public boolean containsAll(Collection&lt;? extends E&gt; c) {
+        for (E element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Generates digests based on the contents of an array of bytes and splits the result into 4-byte int&#39;s and store them in an array. The
+     * digest function is called until the required number of int&#39;s are produced. For each call to digest a salt
+     * is prepended to the data. The salt is increased by 1 for each call.
+     *
+     * @param data   specifies input data.
+     * @param hashes number of hashes/int&#39;s to produce.
+     * @return array of int-sized hashes
+     */
+    public static int[] createHashes(byte[] data, int hashes) {
+        int[] result = new int[hashes];
+
+        int k = 0;
+        byte salt = 0;
+        while (k &lt; hashes) {
+            byte[] digest;
+            synchronized (digestFunction) {
+                digestFunction.update(salt);
+                salt++;
+                digest = digestFunction.digest(data);
+            }
+
+            for (int i = 0; i &lt; digest.length / 4 &amp;&amp; k &lt; hashes; i++) {
+                int h = 0;
+                for (int j = (i * 4); j &lt; (i * 4) + 4; j++) {
+                    h &lt;&lt;= 8;
+                    h |= ((int) digest[j]) &amp; 0xFF;
+                }
+                result[k] = h;
+                k++;
+            }
+        }
+        return result;
+    }
+
+    public int getSizeOfBloomFilter() {
+        return this.sizeOfBloomFilter;
+    }
+
+    public int getExpectedNumberOfElements() {
+        return this.expectedNumberOfFilterElements;
+    }
+
+    public int getNumberOfHashFunctions() {
+        return this.numberOfHashFunctions;
+    }
+
+    /**
+     * Compares the contents of two instances to see if they are equal.
+     *
+     * @param obj is the object to compare to.
+     * @return True if the contents of the objects are equal.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BloomFilter&lt;E&gt; other = (BloomFilter&lt;E&gt;) obj;
+        if (this.sizeOfBloomFilter != other.sizeOfBloomFilter) {
+            return false;
+        }
+        if (this.expectedNumberOfFilterElements != other.expectedNumberOfFilterElements) {
+            return false;
+        }
+        if (this.numberOfHashFunctions != other.numberOfHashFunctions) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Calculates a hash code for this class.
+     *
+     * @return hash code representing the contents of an instance of this class.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + this.sizeOfBloomFilter;
+        hash = 61 * hash + this.expectedNumberOfFilterElements;
+        hash = 61 * hash + this.numberOfHashFunctions;
+        return hash;
+    }
+
+    public static void main(String[] args) {
+        BloomFilter&lt;String&gt; bloomFilter = new BloomFilter&lt;&gt;(0.0001, 600000);
+        System.out.println(bloomFilter.getSizeOfBloomFilter());
+        System.out.println(bloomFilter.getNumberOfHashFunctions());
+    }
+}
+</code></pre>
+
+<h2 id="toc_22">11.SPV节点如何使用Bloom过滤器</h2>
+
+<h2 id="toc_23">12.SPV节点和隐私</h2>
+
+<p>SPV的节点隐私比整个节点更弱，SPV节点接收与其钱包中的地址相关的经过过滤的列表，所有说整体上减少了所有者的隐私。</p>
+
+<p>Bloom过滤器是减少隐私损失的一种方式，即时使用过滤器，对手监控SPV客户端的流量或直接连接到它的P2P网络中的节点可以随时随地收集足够的信息来了解SPV客户端钱包中的地址</p>
+
+<h2 id="toc_24">13.加密和认证连接</h2>
+
+<p>比特币节点网络通讯是加密的，P2P网络隐私和安全性有两种方案Tor传输和P2P认证和加密</p>
+
+<h3 id="toc_25">Tor网络传输</h3>
+
+<p>Tor代表是洋葱路由网络，是一个软件项目和网络，通过提供匿名，不可追踪和隐私的随机网络路径提供数据的加密和封装</p>
+
+<blockquote>
+<p>洋葱路由器是一个类似于P2P原理的代理服务器，所有安装了洋葱路由的用户既是代理服务器的使用者也是代理服务器的提供者，洋葱路由器是由志愿者，花费自己的带宽建立起来的。</p>
+</blockquote>
+
+<h3 id="toc_26">对等认证和加密</h3>
+
+<p>BIP-150提供了可选的对等认证，允许节点使用ECDSA和私钥对对方身份进行身份验证<br/>
+BIP-151支持了两个节点之间的所有通信的协商加密<br/>
+不过这两种方案目前还尚未在BicoinCore实施</p>
+
+<p>BIP-150和BIP-151允许用户运行连接到受信任的完整节点的SPV客户端，使用加密和身份证来保护SPV客户端的隐私</p>
+
+<h2 id="toc_27">14.交易池</h2>
+
+<p>在比特币网络中几乎每一个节点都会维护一份未确认的交易的临时列表，他被称为内存池和交易池。<br/>
+节点们利用这个池来追踪记录哪些被网络所知晓，但是还未被区块链所包含的交易；<br/>
+例如，保存用户钱包的节点会利用这个交易池来记录哪些网络已经接收但还未被确认的，属于该用户钱包的预支付信息</p>
+
+<p>随着交易被接收和验证，他们被添加到交易池并通知相邻节点处，从而传播到到网络中</p>
+
+<p>有些节点的实现，还维护一个单独的孤立交易池，如果一个交易的输入与某未知的交易有关，如与缺失的夫交易相关，该孤立交易就会被暂时存储在孤立的交易池中至到父交易的信息到达</p>
+
+<p>当一个交易被添加到交易池中，会同时检查孤立交易池，看是否有某个孤立交易引用了此交易的输出（子交易），任何匹配的孤立交易会被进行验证；如果验证有效，他们会从孤立交易池中删除，并添加到交易池中，使以其夫交易开始链变的完整；<br/>
+对新加入交易池的交易来说，他不再是孤立交易，前述的过程重复递归寻找进一步的后代，知道所有的后代都被找到，通过这一个过程，一个父交易的到达把整个链中的孤立交易和它们的父交易重新结合再一起，从而触发了整条交易链进行级链重构</p>
+
+<p>交易池和孤立交易池都是存储在本地内存中，并不是存储永久性存储设备，它是随网络传入的消息动态填充，节点启动时，两个池子都是空闲的，随着网络中新交易不断被接收，两个池逐渐被填充</p>
+
+<p>有些客户端还维护一个UTXO数据库，也成为UTXO池，是区块链中所有为支付交易输出的集合，UTXO感觉与交易池相似，但它代表了不同的数据集，UTXO池不同与交易池和孤立交易池的地方，它在初始化时不为空，而是包含了数以百万计的为支付的交易输出条目，有些条目的历史可以追溯到2009年。UTXO池可能被安置在本地内存或者作为一个包含索引的数据库安置在永久性存储设备中</p>
+
+<p>交易池和孤立交易池代表是单个节点的本地视角，取决于节点的启动时间或重启时间，不同的节点两个池内容可能有很大的差别，相反的，UTXO池代表是网络的突显共识，因此不同节点间的UTXO池的内容差别不大。此外，交易池和孤立交易池只包含未确认交易，而UTXO池只包含已确认的交易</p>
+
+<h2 id="toc_28">15.DOS攻击（扩展阅读）</h2>
 
 <p>Dos是一对一<br/>
 DDos是分布式多个节点对抗一个节点</p>
 
-<h3 id="toc_25">TCP三次握手</h3>
+<h3 id="toc_29">TCP三次握手</h3>
 
 <p>完成三次握手，客户端于服务器开始传送数据</p>
 
@@ -907,7 +1262,7 @@ b-&gt;&gt;a: 授予连接（SYN=1,seq=client_isn）\n ack=client_isn+1
 a-&gt;&gt;b: 确认（SYN=0,seq=client_isn+1）\nack=server_isn+1
 </code></pre>
 
-<h3 id="toc_26">常见的DOS攻击的方式</h3>
+<h3 id="toc_30">常见的DOS攻击的方式</h3>
 
 <ol>
 <li>SYN FLOOD<br/>
