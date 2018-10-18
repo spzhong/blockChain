@@ -125,15 +125,13 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="poofAlgorithm.html">共识算法</a></li>
-        
             <li><a href="about.html">关于</a></li>
-        
-            <li><a href="index.html">指引</a></li>
         
             <li><a href="bit.html">比特币</a></li>
         
             <li><a href="ethereum.html">以太坊</a></li>
+        
+            <li><a href="poofAlgorithm.html">共识算法</a></li>
          
 
       </ul>
@@ -155,6 +153,683 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="15397582057010.html">
+                
+                  <h1>一篇关于区块BerkeleyDB的存储</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>BitCore区块的存储采用的就是BerkeleyDB</p>
+
+<p>BerkeleyDB（简称BDB）是一种以key-value为结构的嵌入式数据引擎</p>
+
+<ul>
+<li>嵌入式：BDB提供了一系列的应用接口API，调用的时候很简单，应用程序和BDB所提供的库一起编译/链接成为可执行的程序</li>
+<li>NOSQL：BDB不支持sql语言，他对数据个管理很简单，BDB数据库包含若干条记录，每条记录由关键字和数据两部分构成，数据可以是简单的数据类型，也可是复杂的数据类型，例如，c语言的结构体，BDB对数据类型不做任何的解释，完全由程序自行处理</li>
+</ul>
+
+<p>DB的设计思想是简单、小巧、可靠、高性能</p>
+
+<p>1.DB库和应用程序运行在同一个地址的空间，没有了客户端和数据服务器之间网络通讯开销，也没有了本地主机进程之间的通讯<br/>
+2.不需要对SQL代码解码，对数据的访问直接了当</p>
+
+<p>BDB分为如下五个子系统：</p>
+
+<ul>
+<li>存储管理子系统 （Storage subsystem）</li>
+<li>内存池管理子系统 (Memory pool subsystem)</li>
+<li>事物子系统 (Transaction subsystem)</li>
+<li>锁子系统 (Locking subsystem)</li>
+<li>日志子系统 (Logging subsystem)</li>
+</ul>
+
+<p>BDB的每一个基础功能模块都被设计为独立的，也即意味着其使用领域并不局限于BDB本身，例如加锁子系统可以用于非BDB应用程序的通用操作，内存共享缓冲池子系统可以用于在内存中基于页面的文件缓冲。</p>
+
+<p>BDB API使用的例子</p>
+
+<pre><code class="language-cpp">#include &lt;db.h&gt; 
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;pthread.h&gt;
+
+typedef struct customer {
+    int  c_id;
+    char name[10];
+    char address[20];
+    int  age;
+} CUSTOMER;
+
+
+/* 数据结构DBT在使用前，应首先初始化，否则编译可通过但运行时报参数错误  */
+void init_DBT(DBT * key, DBT * data)
+{
+    memset(key, 0, sizeof(DBT));
+    memset(data, 0, sizeof(DBT));
+}
+
+int main(void)
+{
+    DB_ENV *dbenv;
+    DB *dbp;    
+    DBT key, data;
+
+    int ret = 0;
+    int key_cust_c_id = 1;
+    CUSTOMER cust = {1, &quot;chenqi&quot;, &quot;beijing&quot;, 30}; 
+
+
+    /* initialize env handler */
+    if (ret = db_env_create(&amp;dbenv, 0)) { 
+        printf(&quot;db_env_create ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    u_int32_t flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB | DB_THREAD;;  
+
+    if (ret = dbenv-&gt;open(dbenv, &quot;/data0/bdb_test&quot;, flags, 0)) {
+        printf(&quot;dbenv-&gt;open ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    /* initialize db handler */
+    if (ret = db_create(&amp;dbp, dbenv, 0)) {
+        printf(&quot;db_create ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    flags = DB_CREATE | DB_THREAD;
+
+    if (ret = dbp-&gt;open(dbp, NULL, &quot;single.db&quot;, NULL, DB_BTREE, flags, 0664)) {
+        printf(&quot;dbp-&gt;open ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+
+    /* write record */
+    /* initialize DBT */
+    init_DBT(&amp;key, &amp;data);
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+    data.data = &amp;cust;
+    data.size = sizeof(CUSTOMER);
+
+    if (ret = dbp-&gt;put(dbp, NULL, &amp;key, &amp;data, DB_NOOVERWRITE)) {
+        printf(&quot;dbp-&gt;put ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+    /* flush to disk */
+    dbp-&gt;sync(dbp, 0);
+
+    /* get record */
+    init_DBT(&amp;key, &amp;data);
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+    data.flags = DB_DBT_MALLOC;
+
+    if (ret = dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, 0)) {
+        printf(&quot;dbp-&gt;get ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+    CUSTOMER *info = data.data;
+
+    printf(&quot;id = %d\nname=%s\naddress=%s\nage=%d\n&quot;,
+            info-&gt;c_id,
+            info-&gt;name,
+            info-&gt;address,
+            info-&gt;age);
+
+    /* free */
+    free(data.data);
+
+    if(dbp) {
+        dbp-&gt;close(dbp, 0);
+    }
+
+    if (dbenv) {
+    dbenv-&gt;close(dbenv, 0);
+    }
+
+    return 0;
+
+
+failed:
+
+    if(dbp) {
+        dbp-&gt;close(dbp, 0);
+    }
+
+    if (dbenv) {
+        dbenv-&gt;close(dbenv, 0);
+    }
+
+    return -1;
+} 
+</code></pre>
+
+<p>访问方法对应了数据在硬盘上的存储格式和操作方法，在编写应用程序的时，选择合适的算法可能会在运算上提高1个甚至多个数量级，大多数的数据库都选用了BTree的算法，BDB也不例外，同时还支持HAHS算法，Recno算法和Quenu算法</p>
+
+<ol>
+<li><p>BTree：有序平衡树结构</p></li>
+<li><p>Hash：扩展线性哈希表结构（extended linear hashing）</p></li>
+<li><p>Queue：由有固定长度的记录组成的队列结构，每个记录使用一个逻辑序列号作为键值，逻辑纪录号由算法本身生成，这和关系型数据库中逻辑主键通常定义为int AUTO型是同一个概念；支持在队尾快速插入，和从队首取出（或删除）记录；并提供记录级别的加锁操作，从而支持对队列的并发访问</p></li>
+<li><p>Recno：同时支持固定长度的记录和变长记录，并且提供支持flat text file的永久存储和数据在读时提供一个快速的临时存储空间</p></li>
+</ol>
+
+<p>BTree和Hash的key和value都支持任意复杂类型，并且也允许存在key重复的记录；</p>
+
+<p>Queue和Recno的key只能是逻辑序列号，两者基本上都是建立在Btree算法之上，提供存储有序数据的接口。前者的序列号是不可变的，后者的序列号可以是可变，也可以是不变；</p>
+
+<p>可变，指的是当记录被删除或者插入时，编号改变；不变，指的是不管数据库如何操作，编号都不改变。在Queue算法中编号总被不变的。在Recno算法中编号是可变的，即当记录被删除或者插入时，数据库里的其他记录的编号也可能会改变。</p>
+
+<p>另外，Queue的value为定长结构，而Recno的value可以为定长，也可以为变长结构；</p>
+
+<p>对算法的选择首先要看关键字的类型，如果为复杂类型，则只能选择BTree或HASH算法，如果关键字为逻辑记录号，则应该选择Recno或Queue算法。</p>
+
+<p>当工作集key有序时，BTree算法比较合适；如果工作集比较大且基本上关键字为随机分布时，选择HASH算法。</p>
+
+<p>Queue算法只能存储定长的记录，在高的并发处理情况下，Queue算法效率较高；如果是其它情况，则选择Recno算法，Recno算法把数据存储为flat text file。</p>
+
+<table>
+<thead>
+<tr>
+<th>Access Method</th>
+<th>Description</th>
+<th>Choosing Occasion</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>BTree</td>
+<td>关键字有序存储，并且其结构能随数据的插入和删除进行动态调整。为了代码的简单，Berkeley DB没有实现对关键字的前缀码压缩。B+树支持对数据查询、插入、删除的常数级速度。关键字可以为任意的数据结构</td>
+<td>1、 当Key为复杂类型时 <br> 2、 当Key有序时</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>DB中实际使用的是扩展线性HASH算法（extended linear hashing），可以根据HASH表的增长进行适当的调整。关键字可以为任意的数据结构</td>
+<td>1、 当Key为复杂类型<br>2、 当数据较大且key随机分布时</td>
+</tr>
+<tr>
+<td>Recno</td>
+<td>要求每一个记录都有一个逻辑纪录号，逻辑纪录号由算法本身生成。相当于关系数据库中的自动增长字段。Recho建立在B+树算法之上，提供了一个存储有序数据的接口。记录的长度可以为定长或不定长</td>
+<td>1、 当key为逻辑记录号时<br>2、 当非高并发的情况下</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>和Recno方式接近, 只不过记录的长度为定长。数据以定长记录方式存储在队列中，插入操作把记录插入到队列的尾部，相比之下插入速度是最快的</td>
+<td>1、当key为逻辑记录号时<br>2、定长记录<br>3、 高并发的情况下</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_0">数据结构</h2>
+
+<pre><code class="language-text">DB_ENV 　　 *dbenv;           // 环境句柄
+DB　　　　  *dbp;             // 数据库句柄
+DBT 　　　　key, value;       // 纪录结构
+DBC 　　　　*cur;            // 游标结构
+</code></pre>
+
+<p>数据库每条记录包含两个DBT结构，一个是key，一个是value</p>
+
+<pre><code class="language-text">typedef struct {
+     void *data;          // 数据buf
+     u_int32_t size;     // 数据大小
+     u_int32_t ulen;     //
+     u_int32_t dlen;     // 数据长度
+     u_int32_t doff;     // 数据开始处
+     u_int32_t flags;     
+} DBT;
+</code></pre>
+
+<h2 id="toc_1">数据库环境</h2>
+
+<p>BDB环境是对一个或多个数据库的封装，环境对应一个目录，数据库对应该目录下面的一个文件。</p>
+
+<p>环境支持：<br/>
+在一个磁盘文件中包含多个数据库；<br/>
+多进程和多线程支持；<br/>
+事务处理；<br/>
+高可用支持（主从库复制）；<br/>
+日志系统（可用于数据库异常恢复）；</p>
+
+<p>与环境相关的API：</p>
+
+<pre><code class="language-text">DB_ENV *dbenv;
+db_env_create(&amp;dbenv, 0);                     // 创建数据库环境句柄
+dbenv-&gt;open(dbenv, path, flags, 0);          // 打开数据库环境, path是环境的目录路径, flag参数参考下面介绍
+dbenv-&gt;close(dbenv, 0);                      // 关闭数据库环境
+dbenv-&gt;err(dbenv, ret, formart, ...);        // 错误调试
+</code></pre>
+
+<p>打开环境时的flags标志位：</p>
+
+<pre><code class="language-text">DB_CREATE               // 打开的环境不存在的话就创建它
+DB_THREAD               // 支持线程
+DB_INIT_MPOOL         // 初始化内存中的cache
+DB_INIT_CDB
+</code></pre>
+
+<p>BDB 环境的使用例子：</p>
+
+<pre><code class="language-text">/* 定义一个环境变量，并创建 */
+DB_ENV *dbenv;
+db_env_create(&amp;dbenv, 0);
+
+/* 在环境打开之前，可调用形式为dbenv-&gt;set_XXX()的若干函数设置环境 */
+
+/* 通知DB使用Rijndael加密算法（参考资料&gt;）对数据进行处理 */
+dbenv-&gt;set_encrypt(dbenv, &quot;encrypt_string&quot;, DB_ENCRYPT_AES);
+
+/* 设置DB的缓存为5M */
+dbenv-&gt;set_cachesize(dbenv, 0, 5 * 1024 * 1024, 0);
+
+/* 设置DB查找数据库文件的目录 */
+dbenv-&gt;set_data_dir(dbenv, &quot;/usr/javer/work_db&quot;);
+
+/* 设置出错时的回调函数 */
+dbenv-&gt;set_errcall(dbenv, callback);
+
+/* 将错误信息写到指定文件 */
+dbenv-&gt;set_errfile(dbenv, file);
+
+/* 打开数据库环境，注意后四个标志分别指示DB启动日志、加锁、缓存、事务处理子系统 */
+dbenv-&gt;open(dbenv,home,DB_CREATE|DB_INIT_LOG|DB_INIT_LOCK| DB_INIT_MPOOL |DB_INIT_TXN, 0)；
+
+/* 在环境打开后，则可以打开若干个数据库，所有数据库的处理都在环境的控制和保护中。
+   注意db_create函数的第二个参数是环境变量 */
+db_create(&amp;dbp1, dbenv, 0)；
+dbp1-&gt;open(dbp1, ……);
+db_create(&amp;dbp2, dbenv, 0)；
+dbp1-&gt;open(dbp2, ……);
+
+/* do something with the database */
+/* 最后首先关闭打开的数据库，再关闭环境 */
+dbp2-&gt;close(dbp2, 0);
+dbp1-&gt;close(dbp1, 0);
+dbenv-&gt;close(dbenv, 0);
+</code></pre>
+
+<h2 id="toc_2">数据库操作</h2>
+
+<p>DB数据库是一组K-V记录的集合，key和value都是DBT结构存储的，与数据库操作有关的API：</p>
+
+<pre><code class="language-text">DB* dbp; 
+db_create(&amp;dbp, dbenv, 0);                                            // 获取数据库句柄
+dbp-&gt;open(dbp, NULL, filename, NULL, DB_BTREE, flags, 0);　　　　　　　 
+dbp-&gt;close(&amp;dbp, 0);                                                  // 在关闭数据库前，先关闭所有打开的游标
+dbp-&gt;sync(dbp, 0)                                                     // 刷新cache，同步到磁盘，close操作会隐含调用该过程
+dbp-&gt;remove(dbp, filename, NULL, 0)                              　　 // 移除数据库，不要移除已打开的数据库
+dbp-&gt;rename(dbp, oldname, NULL, newname, 0)                　　　　　　// 数据库重命名，不要重命名已打开的数据库
+ 
+dbp-&gt;put(dbp, NULL, &amp;key, &amp;data, DB_NOOVERWRITE);      　　　　　　　　// DB_NOOVERWRITE不允许重写已存在的key
+dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, flags);                             // 如果存在key重复的记录，只返回第一个，或者使用游标
+dbp-&gt;del(dbp, NULL, &amp;key, 0);                                        // 删除指定key的记录
+dbp-&gt;truncate(dbp, NULL, u_int32_t* count, 0);                   　　 // 删除所有记录，count中返回被删除的记录个数
+dbp-&gt;get_open_flags(dbp, &amp;open_flags);                          　 　// 获取打开的flags，仅对已打开的数据库才有意义
+dbp-&gt;set_flags(dbp, flags);                                          // 设置打开的flags
+</code></pre>
+
+<p>打开数据库时的flags标志位<br/>
+DB_CREATE　　//如果打开的数据库不存在，就创建它；不指定这个标志，如果数据库不存在，打开失败！<br/>
+DB_EXC　　　　//与DB_CREATE一起使用，如果打开的数据库已经存在，则打开失败；不存在，则创建它；<br/>
+DB_RDONLY　　//只读的方式打开，随后的任何写操作都会失败；<br/>
+DB_TRUNCATE　　//清空对应的数据库磁盘文件；<br/>
+DB_DUPSORT 　　//</p>
+
+<p>get方法返回DB_NOTFOUND时表示没有匹配记录，其最后一个参数flags：</p>
+
+<p>DB_GET_BOTH 　　// get方法默认只匹配key，该flag将返回key和data都匹配的第一条记录<br/>
+DB_MULTIPLE 　　// get方法默认只返回匹配的第一条记录，该flag返回所有匹配记录</p>
+
+<p>使用get方法时，data参数是DBT结构，该DBT的flags参数可以定义为：</p>
+
+<p>DB_DBT_USERMEM       // 使用自己的内存存储检索的data<br/>
+DB_DBT_MALLOC        // 使用DB分配的内存，用完后要手动free<br/>
+DB提供的内存对齐方式可能不符合用户数据结构的需求，所以尽量使用我们自己的内存。</p>
+
+<p>用DB_DBT_USERMEM方式改写前面的例子：</p>
+
+<pre><code class="language-text"> /* get record */
+    CUSTOMER info;
+    init_DBT(&amp;key, &amp;data);
+
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+
+    data.data = &amp;info;
+    data.ulen = sizeof(CUSTOMER);
+    data.flags = DB_DBT_USERMEM;
+
+    if (ret = dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, 0)) {
+        printf(&quot;dbp-&gt;get ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    printf(&quot;id = %d\nname=%s\naddress=%s\nage=%d\n&quot;, 
+            info.c_id,
+            info.name,
+            info.address,
+            info.age);
+</code></pre>
+
+<p>错误处理<br/>
+DB接口调用成功通常返回0，失败返回非0值，此时可以检查错误码errno；<br/>
+由系统调用失败引起的错误errno&gt;0，否则errno&lt;0。</p>
+
+<pre><code class="language-text">db_strerror(errno)                     // 将错误编码映射成一个字符串
+dbp-&gt;set_errfile(dbp, FILE*)           // 设置错误文件
+dbp-&gt;set_errcall(dbp, void(*)(const DB_ENV *dbenv, const char* err_pfx, const char* msg))           // 定义错误处理的回调函数
+dbp-&gt;set_errpfx(dbp, format...)       // 加上错误消息前缀
+dbp-&gt;err(dbp, ret, format...)        // 生成错误消息，并按优先级发给set_errcall定义的错误处理回调函数、set_errfile定义的文件、stderr；
+dbp-&gt;errx(dbp, format...)            // 与dbp-&gt;err类似，但没有返回值ret这个额外参数
+</code></pre>
+
+<p>错误消息由一个前缀（由set_errpfx定义）、消息本身（由err或errx定义）和一个换行符组成。</p>
+
+<h2 id="toc_3">游标</h2>
+
+<p>如果DB数据库中存在键值相同的多条记录，使用dbp-&gt;get()方法默认只能获取一条记录（除非打开DB_MULTIPLE标志），这个时候有必要使用游标（cursor），游标可以迭代DB数据库中的记录。</p>
+
+<pre><code class="language-text">DBC  *cur;
+dbp-&gt;cursor(dbp, NULL, &amp;cur, 0);              // 初始化游标对象
+cur-&gt;close(cur);                              // 关闭游标
+cur-&gt;get(cur, &amp;key, &amp;data, flags);            // 迭代记录，当没有可迭代的记录时，返回DB_NOTFOUND
+cur-&gt;put(cur, &amp;key, &amp;data, flags);
+cur-&gt;del(cur, 0);                             // 删除游标指向的记录
+</code></pre>
+
+<p>cur-&gt;get()方法中flags参数的取值：<br/>
+1、迭代整个数据库中的纪录集合：<br/>
+DB_NEXT　　　　// 从第一条纪录遍历到最后一条纪录；<br/>
+DB_PREV　　　　// 逆序遍历，从最后一条纪录开始；</p>
+
+<p>2、查找符合条件的记录集：<br/>
+DB_SET　　　　　　　　　　// 移动游标到键值等于给定值的第一条纪录；<br/>
+DB_SET_RANGE　　　　　　// 如果数据库使用BTREE的算法，移动游标到键值大于或等于给定值的纪录集合；<br/>
+DB_GET_BOTH　　　　　　// 移动游标到键值和数据项均等于给定值的第一条记录；<br/>
+DB_GET_BOTH_RAGNE　　 // 移动游标到键值等于给定值，数据项大于或等于给定值的纪录集合；</p>
+
+<p>DB_NEXT_DUP　　　　　　// 获取下一个key重复的记录；<br/>
+DB_PREV_DUP　　　　　　// 获取上一个key重复的记录；<br/>
+DB_NEXT_NODUP　　　　 // 获取下一个key不重复的记录；<br/>
+DB_PREV_NODUP　　　　// 获取上一个key不重复的记录；</p>
+
+<p>cur-&gt;put()方法中flags参数的取值：<br/>
+DB_NODUPDATA　　　// 如果插入的key已存在，返回DB_KEYEXIST，如果不存在，则记录的插入顺序由其在数据库的插入顺序决定；<br/>
+DB_KEYFIRST　　　　// 在key重复的集合里面放在第一个位置；<br/>
+DB_KEYLAST　　　　// 在key重复的集合里面放在最后一个位置；<br/>
+DB_CURRENT　　　　// replace</p>
+
+<p>一个例子：</p>
+
+<pre><code class="language-text">DB *dbp, *sdbp;     /* Primary and secondary DB handles */
+u_int32_t flags;    /* Primary database open flags */
+int ret;            /* Function return value */
+
+typedef struct vendor {
+    char name[MAXFIELD]; 　　　　　　　 /* Vendor name */
+    char street[MAXFIELD]; 　　　　　　 /* Street name and number */
+    char city[MAXFIELD]; 　　　　　　　 /* City */
+    char state[3]; 　　　　　　　　　　　/* Two-digit US state code */
+    char zipcode[6]; 　　　　　　　　　　/* US zipcode */
+    char phone_number[13]; 　　　　　　/* Vendor phone number */
+    char sales_rep[MAXFIELD]; 　　　　 /* Name of sales representative */
+    char sales_rep_phone[MAXFIELD];  /* Sales rep&#39;s phone number */
+} VENDOR;
+
+/* Primary */
+ret = db_create(&amp;dbp, NULL, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Secondary */
+ret = db_create(&amp;sdbp, NULL, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Usually we want to support duplicates for secondary databases */
+ret = sdbp-&gt;set_flags(sdbp, DB_DUPSORT);
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Database open flags */
+flags = DB_CREATE; /* If the database does not exist, create it.*/
+
+/* open the primary database */
+ret = dbp-&gt;open(dbp, NULL, &quot;my_db.db&quot;, NULL, DB_BTREE, flags, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* open the secondary database */
+ret = sdbp-&gt;open(sdbp, NULL, &quot;my_secdb.db&quot;, NULL, DB_BTREE, flags, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Callback used for key creation. Not defined in this example. See the next section. */
+int get_sales_rep(DB *sdbp,   /* secondary db handle */
+        const DBT *pkey, 　　 /* primary db record&#39;s key */
+        const DBT *pdata, 　　/* primary db record&#39;s data */
+        DBT *skey) 　　　　　　/* secondary db record&#39;s key */
+{
+    VENDOR *vendor;
+
+    /* First, extract the structure contained in the primary&#39;s data */
+    vendor = pdata-&gt;data;
+
+    /* Now set the secondary key&#39;s data to be the representative&#39;s name */
+    memset(skey, 0, sizeof(DBT));
+    skey-&gt;data = vendor-&gt;sales_rep;
+    skey-&gt;size = strlen(vendor-&gt;sales_rep) + 1;
+
+    /* Return 0 to indicate that the record can be created/updated. */
+    return (0);
+}
+
+
+/* Now associate the secondary to the primary */
+dbp-&gt;associate(dbp, NULL, sdbp, get_sales_rep, 0);
+</code></pre>
+
+<h2 id="toc_4">缓存</h2>
+
+<p>DB可以将那些经常访问到记录cache 到内存里面，从而加快读写速度。</p>
+
+<p>dbp-&gt;set_cachesize(dbp, gbytes, bytes, ncache);         // 通过数据库句柄设置cache大小<br/>
+dbenv-&gt;set_cachesize(dbp, gbytes, bytes, ncache);      // 通过环境句柄设置cache大小（全局）</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15397582057010.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15397563500978.html">
+                
+                  <h1>一篇比特币相关的问答整理</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>[toc]<br/>
+<a href="https://www.jianshu.com/p/f01728ad725c?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">https://www.jianshu.com/p/f01728ad725c?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation</a></p>
+
+<h2 id="toc_0">什么是比特币？</h2>
+
+<p>一种基于p2p形式的数字货币，比特币不依赖于指定的货币机构发行，他是依据固定的共识算法，通过大量的计算产生，在p2p网络中众多节点构成了分布式数据库来确认并记录所有的交易行为</p>
+
+<h2 id="toc_1">什么是双重支付？</h2>
+
+<h2 id="toc_2">什么是工作量证明？</h2>
+
+<h2 id="toc_3">什么是挖矿？</h2>
+
+<h2 id="toc_4">比特币会不会有一天突然消失，变得一文不值？</h2>
+
+<h2 id="toc_5">没有政府支持，比特币还值得信任吗？</h2>
+
+<h2 id="toc_6">比特币是击鼓传花的游戏吗？</h2>
+
+<h2 id="toc_7">比特币会丢失吗？</h2>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15397563500978.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15397440071875.html">
+                
+                  <h1>一篇关于最新比特币技术的说明</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>参考点，区块链开发指南（区块链技术丛书） 2.5 章节</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/17</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15397440071875.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15396726640663.html">
+                
+                  <h1>Raft</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15396726640663.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="15396726536666.html">
+                
+                  <h1>Paxos</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2018/10/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='poofAlgorithm.html'>共识算法</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="15396726536666.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="15385342635688.html">
                 
@@ -452,7 +1127,8 @@ Base58是一种基于文本的二进制编码格式，这种编码格式不仅�
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<h2 id="toc_0">Case</h2>
+
                         
                       </div>
                   </div>
@@ -2146,8 +2822,26 @@ Bitcoin脚本有10个操作码保留提供使用，NOP1到NOP10</p>
                       
                       <div class="a-content-text">
                         
-                        	<p><a href="https://www.jianshu.com/p/8c8cedc84220">https://www.jianshu.com/p/8c8cedc84220</a><br/>
-<a href="https://zhuanlan.zhihu.com/p/30008641">https://zhuanlan.zhihu.com/p/30008641</a></p>
+                        	<p>Proof of Work 工作量证明，也就是说你获得多少货币，取决于你挖矿贡献的有效工作，比如你电脑性能越好，分给你的矿就越多，即根据你的工作证明来执行活不的分配，大部分的虚拟货币，比如比特币，莱特币等都是基于POW模式的，算力越高，挖矿时间越长，获得货币就越多</p>
+
+<h2 id="toc_0">实现的原理</h2>
+
+<p>不停的进行哈希计算，使其小于一个目标bits值的过程，称为“工作量证明”</p>
+
+<p>每个区块中都有一个字段为bits的值</p>
+
+<blockquote>
+<p>目标值bits:<br/>
+    4个字节，第一字节表示幂，后3个字节表示系数<br/>
+    例如：0x191a122f<br/>
+    bits = 0x1a122f 2 ^ (8 * ( 0x19 - 3 ))<br/>
+矿工就要找出小于当前区块中的bits值</p>
+</blockquote>
+
+<p>coinbase交易中的coinbase字段<br/>
+difficulty</p>
+
+<h2 id="toc_1">优缺点</h2>
 
                         
                       </div>
@@ -2200,74 +2894,6 @@ Bitcoin脚本有10个操作码保留提供使用，NOP1到NOP10</p>
                   <span class="comments">
                       
                         <a href="15353571670713.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15350288973049.html">
-                
-                  <h1>分布式共识算法思考</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/23</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15350288973049.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348504281449.html">
-                
-                  <h1>比特币的开发环境配置</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348504281449.html#disqus_thread">comments</a>
                       
 
                        
@@ -2421,310 +3047,13 @@ Bitcoin脚本有10个操作码保留提供使用，NOP1到NOP10</p>
                   <div class="more-left left">
                   
                     <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='index.html'>指引</a></span>
+                    
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
                         <a href="15348479167262.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="15348479167321.html">
-                
-                  <h1>比特币</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>概述：从别从，比特币的发展历史，，，，，，</p>
-
-<hr/>
-
-<h3 id="toc_0">历史</h3>
-
-<ul>
-<li>2008年，Bitcoin是由署名Satoshi Nakamoto发明的，他出版了为“Bitcoin:A Peer-to-Peer Electronic Cash System”;结合了b-money和hashCash的发明，创建一个完全去中心化的电子现金系统，不依赖中央机构进行的货币发行或结算和验证交易。</li>
-<li>2009年，基于中本聪（传言是澳大利亚人，目前尚未被确认身份）发布的参考实施指南，之后由许多程序员进行修订。</li>
-<li>2014年，比特币背后的区块链技术被大家关注，并正式的发布分布式记账本（Distributed Ledger）技术的革新浪潮。</li>
-</ul>
-
-<hr/>
-
-<h3 id="toc_1">什么是比特币</h3>
-
-<p>本质上就是一个去中心化账本<br/>
-一种建立于p2p和密码学基础上的数据货币<br/>
-密码学和分布式系统的组合产物<br/>
-比特币的特点：</p>
-
-<ul>
-<li>去中心化的点对点网络<br/>
-比特币的传输协议，或者是说脚本的传输协议</li>
-<li>区块链<br/>
-存放交易的数据链 <br/>
-块，时间戳，难度系数，交易集合</li>
-<li>共识机制<br/>
-货币的发行规则（是一种奖励规则，解决货币的流通的问题）<br/>
-交易的验证规则（交易引用，解决交易双花问题）<br/>
-交易数据一致性（去中心化，引入工作量证明，解决由谁来写入区块链的问题） <br/>
-脚本的网络传输协议（解决个个节点之间的区块同步问题） </li>
-<li>货币所有权的证明<br/>
-公钥，私钥，匿名化交易</li>
-</ul>
-
-<hr/>
-
-<h3 id="toc_2">比特币是如何发行的</h3>
-
-<p>比特币没有特定的发行机构，而是依靠一套去中心化的发行机制，逐步将比特币发行出去；比特币系统相当于一个去中心化的大账本，每个区块就是这一个账本中的一页，系统自动生成比特币作为奖励激励矿工参与记账；<br/>
-每十分钟全体矿工一起计算一道问题，最先算出的矿工获得记一页账的权利，经过100个块确认后，矿工将自动的获得一定数量的比特币；<br/>
-最开始记账一次获取50个比特币，每记21万页账（大约需要4年）记账的奖励就会减少一半，直到大约2140年，比特币无法细分，直至发行完毕，总量2100万枚；</p>
-
-<hr/>
-
-<h3 id="toc_3">什么是比特币的钱包</h3>
-
-<p>比特币的钱包是存放用户的私钥和公钥的；和现实的钱包不太一样</p>
-
-<h5 id="toc_4">1.密码学的基础</h5>
-
-<ul>
-<li><p>哈希运算<br/>
-又称为散列函数，把任意长度的输入（又叫做预映射pre-image）通过散列算法变换成固定长度的输出，该输出就是散列值</p>
-<blockquote>
-<p>f（x）不可逆，只能正向运算<br/>
-    极难找到hash值相同的<br/>
-    正向运算快，即时原文很大<br/>
-    无论原文多大，都压缩固定位数的16进制</p>
-</blockquote></li>
-<li><p>非对称加密<br/>
-密钥是一对，拥有公开密钥和私有密钥，随机生成一个私钥，然后通过椭圆曲线算法得到公钥</p>
-<blockquote>
-<p>公钥加密，只有私钥可解开<br/>
-    私钥签名，可以用公钥验证</p>
-</blockquote></li>
-<li><p>base58和base58cheack<br/>
-为了更简洁的表示长串的数字，使用更少的符号来表示<br/>
-比特币钱包的地址<br/>
-比特币钱包的验证</p></li>
-</ul>
-
-<h5 id="toc_5">2.钱包都有哪些类型</h5>
-
-<ul>
-<li>全节点钱包客户端</li>
-<li>简单支付验证客户端SPV</li>
-<li>基于第三方客户端程序接口</li>
-</ul>
-
-<h5 id="toc_6">3.生成自己的钱包</h5>
-
-<blockquote>
-<p>私钥，随机32位字符（256位随机数）<br/>
-公钥，椭圆曲线加密SECP2561算法<br/>
-公钥哈希值，SHA256(公钥)<br/>
-公钥哈希值，ripemd160(公钥哈希值)<br/>
-校验码，SHA256(SHA256(1个字节版本号0x00+公钥哈希值))，取前4个字节<br/>
-base58(1个字节版本号0x00+公钥哈希值+校验码)<br/>
-得到钱包地址</p>
-</blockquote>
-
-<h3 id="toc_7">比特币怎么完成交易的</h3>
-
-<p>比特币系统雨传统的银行支付系统不同，是基于去中心化的信任，在比特币中取代了中央信任机构，信任通过各个节点之间的互相参与互相达成的； </p>
-
-<ol>
-<li><p>交易的概述</p>
-<p>在比特币系统中由用户（通过私钥控制的钱包），将每一笔的交易广播到整个比特币的网络中，矿工通过竞争计算生成的每个节点达成的共识的区块（包含当前网络中所发生的所有的交易），然后将其区块同步到其它的节点；</p>
-<p>比特币的持有者已授权把比特币转账给其他人，而持有者能够再次授权，转移给该比特币所有权链中的其他人，产生另一笔交易来花掉这些比特币，后面的持有者在花费比特币也是类似的方式；</p>
-<p>整个交易的传递，其实就是所有权的证明转移，这就是为什么说，区块链实现的是价值的转移，而非单纯互联网信息传递；</p></li>
-<li><p>块，交易结构己交易链的说明</p></li>
-</ol>
-
-<pre><code class="language-text"># pram 块的结构
-type Block struct {
-        hash               string       哈希
-        confirmations      string       确认次数
-        size               uint64       块的大小
-        height             uint64       块的高度
-        version            uint32       块的版本
-        merkleroot         string       默克尔树（后期讲解）
-        tx                 []           交易的详细信息集合
-        time               uint32       块的时间
-        nonce              uint32       随机数（最大2^32，后期讲解）
-        bits               string       当前目标hash值
-        difficulty         float64      难度系数（用于挖矿控制，后期讲解）
-        previousblockhash  string       上一个区块的hash
-}
- 
-# pram 交易的结构
-type tx struct {
-        hex                 string              交易的十六进制
-        txid                string              交易的id
-        version             uint64              版本号
-        locktime            uint64              锁定时间（后期在脚本中会讲解）
-        vin                 []                  交易的输入
-        vout                []                  交易的输出
-        blockhash           string              所在的块的hash
-        confirmations       uint32              交易确认的次数
-        time                uint32              交易的时间
-        blocktime           uint32              所在快的时间
-}
-
-# pram 交易的输入（挖矿所得的币）结构
-type vin_coinbase struct {
-        coinbase            string              挖矿所得的备注说明
-        sequence            uint32              序列
-}
-
-# pram 交易的输入（交易所得的币）结构
-type vin_tx struct {
-        txid                string             交易的id
-        vout                uint32             交易的索引（和vout中的n对应）
-        sequence            uint32             输入序列（后期在脚本中会讲解）
-        scriptSig           map                解锁脚本
-        {   
-            asm =&gt; &quot;私钥签名&quot;,
-            hex =&gt; &quot;16进制&quot;
-        }
-}
-
-# pram 交易的输出结构
-type vout struct {
-        value               uint32           交易金额
-        n                   uint32           交易引用索引           
-        scriptPubKey        map              锁定脚本 
-        {
-            asm =&gt; &quot;脚本code&quot;,
-            hex =&gt; &quot;签名验证16进制&quot;,
-            reqSigs =&gt; &quot;签名个数，默认至少为1&quot;,
-            type =&gt; &quot;pubkey:公钥验证，pubkeyhash:私钥签名验证&quot;,
-            addresses =&gt; [&quot;钱包的地址&quot;]
-        }                 
-}
-</code></pre>
-
-<ol>
-<li><p>首先如何获得第一个比特币</p>
-<p>挖矿得到basecoin<br/>
-场外交易</p></li>
-<li><p>怎么计算余额</p>
-<p>假设自己的钱包是全节点的客户端；</p>
-<blockquote>
-<p>得到自己的钱包地址</p>
-</blockquote>
-<p>遍历所有的区块，得到区块中的所有交易的输出 <br/>
-匹配交易里面包含addresses字段，是一个数组结构（具体交易结构在交易细节中查看）<br/>
-得到当前钱包地址匹配出来的交易，然后，在当前块中，查询是否有交易的输入包含该txid<br/>
-如果没有包含，就加入未花费的交易(UTXO)的HashMap集合中<br/>
-累加所有的未花费的交易(UTXO)的值，得到钱包中的余额</p>
-<p>优化建议：</p>
-<p><code>生成钱包时候，指定位数标记当前最大的区块高度（或时间戳）<br/>
-    例如钱包的格式：1GdK9UzpHBzqzX2A9JFP3Di4weBwqgmoQA[37676/1535624845]<br/>
-</code> </p>
-<p>未花费的交易(UTXO)<br/>
-交易没有被引用</p></li>
-<li><p>怎么转账</p>
-<p>组合UTXO，大于交易的金额</p></li>
-<li><p>如何找零</p>
-<p>将剩下的钱，转入自己的钱包中</p></li>
-<li><p>交易费用</p>
-<p>交易的小费是按照字节大小来计算的</p></li>
-<li><p>完整交易的输入和输出</p>
-<p>例如，用户a转账10个比特币给用户b<br/>
-任何交易都有上一个交易的引用，或是说有多个输入或多个输出；</p>
-<p>a用户给b用户转账的交易明细如下：<br/>
-<strong>输入：</strong>解锁脚本(私钥验证签名)</p>
-<blockquote>
-<p>[<br/>
-    a用户用自己的私钥，验证签名得到未花费的交易1,<br/>
-    a用户用自己的私钥，验证签名得到未花费的交易2<br/>
-]</p>
-</blockquote>
-<p><strong>输出：</strong>锁定脚本（转出公钥证明）</p>
-<blockquote>
-<p>[<br/>
-    目标b用户的公钥，<br/>
-    目标a用户的公钥（用于找零）<br/>
-]</p>
-</blockquote></li>
-<li><p>交易的传输</p></li>
-<li><p>交易的验证</p></li>
-<li><p>挖矿写入区块链中</p></li>
-<li><p>最终如何确认交易完成</p></li>
-<li><p>b如何花费该笔交易</p></li>
-</ol>
-
-<h3 id="toc_8">交易的细节讲解</h3>
-
-<p>生活中我们都有自己的银行账户，转账是在银行账户之间进行的。同样，比特币转账就是把比特币从一个比特币地址转移到另一个比特币地址上的过程。如果你想要转账比特币给别人，你需要在比特币交易平台、比特币钱包或者比特币客户端中，输入你的比特币地址、接收方地址、转账金额和手续费金额。确定支付后交易信息会在比特币网络进行全网广播。矿工每隔10分钟会将比特币网络中未被记账的交易打包进一个区块，这就完成了一次确认，此时比特币已转到对方账户。通常需要经过6次确认，确保交易记录不能被任何人窜改，转账才算真正完成。</p>
-
-<ol>
-<li><p>块的数据结构</p></li>
-<li><p>交易的数据结构</p></li>
-<li><p>交易费</p></li>
-<li><p>如何找零</p></li>
-<li><p>一个完整的交易例子说明</p></li>
-</ol>
-
-<h3 id="toc_9">挖矿的细节讲解</h3>
-
-<p>挖矿是数字货币一个创新，解决了数据一致性的问题；<br/>
-比特币通过挖矿产生，每10分钟，全网矿工一起计算一道算术题，谁先算出答案，就相当于挖到了这个区块，这个过程叫做挖矿；<br/>
-那么是什么样的算术题呢？<br/>
-首先，每个区块上有一难度系数，将随机产生hash256的值进行计算，需要小于该难度系数；<br/>
-将交易信息+自增长的数字，进行hash256，得到64位的16进制，转换为二进制2<sup>256次方的值；</sup><br/>
-0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
-这是一个极大的值，例如随机产生一个2<sup>256次方的值都小于该值；</sup><br/>
-为了增加计算的时间，我们将值缩小，例如：0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
-1 Khash/s = 1000 hash/s<br/>
-1 Mhash/s = 1000 Khash/s<br/>
-1 Ghash/s = 1000 Mhash/s<br/>
-1 Shash/s = 1000 Ghash/s<br/>
-1 PHash/s = 1000 Shash/s = 1000000000000000 hash/s <br/>
-难度系数：<br/>
-0x0000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF<br/>
-nonce的最大值2<sup>32次方</sup><br/>
-比特币里nonce的预设太小了。对于现在的挖矿难度，当交易的merkle tree给定后，在32bit的nonce里面找到解的概率忽略不计。一台专业矿机在秒为单位的时间内就能穷举完nonce的所有可能。nonce太小，Merkle tree root来凑。现在的做法是不断的改变coinbase交易，带动merkle tree变化，再循环穷举nonce。针对一个给定的merkle tree root，nonce穷举完了，还没找到解，接着改coinbase来换新的merkle tree root，开始新的nonce穷举，如此重复，直到找到解为止。<br/>
-如何改变coinbase交易？<br/>
-1000笔交易的顺序可能有，1000!个阶乘计算，这个数字是极其大的<br/>
-预留了2<sup>32次方,那么最大的值是2<sup>224次方</sup></sup><br/>
-<code>D*2^32/600<br/>
-时间=难度*2^32/算力<br/>
-</code> <br/>
-随着运算的提高，难度系统也再增加，每2014块（两周）会调整一下，难度系数，确保产生的块平均维持在10分钟左右，不至于过快的将币挖完；</p>
-
-<h3 id="toc_10">比特币的脚本讲解</h3>
-
-<h3 id="toc_11">比特币的p2p网络</h3>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2018/8/21</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='bit.html'>比特币</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="15348479167321.html#disqus_thread">comments</a>
                       
 
                        
@@ -2785,15 +3114,13 @@ nonce的最大值2<sup>32次方</sup><br/>
 
       	<p class="cat-list">
         
-            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
-        
             <a href="about.html"><strong>关于</strong></a>
-        
-            <a href="index.html"><strong>指引</strong></a>
         
             <a href="bit.html"><strong>比特币</strong></a>
         
             <a href="ethereum.html"><strong>以太坊</strong></a>
+        
+            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
          
         </p>
 
@@ -2810,33 +3137,37 @@ nonce的最大值2<sup>32次方</sup><br/>
 	      
 		      
 			      <li class="post">
-			        <a href="15385342635688.html">以太坊虚拟机</a>
+			        <a href="15397582057010.html">一篇关于区块BerkeleyDB的存储</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15365050797831.html">一篇对数字签名的理解</a>
+			        <a href="15397563500978.html">一篇比特币相关的问答整理</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15360563845824.html">关于</a>
+			        <a href="15397440071875.html">一篇关于最新比特币技术的说明</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15358586085164.html">一篇对比特币的应用案例分析</a>
+			        <a href="15396726640663.html">Raft</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
+			        <a href="15396726536666.html">Paxos</a>
 			      </li>
 		     
+		  
+		      
+		  
+		      
 		  
 		      
 		  

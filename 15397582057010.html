@@ -1,0 +1,881 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  一篇关于区块BerkeleyDB的存储 - 我对区块链的理解
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="我对区块链的理解" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+
+<link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermaid.css">
+<!--        <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermadidstyle.css">-->
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/jquery.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/rawdeflate.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/encode64.js"></script>
+            <script src="asset/sample-custom-html-charts/echarts.common.min.js"></script>
+            <script src="asset/sample-custom-html-charts/mermaid.min.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                  var mwebii=0;
+                  var mwebChartEleId = 'mweb-chart-ele-';
+                  $('pre>code').each(function(){
+                                     mwebii++;
+                                     var eleiid = mwebChartEleId+mwebii;
+                                     if($(this).hasClass('language-mermaid')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div id="'+eleiid+'"></div>').addClass('mermaid').html($(this).text()).insertAfter(ele);
+                                     }else if($(this).hasClass('language-plantuml')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     var str = unescape(encodeURIComponent($(this).text()));
+                                     var imgURL = "http://www.plantuml.com/plantuml/svg/"+encode64(deflate(str,9));
+                                     var newEle = $('<div id="'+eleiid+'"><img src="'+imgURL+'" /></div>').insertAfter(ele);
+                                     }else if($(this).hasClass('language-js-echarts')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div style="width: 100%;height:400px;" id="'+eleiid+'"></div>').insertAfter(ele);
+                                     var myChart = echarts.init(document.getElementById(eleiid));
+                                     try  {
+                                     eval($(this).text());
+                                     myChart.setOption(option);
+                                     }catch(exception) {}
+                                     }
+                                     });
+                  
+                  mermaid.init({noteMargin: 10}, ".mermaid");
+                  });
+                </script>
+
+
+
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">首页</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">归档</a></li>
+        
+        <li id=""><a target="_self" href="about.html">关于</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 我对区块链的理解</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">首页</a></li>
+        
+        <li><a target="_self" href="archives.html">归档</a></li>
+        
+        <li><a target="_self" href="about.html">关于</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="about.html">关于</a></li>
+        
+            <li><a href="bit.html">比特币</a></li>
+        
+            <li><a href="ethereum.html">以太坊</a></li>
+        
+            <li><a href="poofAlgorithm.html">共识算法</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>一篇关于区块BerkeleyDB的存储</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/10/17</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='bit.html'>比特币</a></span>
+           
+         
+          <span class="comments">
+            
+              <a href="15397582057010.html#disqus_thread">comments</a>
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>BitCore区块的存储采用的就是BerkeleyDB</p>
+
+<p>BerkeleyDB（简称BDB）是一种以key-value为结构的嵌入式数据引擎</p>
+
+<ul>
+<li>嵌入式：BDB提供了一系列的应用接口API，调用的时候很简单，应用程序和BDB所提供的库一起编译/链接成为可执行的程序</li>
+<li>NOSQL：BDB不支持sql语言，他对数据个管理很简单，BDB数据库包含若干条记录，每条记录由关键字和数据两部分构成，数据可以是简单的数据类型，也可是复杂的数据类型，例如，c语言的结构体，BDB对数据类型不做任何的解释，完全由程序自行处理</li>
+</ul>
+
+<p>DB的设计思想是简单、小巧、可靠、高性能</p>
+
+<p>1.DB库和应用程序运行在同一个地址的空间，没有了客户端和数据服务器之间网络通讯开销，也没有了本地主机进程之间的通讯<br/>
+2.不需要对SQL代码解码，对数据的访问直接了当</p>
+
+<p>BDB分为如下五个子系统：</p>
+
+<ul>
+<li>存储管理子系统 （Storage subsystem）</li>
+<li>内存池管理子系统 (Memory pool subsystem)</li>
+<li>事物子系统 (Transaction subsystem)</li>
+<li>锁子系统 (Locking subsystem)</li>
+<li>日志子系统 (Logging subsystem)</li>
+</ul>
+
+<p>BDB的每一个基础功能模块都被设计为独立的，也即意味着其使用领域并不局限于BDB本身，例如加锁子系统可以用于非BDB应用程序的通用操作，内存共享缓冲池子系统可以用于在内存中基于页面的文件缓冲。</p>
+
+<p>BDB API使用的例子</p>
+
+<pre><code class="language-cpp">#include &lt;db.h&gt; 
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;pthread.h&gt;
+
+typedef struct customer {
+    int  c_id;
+    char name[10];
+    char address[20];
+    int  age;
+} CUSTOMER;
+
+
+/* 数据结构DBT在使用前，应首先初始化，否则编译可通过但运行时报参数错误  */
+void init_DBT(DBT * key, DBT * data)
+{
+    memset(key, 0, sizeof(DBT));
+    memset(data, 0, sizeof(DBT));
+}
+
+int main(void)
+{
+    DB_ENV *dbenv;
+    DB *dbp;    
+    DBT key, data;
+
+    int ret = 0;
+    int key_cust_c_id = 1;
+    CUSTOMER cust = {1, &quot;chenqi&quot;, &quot;beijing&quot;, 30}; 
+
+
+    /* initialize env handler */
+    if (ret = db_env_create(&amp;dbenv, 0)) { 
+        printf(&quot;db_env_create ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    u_int32_t flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_CDB | DB_THREAD;;  
+
+    if (ret = dbenv-&gt;open(dbenv, &quot;/data0/bdb_test&quot;, flags, 0)) {
+        printf(&quot;dbenv-&gt;open ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    /* initialize db handler */
+    if (ret = db_create(&amp;dbp, dbenv, 0)) {
+        printf(&quot;db_create ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    flags = DB_CREATE | DB_THREAD;
+
+    if (ret = dbp-&gt;open(dbp, NULL, &quot;single.db&quot;, NULL, DB_BTREE, flags, 0664)) {
+        printf(&quot;dbp-&gt;open ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+
+    /* write record */
+    /* initialize DBT */
+    init_DBT(&amp;key, &amp;data);
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+    data.data = &amp;cust;
+    data.size = sizeof(CUSTOMER);
+
+    if (ret = dbp-&gt;put(dbp, NULL, &amp;key, &amp;data, DB_NOOVERWRITE)) {
+        printf(&quot;dbp-&gt;put ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+    /* flush to disk */
+    dbp-&gt;sync(dbp, 0);
+
+    /* get record */
+    init_DBT(&amp;key, &amp;data);
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+    data.flags = DB_DBT_MALLOC;
+
+    if (ret = dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, 0)) {
+        printf(&quot;dbp-&gt;get ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }
+
+    CUSTOMER *info = data.data;
+
+    printf(&quot;id = %d\nname=%s\naddress=%s\nage=%d\n&quot;,
+            info-&gt;c_id,
+            info-&gt;name,
+            info-&gt;address,
+            info-&gt;age);
+
+    /* free */
+    free(data.data);
+
+    if(dbp) {
+        dbp-&gt;close(dbp, 0);
+    }
+
+    if (dbenv) {
+    dbenv-&gt;close(dbenv, 0);
+    }
+
+    return 0;
+
+
+failed:
+
+    if(dbp) {
+        dbp-&gt;close(dbp, 0);
+    }
+
+    if (dbenv) {
+        dbenv-&gt;close(dbenv, 0);
+    }
+
+    return -1;
+} 
+</code></pre>
+
+<p>访问方法对应了数据在硬盘上的存储格式和操作方法，在编写应用程序的时，选择合适的算法可能会在运算上提高1个甚至多个数量级，大多数的数据库都选用了BTree的算法，BDB也不例外，同时还支持HAHS算法，Recno算法和Quenu算法</p>
+
+<ol>
+<li><p>BTree：有序平衡树结构</p></li>
+<li><p>Hash：扩展线性哈希表结构（extended linear hashing）</p></li>
+<li><p>Queue：由有固定长度的记录组成的队列结构，每个记录使用一个逻辑序列号作为键值，逻辑纪录号由算法本身生成，这和关系型数据库中逻辑主键通常定义为int AUTO型是同一个概念；支持在队尾快速插入，和从队首取出（或删除）记录；并提供记录级别的加锁操作，从而支持对队列的并发访问</p></li>
+<li><p>Recno：同时支持固定长度的记录和变长记录，并且提供支持flat text file的永久存储和数据在读时提供一个快速的临时存储空间</p></li>
+</ol>
+
+<p>BTree和Hash的key和value都支持任意复杂类型，并且也允许存在key重复的记录；</p>
+
+<p>Queue和Recno的key只能是逻辑序列号，两者基本上都是建立在Btree算法之上，提供存储有序数据的接口。前者的序列号是不可变的，后者的序列号可以是可变，也可以是不变；</p>
+
+<p>可变，指的是当记录被删除或者插入时，编号改变；不变，指的是不管数据库如何操作，编号都不改变。在Queue算法中编号总被不变的。在Recno算法中编号是可变的，即当记录被删除或者插入时，数据库里的其他记录的编号也可能会改变。</p>
+
+<p>另外，Queue的value为定长结构，而Recno的value可以为定长，也可以为变长结构；</p>
+
+<p>对算法的选择首先要看关键字的类型，如果为复杂类型，则只能选择BTree或HASH算法，如果关键字为逻辑记录号，则应该选择Recno或Queue算法。</p>
+
+<p>当工作集key有序时，BTree算法比较合适；如果工作集比较大且基本上关键字为随机分布时，选择HASH算法。</p>
+
+<p>Queue算法只能存储定长的记录，在高的并发处理情况下，Queue算法效率较高；如果是其它情况，则选择Recno算法，Recno算法把数据存储为flat text file。</p>
+
+<table>
+<thead>
+<tr>
+<th>Access Method</th>
+<th>Description</th>
+<th>Choosing Occasion</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>BTree</td>
+<td>关键字有序存储，并且其结构能随数据的插入和删除进行动态调整。为了代码的简单，Berkeley DB没有实现对关键字的前缀码压缩。B+树支持对数据查询、插入、删除的常数级速度。关键字可以为任意的数据结构</td>
+<td>1、 当Key为复杂类型时 <br> 2、 当Key有序时</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>DB中实际使用的是扩展线性HASH算法（extended linear hashing），可以根据HASH表的增长进行适当的调整。关键字可以为任意的数据结构</td>
+<td>1、 当Key为复杂类型<br>2、 当数据较大且key随机分布时</td>
+</tr>
+<tr>
+<td>Recno</td>
+<td>要求每一个记录都有一个逻辑纪录号，逻辑纪录号由算法本身生成。相当于关系数据库中的自动增长字段。Recho建立在B+树算法之上，提供了一个存储有序数据的接口。记录的长度可以为定长或不定长</td>
+<td>1、 当key为逻辑记录号时<br>2、 当非高并发的情况下</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>和Recno方式接近, 只不过记录的长度为定长。数据以定长记录方式存储在队列中，插入操作把记录插入到队列的尾部，相比之下插入速度是最快的</td>
+<td>1、当key为逻辑记录号时<br>2、定长记录<br>3、 高并发的情况下</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_0">数据结构</h2>
+
+<pre><code class="language-text">DB_ENV 　　 *dbenv;           // 环境句柄
+DB　　　　  *dbp;             // 数据库句柄
+DBT 　　　　key, value;       // 纪录结构
+DBC 　　　　*cur;            // 游标结构
+</code></pre>
+
+<p>数据库每条记录包含两个DBT结构，一个是key，一个是value</p>
+
+<pre><code class="language-text">typedef struct {
+     void *data;          // 数据buf
+     u_int32_t size;     // 数据大小
+     u_int32_t ulen;     //
+     u_int32_t dlen;     // 数据长度
+     u_int32_t doff;     // 数据开始处
+     u_int32_t flags;     
+} DBT;
+</code></pre>
+
+<h2 id="toc_1">数据库环境</h2>
+
+<p>BDB环境是对一个或多个数据库的封装，环境对应一个目录，数据库对应该目录下面的一个文件。</p>
+
+<p>环境支持：<br/>
+在一个磁盘文件中包含多个数据库；<br/>
+多进程和多线程支持；<br/>
+事务处理；<br/>
+高可用支持（主从库复制）；<br/>
+日志系统（可用于数据库异常恢复）；</p>
+
+<p>与环境相关的API：</p>
+
+<pre><code class="language-text">DB_ENV *dbenv;
+db_env_create(&amp;dbenv, 0);                     // 创建数据库环境句柄
+dbenv-&gt;open(dbenv, path, flags, 0);          // 打开数据库环境, path是环境的目录路径, flag参数参考下面介绍
+dbenv-&gt;close(dbenv, 0);                      // 关闭数据库环境
+dbenv-&gt;err(dbenv, ret, formart, ...);        // 错误调试
+</code></pre>
+
+<p>打开环境时的flags标志位：</p>
+
+<pre><code class="language-text">DB_CREATE               // 打开的环境不存在的话就创建它
+DB_THREAD               // 支持线程
+DB_INIT_MPOOL         // 初始化内存中的cache
+DB_INIT_CDB
+</code></pre>
+
+<p>BDB 环境的使用例子：</p>
+
+<pre><code class="language-text">/* 定义一个环境变量，并创建 */
+DB_ENV *dbenv;
+db_env_create(&amp;dbenv, 0);
+
+/* 在环境打开之前，可调用形式为dbenv-&gt;set_XXX()的若干函数设置环境 */
+
+/* 通知DB使用Rijndael加密算法（参考资料&gt;）对数据进行处理 */
+dbenv-&gt;set_encrypt(dbenv, &quot;encrypt_string&quot;, DB_ENCRYPT_AES);
+
+/* 设置DB的缓存为5M */
+dbenv-&gt;set_cachesize(dbenv, 0, 5 * 1024 * 1024, 0);
+
+/* 设置DB查找数据库文件的目录 */
+dbenv-&gt;set_data_dir(dbenv, &quot;/usr/javer/work_db&quot;);
+
+/* 设置出错时的回调函数 */
+dbenv-&gt;set_errcall(dbenv, callback);
+
+/* 将错误信息写到指定文件 */
+dbenv-&gt;set_errfile(dbenv, file);
+
+/* 打开数据库环境，注意后四个标志分别指示DB启动日志、加锁、缓存、事务处理子系统 */
+dbenv-&gt;open(dbenv,home,DB_CREATE|DB_INIT_LOG|DB_INIT_LOCK| DB_INIT_MPOOL |DB_INIT_TXN, 0)；
+
+/* 在环境打开后，则可以打开若干个数据库，所有数据库的处理都在环境的控制和保护中。
+   注意db_create函数的第二个参数是环境变量 */
+db_create(&amp;dbp1, dbenv, 0)；
+dbp1-&gt;open(dbp1, ……);
+db_create(&amp;dbp2, dbenv, 0)；
+dbp1-&gt;open(dbp2, ……);
+
+/* do something with the database */
+/* 最后首先关闭打开的数据库，再关闭环境 */
+dbp2-&gt;close(dbp2, 0);
+dbp1-&gt;close(dbp1, 0);
+dbenv-&gt;close(dbenv, 0);
+</code></pre>
+
+<h2 id="toc_2">数据库操作</h2>
+
+<p>DB数据库是一组K-V记录的集合，key和value都是DBT结构存储的，与数据库操作有关的API：</p>
+
+<pre><code class="language-text">DB* dbp; 
+db_create(&amp;dbp, dbenv, 0);                                            // 获取数据库句柄
+dbp-&gt;open(dbp, NULL, filename, NULL, DB_BTREE, flags, 0);　　　　　　　 
+dbp-&gt;close(&amp;dbp, 0);                                                  // 在关闭数据库前，先关闭所有打开的游标
+dbp-&gt;sync(dbp, 0)                                                     // 刷新cache，同步到磁盘，close操作会隐含调用该过程
+dbp-&gt;remove(dbp, filename, NULL, 0)                              　　 // 移除数据库，不要移除已打开的数据库
+dbp-&gt;rename(dbp, oldname, NULL, newname, 0)                　　　　　　// 数据库重命名，不要重命名已打开的数据库
+ 
+dbp-&gt;put(dbp, NULL, &amp;key, &amp;data, DB_NOOVERWRITE);      　　　　　　　　// DB_NOOVERWRITE不允许重写已存在的key
+dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, flags);                             // 如果存在key重复的记录，只返回第一个，或者使用游标
+dbp-&gt;del(dbp, NULL, &amp;key, 0);                                        // 删除指定key的记录
+dbp-&gt;truncate(dbp, NULL, u_int32_t* count, 0);                   　　 // 删除所有记录，count中返回被删除的记录个数
+dbp-&gt;get_open_flags(dbp, &amp;open_flags);                          　 　// 获取打开的flags，仅对已打开的数据库才有意义
+dbp-&gt;set_flags(dbp, flags);                                          // 设置打开的flags
+</code></pre>
+
+<p>打开数据库时的flags标志位<br/>
+DB_CREATE　　//如果打开的数据库不存在，就创建它；不指定这个标志，如果数据库不存在，打开失败！<br/>
+DB_EXC　　　　//与DB_CREATE一起使用，如果打开的数据库已经存在，则打开失败；不存在，则创建它；<br/>
+DB_RDONLY　　//只读的方式打开，随后的任何写操作都会失败；<br/>
+DB_TRUNCATE　　//清空对应的数据库磁盘文件；<br/>
+DB_DUPSORT 　　//</p>
+
+<p>get方法返回DB_NOTFOUND时表示没有匹配记录，其最后一个参数flags：</p>
+
+<p>DB_GET_BOTH 　　// get方法默认只匹配key，该flag将返回key和data都匹配的第一条记录<br/>
+DB_MULTIPLE 　　// get方法默认只返回匹配的第一条记录，该flag返回所有匹配记录</p>
+
+<p>使用get方法时，data参数是DBT结构，该DBT的flags参数可以定义为：</p>
+
+<p>DB_DBT_USERMEM       // 使用自己的内存存储检索的data<br/>
+DB_DBT_MALLOC        // 使用DB分配的内存，用完后要手动free<br/>
+DB提供的内存对齐方式可能不符合用户数据结构的需求，所以尽量使用我们自己的内存。</p>
+
+<p>用DB_DBT_USERMEM方式改写前面的例子：</p>
+
+<pre><code class="language-text"> /* get record */
+    CUSTOMER info;
+    init_DBT(&amp;key, &amp;data);
+
+    key.data = &amp;key_cust_c_id;
+    key.size = sizeof(key_cust_c_id);
+
+    data.data = &amp;info;
+    data.ulen = sizeof(CUSTOMER);
+    data.flags = DB_DBT_USERMEM;
+
+    if (ret = dbp-&gt;get(dbp, NULL, &amp;key, &amp;data, 0)) {
+        printf(&quot;dbp-&gt;get ERROR: %s\n&quot;, db_strerror(ret));
+        goto failed;
+    }   
+
+    printf(&quot;id = %d\nname=%s\naddress=%s\nage=%d\n&quot;, 
+            info.c_id,
+            info.name,
+            info.address,
+            info.age);
+</code></pre>
+
+<p>错误处理<br/>
+DB接口调用成功通常返回0，失败返回非0值，此时可以检查错误码errno；<br/>
+由系统调用失败引起的错误errno&gt;0，否则errno&lt;0。</p>
+
+<pre><code class="language-text">db_strerror(errno)                     // 将错误编码映射成一个字符串
+dbp-&gt;set_errfile(dbp, FILE*)           // 设置错误文件
+dbp-&gt;set_errcall(dbp, void(*)(const DB_ENV *dbenv, const char* err_pfx, const char* msg))           // 定义错误处理的回调函数
+dbp-&gt;set_errpfx(dbp, format...)       // 加上错误消息前缀
+dbp-&gt;err(dbp, ret, format...)        // 生成错误消息，并按优先级发给set_errcall定义的错误处理回调函数、set_errfile定义的文件、stderr；
+dbp-&gt;errx(dbp, format...)            // 与dbp-&gt;err类似，但没有返回值ret这个额外参数
+</code></pre>
+
+<p>错误消息由一个前缀（由set_errpfx定义）、消息本身（由err或errx定义）和一个换行符组成。</p>
+
+<h2 id="toc_3">游标</h2>
+
+<p>如果DB数据库中存在键值相同的多条记录，使用dbp-&gt;get()方法默认只能获取一条记录（除非打开DB_MULTIPLE标志），这个时候有必要使用游标（cursor），游标可以迭代DB数据库中的记录。</p>
+
+<pre><code class="language-text">DBC  *cur;
+dbp-&gt;cursor(dbp, NULL, &amp;cur, 0);              // 初始化游标对象
+cur-&gt;close(cur);                              // 关闭游标
+cur-&gt;get(cur, &amp;key, &amp;data, flags);            // 迭代记录，当没有可迭代的记录时，返回DB_NOTFOUND
+cur-&gt;put(cur, &amp;key, &amp;data, flags);
+cur-&gt;del(cur, 0);                             // 删除游标指向的记录
+</code></pre>
+
+<p>cur-&gt;get()方法中flags参数的取值：<br/>
+1、迭代整个数据库中的纪录集合：<br/>
+DB_NEXT　　　　// 从第一条纪录遍历到最后一条纪录；<br/>
+DB_PREV　　　　// 逆序遍历，从最后一条纪录开始；</p>
+
+<p>2、查找符合条件的记录集：<br/>
+DB_SET　　　　　　　　　　// 移动游标到键值等于给定值的第一条纪录；<br/>
+DB_SET_RANGE　　　　　　// 如果数据库使用BTREE的算法，移动游标到键值大于或等于给定值的纪录集合；<br/>
+DB_GET_BOTH　　　　　　// 移动游标到键值和数据项均等于给定值的第一条记录；<br/>
+DB_GET_BOTH_RAGNE　　 // 移动游标到键值等于给定值，数据项大于或等于给定值的纪录集合；</p>
+
+<p>DB_NEXT_DUP　　　　　　// 获取下一个key重复的记录；<br/>
+DB_PREV_DUP　　　　　　// 获取上一个key重复的记录；<br/>
+DB_NEXT_NODUP　　　　 // 获取下一个key不重复的记录；<br/>
+DB_PREV_NODUP　　　　// 获取上一个key不重复的记录；</p>
+
+<p>cur-&gt;put()方法中flags参数的取值：<br/>
+DB_NODUPDATA　　　// 如果插入的key已存在，返回DB_KEYEXIST，如果不存在，则记录的插入顺序由其在数据库的插入顺序决定；<br/>
+DB_KEYFIRST　　　　// 在key重复的集合里面放在第一个位置；<br/>
+DB_KEYLAST　　　　// 在key重复的集合里面放在最后一个位置；<br/>
+DB_CURRENT　　　　// replace</p>
+
+<p>一个例子：</p>
+
+<pre><code class="language-text">DB *dbp, *sdbp;     /* Primary and secondary DB handles */
+u_int32_t flags;    /* Primary database open flags */
+int ret;            /* Function return value */
+
+typedef struct vendor {
+    char name[MAXFIELD]; 　　　　　　　 /* Vendor name */
+    char street[MAXFIELD]; 　　　　　　 /* Street name and number */
+    char city[MAXFIELD]; 　　　　　　　 /* City */
+    char state[3]; 　　　　　　　　　　　/* Two-digit US state code */
+    char zipcode[6]; 　　　　　　　　　　/* US zipcode */
+    char phone_number[13]; 　　　　　　/* Vendor phone number */
+    char sales_rep[MAXFIELD]; 　　　　 /* Name of sales representative */
+    char sales_rep_phone[MAXFIELD];  /* Sales rep&#39;s phone number */
+} VENDOR;
+
+/* Primary */
+ret = db_create(&amp;dbp, NULL, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Secondary */
+ret = db_create(&amp;sdbp, NULL, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Usually we want to support duplicates for secondary databases */
+ret = sdbp-&gt;set_flags(sdbp, DB_DUPSORT);
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Database open flags */
+flags = DB_CREATE; /* If the database does not exist, create it.*/
+
+/* open the primary database */
+ret = dbp-&gt;open(dbp, NULL, &quot;my_db.db&quot;, NULL, DB_BTREE, flags, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* open the secondary database */
+ret = sdbp-&gt;open(sdbp, NULL, &quot;my_secdb.db&quot;, NULL, DB_BTREE, flags, 0); 
+if (ret != 0) {
+    /* Error handling goes here */
+}
+
+/* Callback used for key creation. Not defined in this example. See the next section. */
+int get_sales_rep(DB *sdbp,   /* secondary db handle */
+        const DBT *pkey, 　　 /* primary db record&#39;s key */
+        const DBT *pdata, 　　/* primary db record&#39;s data */
+        DBT *skey) 　　　　　　/* secondary db record&#39;s key */
+{
+    VENDOR *vendor;
+
+    /* First, extract the structure contained in the primary&#39;s data */
+    vendor = pdata-&gt;data;
+
+    /* Now set the secondary key&#39;s data to be the representative&#39;s name */
+    memset(skey, 0, sizeof(DBT));
+    skey-&gt;data = vendor-&gt;sales_rep;
+    skey-&gt;size = strlen(vendor-&gt;sales_rep) + 1;
+
+    /* Return 0 to indicate that the record can be created/updated. */
+    return (0);
+}
+
+
+/* Now associate the secondary to the primary */
+dbp-&gt;associate(dbp, NULL, sdbp, get_sales_rep, 0);
+</code></pre>
+
+<h2 id="toc_4">缓存</h2>
+
+<p>DB可以将那些经常访问到记录cache 到内存里面，从而加快读写速度。</p>
+
+<p>dbp-&gt;set_cachesize(dbp, gbytes, bytes, ncache);         // 通过数据库句柄设置cache大小<br/>
+dbenv-&gt;set_cachesize(dbp, gbytes, bytes, ncache);      // 通过环境句柄设置cache大小（全局）</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15397563500978.html" 
+          title="Next Post: 一篇比特币相关的问答整理">一篇比特币相关的问答整理 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+            <div id="disqus_thread"></div>
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>我对区块链的理解</h1>
+                <div class="site-des">对区块链的思考</div>
+                <div class="social">
+
+
+
+
+
+
+
+<a target="_blank" class="weibo" href="https://weibo.com" title="weibo">Weibo</a>
+
+<a target="_blank" class="github" target="_blank" href="https://github.com" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:spzhongwin@google.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="about.html"><strong>关于</strong></a>
+        
+            <a href="bit.html"><strong>比特币</strong></a>
+        
+            <a href="ethereum.html"><strong>以太坊</strong></a>
+        
+            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15397582057010.html">一篇关于区块BerkeleyDB的存储</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15397563500978.html">一篇比特币相关的问答整理</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15397440071875.html">一篇关于最新比特币技术的说明</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15396726640663.html">Raft</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15396726536666.html">Paxos</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2018
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'coderforart'; 
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+<script type="text/javascript">
+var disqus_shortname = 'coderforart'; 
+
+(function () {
+var s = document.createElement('script'); s.async = true;
+s.type = 'text/javascript';
+s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

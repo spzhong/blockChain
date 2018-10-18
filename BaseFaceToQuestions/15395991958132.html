@@ -1,0 +1,290 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  找出一个数组中最大的k个数。 - 
+  
+  </title>
+ <meta name="description" content="">
+ <link href="atom.xml" rel="alternate" title="" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+    <script src="asset/highlightjs/highlight.pack.js"></script>
+    <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+<div id="header">
+    <h1><a href="index.html"></a></h1>
+</div>
+
+</nav>
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; </span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+      <li><a href="index.html">Home</a></li>
+      
+        <li class="divider"></li>
+        <li><label>迅雷</label></li>
+
+          
+            <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
+          
+            <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
+          
+            <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
+          
+            <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
+          
+            <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
+          
+            <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
+          
+            <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
+          
+            <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
+          
+            <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
+          
+            <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
+          
+            <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
+          
+            <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
+          
+
+      
+        <li class="divider"></li>
+        <li><label>其它</label></li>
+
+          
+
+      
+        <li class="divider"></li>
+        <li><label>有意思的参考</label></li>
+
+          
+            <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
+          
+            <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
+          
+            <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
+          
+            <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
+          
+            <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
+          
+
+      
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+        <section id="main-content" role="main" class="scroll-container">
+
+          <div class="row">
+            <div class="large-3 medium-3 columns">
+              <div class="hide-for-small">
+                <div class="sidebar">
+                <nav>
+                  <ul id="side-nav" class="side-nav">
+
+                    
+                      <li class="side-title"><span>迅雷</span></li>
+                        
+                          <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
+                        
+                          <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
+                        
+                          <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
+                        
+                          <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
+                        
+                          <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
+                        
+                          <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
+                        
+                          <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
+                        
+                          <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
+                        
+                          <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
+                        
+                          <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
+                        
+                          <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
+                        
+                          <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
+                        
+
+                    
+                      <li class="side-title"><span>其它</span></li>
+                        
+
+                    
+                      <li class="side-title"><span>有意思的参考</span></li>
+                        
+                          <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
+                        
+                          <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
+                        
+                          <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
+                        
+                          <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
+                        
+                          <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
+                        
+
+                    
+                  </ul>
+                </nav>
+                </div>
+              </div>
+            </div>
+            <div class="large-9 medium-9 columns">
+
+ <div class="markdown-body">
+<h1>找出一个数组中最大的k个数。</h1>
+
+<p>找出数组中前k个最大的数</p>
+
+<ul>
+<li>
+<a href="#toc_0">直接排序</a>
+</li>
+<li>
+<a href="#toc_1">部分排序</a>
+</li>
+<li>
+<a href="#toc_2">堆排序</a>
+</li>
+<li>
+<a href="#toc_3">计数排序法</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">直接排序</h2>
+
+<p>假设有n个数，是一个n个长度的数组将其存储下来，并且使用排序算法从大到小依次排序，拍序完成后，输出前k个数<br/>
+如果n不小，但也不大，可采用快速排序来完成</p>
+
+<p>复杂度分析：<br/>
+快速排序平均复杂度为O(NlogN)</p>
+
+<h2 id="toc_1">部分排序</h2>
+
+<p>我们将所有的元素都进行了排序，是没有必要的，而且题目是要求寻找最大的k个数，也就是说，我呢只要将最大的k个数排好序就OK了，没有必要将剩下的n-k也进行排序</p>
+
+<p>在快速排序中，每一轮都需要选定一个pivot，每一轮排序完成后，比pivot大的数都排在它前面，而比pivot小的数都排在它的后面，假设前面的序列为Sa,后面的长度为Sb,那么Sa的长度为n的2种情况：<br/>
+1.当n &gt;= k,直接输出Sa前k个元素即可<br/>
+2.当n &lt; k,从Sb中找出k-n个元素和Sa一起输出即可</p>
+
+<p>优化后的算法是，将K下标的值作为初始基准点，第一次遍历后取出大于k的数组集合，然后针对该集合再进行快速的排序<br/>
+时间复杂度：O(NlogK)</p>
+
+<h2 id="toc_2">堆排序</h2>
+
+<p>如何N是非常的大，上百万或事千万，及内存受限制之类的话，如果用这么大的数组来存储，这是非常不明智的做法，但是有堆就可以完美的解决存储问题</p>
+
+<h2 id="toc_3">计数排序法</h2>
+
+<p>适用的情况，如果所有的N个数都是正整数，且他们的取值范围不大，已知最大的树是MaxN</p>
+
+<p>我们可以申请一个数组count[MaxN]来记录每个数出现的次数，然后就可以找出最大的K个数<br/>
+时间复杂度：O(N)</p>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="15395992052689.html"  title="Previous Post: 找出二叉树上最远的两个结点的距离。">&laquo; 找出二叉树上最远的两个结点的距离。</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="15395991346816.html" 
+	        title="Next Post: 设计一个队列，主要包括下列操作：">设计一个队列，主要包括下列操作： &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '15395991958132.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
+</div></div>
+
+
+<div class="page-bottom">
+  <div class="row">
+  <hr />
+  <div class="small-9 columns">
+  <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+  <div class="small-3 columns">
+  <p class="copyright text-right"><a href="#header">TOP</a></p>
+  </div>
+   
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+    
+    
+    <script src="asset/js/foundation.min.js"></script>
+    <script src="asset/js/foundation/foundation.offcanvas.js"></script>
+    <script>
+      $(document).foundation();
+
+     
+    </script>
+    
+
+
+  </body>
+</html>

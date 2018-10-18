@@ -125,15 +125,13 @@
     <li><label>Categories</label></li>
 
         
-            <li><a href="poofAlgorithm.html">共识算法</a></li>
-        
             <li><a href="about.html">关于</a></li>
-        
-            <li><a href="index.html">指引</a></li>
         
             <li><a href="bit.html">比特币</a></li>
         
             <li><a href="ethereum.html">以太坊</a></li>
+        
+            <li><a href="poofAlgorithm.html">共识算法</a></li>
          
 
       </ul>
@@ -178,8 +176,26 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p><a href="https://www.jianshu.com/p/8c8cedc84220">https://www.jianshu.com/p/8c8cedc84220</a><br/>
-<a href="https://zhuanlan.zhihu.com/p/30008641">https://zhuanlan.zhihu.com/p/30008641</a></p>
+      <p>Proof of Work 工作量证明，也就是说你获得多少货币，取决于你挖矿贡献的有效工作，比如你电脑性能越好，分给你的矿就越多，即根据你的工作证明来执行活不的分配，大部分的虚拟货币，比如比特币，莱特币等都是基于POW模式的，算力越高，挖矿时间越长，获得货币就越多</p>
+
+<h2 id="toc_0">实现的原理</h2>
+
+<p>不停的进行哈希计算，使其小于一个目标bits值的过程，称为“工作量证明”</p>
+
+<p>每个区块中都有一个字段为bits的值</p>
+
+<blockquote>
+<p>目标值bits:<br/>
+    4个字节，第一字节表示幂，后3个字节表示系数<br/>
+    例如：0x191a122f<br/>
+    bits = 0x1a122f 2 ^ (8 * ( 0x19 - 3 ))<br/>
+矿工就要找出小于当前区块中的bits值</p>
+</blockquote>
+
+<p>coinbase交易中的coinbase字段<br/>
+difficulty</p>
+
+<h2 id="toc_1">优缺点</h2>
 
 
     
@@ -255,15 +271,13 @@
 
       	<p class="cat-list">
         
-            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
-        
             <a href="about.html"><strong>关于</strong></a>
-        
-            <a href="index.html"><strong>指引</strong></a>
         
             <a href="bit.html"><strong>比特币</strong></a>
         
             <a href="ethereum.html"><strong>以太坊</strong></a>
+        
+            <a href="poofAlgorithm.html"><strong>共识算法</strong></a>
          
         </p>
 
@@ -280,33 +294,37 @@
 	      
 		      
 			      <li class="post">
-			        <a href="15385342635688.html">以太坊虚拟机</a>
+			        <a href="15397582057010.html">一篇关于区块BerkeleyDB的存储</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15365050797831.html">一篇对数字签名的理解</a>
+			        <a href="15397563500978.html">一篇比特币相关的问答整理</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15360563845824.html">关于</a>
+			        <a href="15397440071875.html">一篇关于最新比特币技术的说明</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15358586085164.html">一篇对比特币的应用案例分析</a>
+			        <a href="15396726640663.html">Raft</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="15358585289735.html">一篇对比特币网络的理解</a>
+			        <a href="15396726536666.html">Paxos</a>
 			      </li>
 		     
+		  
+		      
+		  
+		      
 		  
 		      
 		  
