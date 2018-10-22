@@ -192,10 +192,84 @@
 矿工就要找出小于当前区块中的bits值</p>
 </blockquote>
 
-<p>coinbase交易中的coinbase字段<br/>
-difficulty</p>
+<pre><code class="language-python">
+bits = 0x191a122f
+hexBits = 0x1a122f ^ 8(0x19 -3 )
 
-<h2 id="toc_1">优缺点</h2>
+isGoMineral = Ture
+const BaseCoin = &quot;我挖出的矿产哦&quot;
+TX={交易,,,,...}
+TXMerkleRootHash = merkleRootHash(TX,BaseCoin)
+BlockHead = ver + proBlockHash + TXMerkleRootHash + timeStamp
+Nonce = 0
+
+//开始挖矿
+while(isGoMineral):
+    hexHash = HAHS256(HASH256(BlockHead+nonce))
+    if (hexBits &lt; hexHash)
+        break
+    Nonce++
+    if (Nonce &gt;= 0xFFFF):
+        //判断是否数在同一秒内，是否需要扩展随机数
+        if (timeStamp == curTimeStamp):
+            exchangeMerkleRootHash(ver, proBlockHash,timeStamp)
+        Nonce = 0
+ 
+ 
+// 修改BlockHead中的TXMerkleRootHash（修改baseCoin交易中的baseCoin字段）
+def exchangeMerkleRootHash(ver, proBlockHash, timeStamp):
+    newTXMerkleRootHash =  merkleRootHash(TX,BaseCoin+hex_to_str(0xffff))
+    BlockHead = ver + proBlockHash + newTXMerkleRootHash + timeStamp
+ 
+ 
+//生成merkle root HASH
+def merkleRootHash(Tx,basCoin):
+    //merkle哈希算法
+    return newTXMerkleRootHash
+    
+//十六进制数字转换Stirng
+def hex_to_str(b):
+    s = &#39;&#39;
+    for i in b:
+        s += &#39;{0:0&gt;2}&#39;.format(str(hex(i))[2:])
+    return(s)
+</code></pre>
+
+<p>随着算力的增加，nonce随机数最大是2<sup>32</sup> ，如果算力每秒大于 2<sup>32</sup> HASH/秒，那么就会使用coinbase交易中的coinbase字段这里面预留了8个字节，加上nonce字段，就有了12个字节用于存储随机数，这个随机数最大支持2<sup>96</sup> HASH/秒，这是一个极大的数据，足够满足随机数的递增了</p>
+
+<h2 id="toc_1">如何调整difficulty</h2>
+
+<p>为了调整挖矿产出时间，系统做了一个难度系数的调整，在每隔2016块（2周左右），系统会调整一下挖矿的难度，以防止后续过快或过慢的挖矿</p>
+
+<p>难度值，只是一个浮点数，没有包含在区块数据中的，只是一个直观的体现</p>
+
+<pre><code class="language-cpp">假设算力为t次Hash/秒
+
+const int constant = 2^32
+
+时间 = 难度 * constant / 算力
+时间*算力 = N次HASH计算 = 难度 * constant
+
+当算力恒定的情况下，难度越大需要的时间就越长
+当时间恒定的情况下，难度越大需要的算力就越大
+
+时间 = 难度 * constant / 算力
+算力 = 难度 * constant / 时间
+</code></pre>
+
+<pre><code class="language-cpp">const int nTargetTimespan = 14 * 24 * 60 * 60; // two weeks 单位秒
+int pindexLastTime = //当前的时间
+int pindex2016Time = //第前2016块的时间
+//生成最近2016个区块所用的时间间隔
+unsigned int nActualTimespan = pindexLastTime - pindex2016Time;  
+//限定最大和最小值（4倍）,防止过快的调整
+if (nActualTimespan &lt; nTargetTimespan/4)
+    nActualTimespan = nTargetTimespan/4
+if (nActualTimespan &gt; nTargetTimespan*4)
+    nActualTimespan = nTargetTimespan*4
+//计算新的难度值
+新的难度值 = 旧的难度值 * nActualTimespan/nTargetTimespan
+</code></pre>
 
 
     
@@ -300,12 +374,6 @@ difficulty</p>
 		  
 		      
 			      <li class="post">
-			        <a href="15397563500978.html">一篇比特币相关的问答整理</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="15397440071875.html">一篇关于最新比特币技术的说明</a>
 			      </li>
 		     
@@ -323,6 +391,10 @@ difficulty</p>
 		     
 		  
 		      
+			      <li class="post">
+			        <a href="15385342635688.html">以太坊虚拟机</a>
+			      </li>
+		     
 		  
 		      
 		  
