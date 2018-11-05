@@ -8,17 +8,67 @@
   找出二叉树上最远的两个结点的距离。 - 
   
   </title>
- <meta name="description" content="">
- <link href="atom.xml" rel="alternate" title="" type="application/atom+xml">
+  
+  
+  <link href="atom.xml" rel="alternate" title="" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
     <link rel="stylesheet" href="asset/css/docs.css" />
-
     <script src="asset/js/vendor/modernizr.js"></script>
     <script src="asset/js/vendor/jquery.js"></script>
-    <script src="asset/highlightjs/highlight.pack.js"></script>
-    <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
-    <script>hljs.initHighlightingOnLoad();</script>
-    
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+
+<link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermaid.css">
+<!--        <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermadidstyle.css">-->
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/jquery.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/rawdeflate.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/encode64.js"></script>
+            <script src="asset/sample-custom-html-charts/echarts.common.min.js"></script>
+            <script src="asset/sample-custom-html-charts/mermaid.min.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                  var mwebii=0;
+                  var mwebChartEleId = 'mweb-chart-ele-';
+                  $('pre>code').each(function(){
+                                     mwebii++;
+                                     var eleiid = mwebChartEleId+mwebii;
+                                     if($(this).hasClass('language-mermaid')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div id="'+eleiid+'"></div>').addClass('mermaid').html($(this).text()).insertAfter(ele);
+                                     }else if($(this).hasClass('language-plantuml')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     var str = unescape(encodeURIComponent($(this).text()));
+                                     var imgURL = "http://www.plantuml.com/plantuml/svg/"+encode64(deflate(str,9));
+                                     var newEle = $('<div id="'+eleiid+'"><img src="'+imgURL+'" /></div>').insertAfter(ele);
+                                     }else if($(this).hasClass('language-js-echarts')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div style="width: 100%;height:400px;" id="'+eleiid+'"></div>').insertAfter(ele);
+                                     var myChart = echarts.init(document.getElementById(eleiid));
+                                     try  {
+                                     eval($(this).text());
+                                     myChart.setOption(option);
+                                     }catch(exception) {}
+                                     }
+                                     });
+                  
+                  mermaid.init({noteMargin: 10}, ".mermaid");
+                  });
+                </script>
+
+
+
   </head>
   <body class="antialiased hide-extras">
     
@@ -28,11 +78,32 @@
 
 <nav class="top-bar docs-bar hide-for-small" data-topbar>
 
-<div id="header">
-    <h1><a href="index.html"></a></h1>
-</div>
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
 
 </nav>
+
         <nav class="tab-bar show-for-small">
   <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
     <span> &nbsp; </span>
@@ -41,202 +112,334 @@
 
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
-      <li><a href="index.html">Home</a></li>
-      
-        <li class="divider"></li>
-        <li><label>迅雷</label></li>
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
 
-          
-            <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
-          
-            <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
-          
-            <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
-          
-            <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
-          
-            <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
-          
-            <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
-          
-            <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
-          
-            <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
-          
-            <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
-          
-            <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
-          
-            <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
-          
-            <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
-          
+    <li><label>Categories</label></li>
 
-      
-        <li class="divider"></li>
-        <li><label>其它</label></li>
+        
+            <li><a href="xunlei.html">迅雷</a></li>
+        
+            <li><a href="other.html">其它</a></li>
+        
+            <li><a href="mindcase.html">有意思的参考</a></li>
+         
 
-          
-
-      
-        <li class="divider"></li>
-        <li><label>有意思的参考</label></li>
-
-          
-            <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
-          
-            <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
-          
-            <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
-          
-            <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
-          
-            <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
-          
-
-      
       </ul>
     </aside>
 
 <a class="exit-off-canvas" href="#"></a>
 
+
         <section id="main-content" role="main" class="scroll-container">
+        
+       
 
-          <div class="row">
-            <div class="large-3 medium-3 columns">
-              <div class="hide-for-small">
-                <div class="sidebar">
-                <nav>
-                  <ul id="side-nav" class="side-nav">
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>找出二叉树上最远的两个结点的距离。</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/10/15</span>
 
-                    
-                      <li class="side-title"><span>迅雷</span></li>
-                        
-                          <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
-                        
-                          <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
-                        
-                          <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
-                        
-                          <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
-                        
-                          <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
-                        
-                          <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
-                        
-                          <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
-                        
-                          <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
-                        
-                          <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
-                        
-                          <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
-                        
-                          <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
-                        
-                          <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
-                        
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='xunlei.html'>迅雷</a></span>
+           
+         
+          <span class="comments">
+            
 
-                    
-                      <li class="side-title"><span>其它</span></li>
-                        
+            
+          </span>
 
-                    
-                      <li class="side-title"><span>有意思的参考</span></li>
-                        
-                          <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
-                        
-                          <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
-                        
-                          <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
-                        
-                          <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
-                        
-                          <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
-                        
+        </div>
+      </div><!-- article -->
 
-                    
-                  </ul>
-                </nav>
+      <div class="article-content">
+      <p>计算一个二叉树到最大距离有两种情况：<br/>
+情况A：路径经过左子树到最深点，通过根节点，再到右子树到最深节点<br/>
+情况B：路径不穿过根节点，而是左子树或右子树到最大距离路径，取其大者</p>
+
+<p>对于情况A来说，只需要知道左右子树到深度，然后加起来即可。<br/>
+对于情况B来说，需要知道左子树到最远距离，右子树到最远距离</p>
+
+<p>对于二叉树到最远两个节点的距离，需要计算这两种情况的路径距离，取其最大的值，就是二叉树的最大距离</p>
+
+<h2 id="toc_0">实例说明</h2>
+
+<p>对于情况A来说，只需要知道左右子树到深度，然后加起来即可。<br/>
+对于情况B来说，需要知道左子树到最远距离，右子树到最远距离</p>
+
+<h2 id="toc_1">代码实现</h2>
+
+<pre><code class="language-cpp">struct NODE
+{
+    NODE *left; //左子树
+    NODE *right;//右子树
+    int nMaxLeft;   //左子树中的最长距离
+    int nMaxRight;  //右子树中的最长距离
+    char chValue;   //该节点的值
+}
+
+int nMaxLen = 0;
+
+//寻找树中最长的两段距离
+void FindMaxLen(NODE* pRoot)
+{
+    //遍历到叶子节点，就返回
+    if (pRoot==Null)
+    {
+        return;
+    }
+    
+    //如果左子树为空，那么该节点的左边最长距离为0
+    if (pRoot-&gt;left == NULL)
+    {
+        pRoot-&gt;nMaxLeft = 0;
+    }
+    //如果右子树为空，那么该节点的右边最长距离为0
+    if (pRoot-&gt;right == NULL)
+    {
+        pRoot-&gt;nMaxRight = 0;
+    }
+    // 如果左子树不为空，递归寻找左子树的最长距离
+    if (pRoot-&gt;pLeft != NULL)
+    {
+        FindMaxLen(pRoot-&gt;pLeft);
+    }
+    // 如果右子树不为空，递归寻找右子树的最长距离
+    if (pRoot-&gt;pRight != NULL)
+    {
+        FindMaxLen(pRoot-&gt;pRight);
+    }
+    // 计算左子树最长节点距离
+    if (pRoot-&gt;pLeft != NULL)
+    {
+        pRoot-&gt;nMaxLeft = ((pRoot-&gt;pLeft-&gt;nMaxLeft &gt; pRoot-&gt;pLeft-&gt;nMaxRight) ? pRoot-&gt;pLeft-&gt;nMaxLeft : pRoot-&gt;pLeft-&gt;nMaxRight) + 1;
+    }
+ 
+    // 计算右子树最长节点距离
+    if (pRoot-&gt;pRight != NULL)
+    {
+        pRoot-&gt;nMaxRight = ((pRoot-&gt;pRight-&gt;nMaxLeft &gt; pRoot-&gt;pRight-&gt;nMaxRight) ? pRoot-&gt;pRight-&gt;nMaxLeft : pRoot-&gt;pRight-&gt;nMaxRight)+1;
+    }
+ 
+    // 更新最长距离
+    if (pRoot-&gt;nMaxLeft + pRoot-&gt;nMaxRight &gt; nMaxLen)
+    {
+        nMaxLen = pRoot-&gt;nMaxLeft + pRoot-&gt;nMaxRight;
+    } 
+}
+</code></pre>
+
+<p><a href="https://blog.csdn.net/liuyi1207164339/article/details/50898902">https://blog.csdn.net/liuyi1207164339/article/details/50898902</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15395992117167.html" 
+          title="Previous Post: STL中vector，Map，Set的实现原理">&laquo; STL中vector，Map，Set的实现原理</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15395991958132.html" 
+          title="Next Post: 找出一个数组中最大的k个数。">找出一个数组中最大的k个数。 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1></h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="xunlei.html"><strong>迅雷</strong></a>
+        
+            <a href="other.html"><strong>其它</strong></a>
+        
+            <a href="mindcase.html"><strong>有意思的参考</strong></a>
+         
+        </p>
+
+
                 </div>
               </div>
-            </div>
-            <div class="large-9 medium-9 columns">
 
- <div class="markdown-body">
-<h1>找出二叉树上最远的两个结点的距离。</h1>
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15411228257252.html">默克尔哈希树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15411227973182.html">汗诺塔</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15409843239504.html">红-黑树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15409843145989.html">二叉树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15404623797917.html">堆排序</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
 
+</div><!-- row -->
 
-
-</div>
-
-<br /><br />
-<hr />
-
-<div class="row clearfix">
-  <div class="large-6 columns">
-	<div class="text-left" style="padding:15px 0px;">
-		
-	        <a href="15395992117167.html"  title="Previous Post: stl中的map底层是如何实现的。">&laquo; stl中的map底层是如何实现的。</a>
-	    
-	</div>
-  </div>
-  <div class="large-6 columns">
-	<div class="text-right" style="padding:15px 0px;">
-		
-	        <a href="15395991958132.html" 
-	        title="Next Post: 找出一个数组中最大的k个数。">找出一个数组中最大的k个数。 &raquo;</a>
-	    
-	</div>
-  </div>
-</div>
-
-<div class="row">
-<div style="padding:0px 0.93em;" class="share-comments">
-
-</div>
-</div>
-<script type="text/javascript">
-	$(function(){
-		var currentURL = '15395992052689.html';
-		$('#side-nav a').each(function(){
-			if($(this).attr('href') == currentURL){
-				$(this).parent().addClass('active');
-			}
-		});
-	});
-</script>  
-</div></div>
-
-
-<div class="page-bottom">
+ <div class="page-bottom clearfix">
   <div class="row">
-  <hr />
-  <div class="small-9 columns">
-  <p class="copyright">Copyright &copy; 2015
+   <p class="copyright">Copyright &copy; 2018
 Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
 Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
-  </div>
-  <div class="small-3 columns">
-  <p class="copyright text-right"><a href="#header">TOP</a></p>
-  </div>
-   
   </div>
 </div>
 
         </section>
       </div>
     </div>
+
+  
     
-    
+
     <script src="asset/js/foundation.min.js"></script>
-    <script src="asset/js/foundation/foundation.offcanvas.js"></script>
     <script>
       $(document).foundation();
-
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
      
     </script>
+
     
+
 
 
   </body>

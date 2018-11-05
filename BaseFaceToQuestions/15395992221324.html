@@ -8,17 +8,67 @@
   什么是钩子。 - 
   
   </title>
- <meta name="description" content="">
- <link href="atom.xml" rel="alternate" title="" type="application/atom+xml">
+  
+  
+  <link href="atom.xml" rel="alternate" title="" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
     <link rel="stylesheet" href="asset/css/docs.css" />
-
     <script src="asset/js/vendor/modernizr.js"></script>
     <script src="asset/js/vendor/jquery.js"></script>
-    <script src="asset/highlightjs/highlight.pack.js"></script>
-    <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
-    <script>hljs.initHighlightingOnLoad();</script>
-    
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+
+<link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermaid.css">
+<!--        <link rel="stylesheet" type="text/css" href="asset/sample-custom-html-charts/mermadidstyle.css">-->
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/jquery.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/rawdeflate.js"></script>
+            <script type="text/javascript" src="asset/sample-custom-html-charts/jquery_plantuml/encode64.js"></script>
+            <script src="asset/sample-custom-html-charts/echarts.common.min.js"></script>
+            <script src="asset/sample-custom-html-charts/mermaid.min.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                  var mwebii=0;
+                  var mwebChartEleId = 'mweb-chart-ele-';
+                  $('pre>code').each(function(){
+                                     mwebii++;
+                                     var eleiid = mwebChartEleId+mwebii;
+                                     if($(this).hasClass('language-mermaid')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div id="'+eleiid+'"></div>').addClass('mermaid').html($(this).text()).insertAfter(ele);
+                                     }else if($(this).hasClass('language-plantuml')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     var str = unescape(encodeURIComponent($(this).text()));
+                                     var imgURL = "http://www.plantuml.com/plantuml/svg/"+encode64(deflate(str,9));
+                                     var newEle = $('<div id="'+eleiid+'"><img src="'+imgURL+'" /></div>').insertAfter(ele);
+                                     }else if($(this).hasClass('language-js-echarts')){
+                                     var ele = $(this).addClass('nohighlight').parent();
+                                     ele.hide();
+                                     $('<div style="width: 100%;height:400px;" id="'+eleiid+'"></div>').insertAfter(ele);
+                                     var myChart = echarts.init(document.getElementById(eleiid));
+                                     try  {
+                                     eval($(this).text());
+                                     myChart.setOption(option);
+                                     }catch(exception) {}
+                                     }
+                                     });
+                  
+                  mermaid.init({noteMargin: 10}, ".mermaid");
+                  });
+                </script>
+
+
+
   </head>
   <body class="antialiased hide-extras">
     
@@ -28,11 +78,32 @@
 
 <nav class="top-bar docs-bar hide-for-small" data-topbar>
 
-<div id="header">
-    <h1><a href="index.html"></a></h1>
-</div>
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
 
 </nav>
+
         <nav class="tab-bar show-for-small">
   <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
     <span> &nbsp; </span>
@@ -41,202 +112,280 @@
 
 <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
-      <li><a href="index.html">Home</a></li>
-      
-        <li class="divider"></li>
-        <li><label>迅雷</label></li>
+        
+        <li><a target="self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
 
-          
-            <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
-          
-            <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
-          
-            <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
-          
-            <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
-          
-            <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
-          
-            <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
-          
-            <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
-          
-            <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
-          
-            <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
-          
-            <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
-          
-            <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
-          
-            <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
-          
+    <li><label>Categories</label></li>
 
-      
-        <li class="divider"></li>
-        <li><label>其它</label></li>
+        
+            <li><a href="xunlei.html">迅雷</a></li>
+        
+            <li><a href="other.html">其它</a></li>
+        
+            <li><a href="mindcase.html">有意思的参考</a></li>
+         
 
-          
-
-      
-        <li class="divider"></li>
-        <li><label>有意思的参考</label></li>
-
-          
-            <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
-          
-            <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
-          
-            <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
-          
-            <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
-          
-            <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
-          
-
-      
       </ul>
     </aside>
 
 <a class="exit-off-canvas" href="#"></a>
 
+
         <section id="main-content" role="main" class="scroll-container">
+        
+       
 
-          <div class="row">
-            <div class="large-3 medium-3 columns">
-              <div class="hide-for-small">
-                <div class="sidebar">
-                <nav>
-                  <ul id="side-nav" class="side-nav">
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>什么是钩子。</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/10/15</span>
 
-                    
-                      <li class="side-title"><span>迅雷</span></li>
-                        
-                          <li><a title="http://www.voidcn.com/article/p-rjpzdthm-xr.html" href="15396828386649.html">http://www.voidcn.com/article/p-rjpzdthm-xr.html</a></li>
-                        
-                          <li><a title="![](media/15396825205058/15396825222726.jpg)" href="15396825205058.html">![](media/15396825205058/15396825222726.jpg)</a></li>
-                        
-                          <li><a title="m*n矩阵中的点一共可构成多少个正方形" href="15395992414359.html">m*n矩阵中的点一共可构成多少个正方形</a></li>
-                        
-                          <li><a title="什么是观察者模式。" href="15395992339639.html">什么是观察者模式。</a></li>
-                        
-                          <li><a title="C++多态的底层实现。" href="15395992279563.html">C++多态的底层实现。</a></li>
-                        
-                          <li><a title="什么是钩子。" href="15395992221324.html">什么是钩子。</a></li>
-                        
-                          <li><a title="stl中的map底层是如何实现的。" href="15395992117167.html">stl中的map底层是如何实现的。</a></li>
-                        
-                          <li><a title="找出二叉树上最远的两个结点的距离。" href="15395992052689.html">找出二叉树上最远的两个结点的距离。</a></li>
-                        
-                          <li><a title="找出一个数组中最大的k个数。" href="15395991958132.html">找出一个数组中最大的k个数。</a></li>
-                        
-                          <li><a title="设计一个队列，主要包括下列操作：" href="15395991346816.html">设计一个队列，主要包括下列操作：</a></li>
-                        
-                          <li><a title="怎么进行文件增量备份。" href="15395991143686.html">怎么进行文件增量备份。</a></li>
-                        
-                          <li><a title="设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。" href="15395963639371.html">设计一个函数，返回包含1000个数的数组，要求数组中随机分布1－1000的数，每个数仅出现一次。</a></li>
-                        
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='xunlei.html'>迅雷</a></span>
+           
+         
+          <span class="comments">
+            
 
-                    
-                      <li class="side-title"><span>其它</span></li>
-                        
+            
+          </span>
 
-                    
-                      <li class="side-title"><span>有意思的参考</span></li>
-                        
-                          <li><a title="20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数" href="15396847691817.html">20个排序好的数组，每个数组500个数，按照降序排序好的，让找出500个最大的数</a></li>
-                        
-                          <li><a title="https://blog.csdn.net/v_JULY_v/article/details/6279498" href="15396786573569.html">https://blog.csdn.net/v_JULY_v/article/details/6279498</a></li>
-                        
-                          <li><a title="https://www.jianshu.com/p/ba86194b0b93" href="15396786503652.html">https://www.jianshu.com/p/ba86194b0b93</a></li>
-                        
-                          <li><a title="https://cloud.tencent.com/developer/article/1017870" href="15396784466512.html">https://cloud.tencent.com/developer/article/1017870</a></li>
-                        
-                          <li><a title="在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！" href="15396734868677.html">在一个数组中有0-99之间的整数101个(数组无序)，用高效方法找出其中的唯一的重复元素！</a></li>
-                        
+        </div>
+      </div><!-- article -->
 
-                    
-                  </ul>
-                </nav>
+      <div class="article-content">
+      <p>钩子也就是HOOK，用于劫持消息</p>
+
+<p>在windows系统中，一切皆为消息，比如你按了一下键盘也就是一个消息，HOOK的意思是勾住，也就是消息过去之前可以先把消息勾住，不让其传递，你可以优先处理，也是这项技术提供了一个入口，能够针对不同的消息或者API在执行前，先执行你的操作，你的操作就称为钩子函数；</p>
+
+<p>所有有时候沟通的过程中，你先hook住，在处理，就是说在执行莫某操作的之前，优先处理一下</p>
+
+<h2 id="toc_0">什么是Hook 技术</h2>
+
+<p>Hook是“钩子”的意思，在Android 操作系统中系统维护着自己的一套事件分发机制。应用程序，包括应用触发事件和后台逻辑处理，也是根据事件流程一步步地向下执行。而“钩子”的意思，就是在事件传送到终点前截获井监控事件的传输，像个钩子钩上事件一样，并且能够在钩上事件时，处理一些自己特定的事件。</p>
+
+<p>1.Hook 的这个本领，使它能够将自身的代码“融入”被勾住（ Hook ）的程序的进程中，成为目标进程的一个部分。</p>
+
+<p>2.在Android 系统中使用了沙箱机制，普通用户程序的进程空间都是独立的，程序的运行彼此间都不受干扰。</p>
+
+<p>3.根据Hook 对象与Hook 后处理的事件方式不同， Hook 还分为不同的种类，如消息Hook 、APIHook 等。</p>
+
+<p>Hook技术无论对安全软件还是恶意软件都是十分关键的一项技术，其本质就是劫持函数调用。但是由于处于Linux 用户态，每个进程都有自己独立的进程空间，所以必须先注入到所要Hook 的进程空间，修改其内存中的进程代码，替换其过程表的符号地址。在Android 中一般是通过ptrace函数附加进程，然后向远程进程注人so 库，从而达到监控以及远程进程关键函数挂钩。</p>
+
+<p>ptrace 函数<br/>
+为方便应用软件的开发和调试，从 Unix 的早期版本开始就提供了一种对运行中的进程进行跟踪和控制的手段，那就是系统调用 ptrace()。通过 ptrace()，一个进程可以动态地读/写另一个进程的内存和寄存器，包括其指令空间、数据空间、堆栈以及所有的寄存器。与信号机制（以及其它手段）相结合， 就可以实现让一个进程在另一个进程的控制和跟踪下运行的目的。<br/>
+GNU 的调试工具gdb 就是一个典型的实例。通过gdb，软件开发人员可以使一个应用程序在gdb的“监视”和操纵下受控地运行。对于受gdb 控制的进程，可以通过在其程序中设置断点，检查其堆校以确定函数调用路线，检查并改变局部变 量或全局变量的内容等等方法，来进行调试。显然，所有这些手段从概念上说都确实属于进程间“通信”的范畴，但是必须指出，这只是为软件调试而设计和设立的，不应该用于一般的进程间通信。一 般而言，通信是要由双方都介入且互相协调才能完成的。就拿“管道”来说，虽然管道是单向的，但 一定得由一方写，另一方读才能达到目的。再拿信号来说，虽然信号是异步的，也就是接收信号的一 方并不知道信号会在什么时候到来，因而在应用程序中并不主动有意地去检查有否信号到达。但是从 总体而言，接收方知道信号可能会到来，并且为此在应用程序中作出了安排。而当信号真的到来时， 接收方也“知道”其到来，并根据事先的安排作出反应。然而，由 ptrace()所实现的“通信”却完全是单方面的，被跟踪的进程甚至并不知道（从应用程序的角度而言）自己是在受到控制和监视的条件下运行。从这个角度讲，ptrace()其实又不属于“进程间通信”。</p>
+
+<p>ptrace 提供了一种使父进程得以监视和控制其他进程的方式，它还能够改变子进程巾的寄存器和内核映像，因而可以实现断点调试和系统调用的跟踪。使用ptrace ，你可以在用户层拦截和修改系统调用（这个和 Hook 所要达到的目的类似），父进程还可以便子进程继续执行，并选择是再忽略引起终止的信号。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15395992279563.html" 
+          title="Previous Post: C++多态的底层实现。">&laquo; C++多态的底层实现。</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="15395992117167.html" 
+          title="Next Post: STL中vector，Map，Set的实现原理">STL中vector，Map，Set的实现原理 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1></h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="xunlei.html"><strong>迅雷</strong></a>
+        
+            <a href="other.html"><strong>其它</strong></a>
+        
+            <a href="mindcase.html"><strong>有意思的参考</strong></a>
+         
+        </p>
+
+
                 </div>
               </div>
-            </div>
-            <div class="large-9 medium-9 columns">
 
- <div class="markdown-body">
-<h1>什么是钩子。</h1>
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15411228257252.html">默克尔哈希树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15411227973182.html">汗诺塔</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15409843239504.html">红-黑树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15409843145989.html">二叉树</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15404623797917.html">堆排序</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
 
+</div><!-- row -->
 
-
-</div>
-
-<br /><br />
-<hr />
-
-<div class="row clearfix">
-  <div class="large-6 columns">
-	<div class="text-left" style="padding:15px 0px;">
-		
-	        <a href="15395992279563.html"  title="Previous Post: C++多态的底层实现。">&laquo; C++多态的底层实现。</a>
-	    
-	</div>
-  </div>
-  <div class="large-6 columns">
-	<div class="text-right" style="padding:15px 0px;">
-		
-	        <a href="15395992117167.html" 
-	        title="Next Post: stl中的map底层是如何实现的。">stl中的map底层是如何实现的。 &raquo;</a>
-	    
-	</div>
-  </div>
-</div>
-
-<div class="row">
-<div style="padding:0px 0.93em;" class="share-comments">
-
-</div>
-</div>
-<script type="text/javascript">
-	$(function(){
-		var currentURL = '15395992221324.html';
-		$('#side-nav a').each(function(){
-			if($(this).attr('href') == currentURL){
-				$(this).parent().addClass('active');
-			}
-		});
-	});
-</script>  
-</div></div>
-
-
-<div class="page-bottom">
+ <div class="page-bottom clearfix">
   <div class="row">
-  <hr />
-  <div class="small-9 columns">
-  <p class="copyright">Copyright &copy; 2015
+   <p class="copyright">Copyright &copy; 2018
 Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
 Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
-  </div>
-  <div class="small-3 columns">
-  <p class="copyright text-right"><a href="#header">TOP</a></p>
-  </div>
-   
   </div>
 </div>
 
         </section>
       </div>
     </div>
+
+  
     
-    
+
     <script src="asset/js/foundation.min.js"></script>
-    <script src="asset/js/foundation/foundation.offcanvas.js"></script>
     <script>
       $(document).foundation();
-
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
      
     </script>
+
     
+
 
 
   </body>
